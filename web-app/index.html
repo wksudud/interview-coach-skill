@@ -666,6 +666,10 @@
       <h2>欢迎使用 AI 求职全流程助手</h2>
       <p style="color:var(--text-light);margin:12px 0 28px;font-size:15px;">请选择你想做的事情，我将为你提供对应的服务</p>
 
+      <div style="text-align:right;margin-bottom:12px;">
+        <button class="btn btn-secondary" onclick="goBack()" style="font-size:13px;padding:6px 16px;">← 返回配置</button>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:720px;margin:0 auto;">
         <div onclick="chooseMode('create')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
              onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
@@ -752,6 +756,7 @@
     </div>
 
     <div class="btn-group">
+      <button class="btn btn-secondary" onclick="goBack()">← 返回</button>
       <button class="btn btn-primary" onclick="saveStep1()">下一步 →</button>
     </div>
   </div>
@@ -770,7 +775,7 @@
     </div>
     <div class="form-group"><label>GPA / 核心课程 <span class="optional">(可选)</span></label><input type="text" id="f_gpa" placeholder="如：3.8/4.0，或列出3-5门核心课程" /></div>
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goStep(1)">← 上一步</button>
+      <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
       <button class="btn btn-primary" onclick="saveStep2()">下一步 →</button>
     </div>
   </div>
@@ -831,7 +836,7 @@
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goStep(2)">← 上一步</button>
+      <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
       <button class="btn btn-primary" onclick="saveStep3()">下一步 →</button>
     </div>
   </div>
@@ -909,7 +914,7 @@
     <div class="form-group"><label>其他 <span class="optional">(开源贡献、博客、论文等)</span></label><textarea id="f_other" rows="2" placeholder="如：GitHub 500+ stars 开源项目作者"></textarea></div>
 
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goStep(3)">← 上一步</button>
+      <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
       <button class="btn btn-primary" onclick="saveStep4()">下一步 →</button>
     </div>
   </div>
@@ -925,7 +930,7 @@
     <div id="resumeResult" class="hidden">
       <div class="resume-output" id="resumeContent"></div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goStep(4)">← 返回修改</button>
+        <button class="btn btn-secondary" onclick="goBack()">← 返回修改</button>
         <button class="btn btn-primary" onclick="goStep(6)">确认，下一步 →</button>
       </div>
     </div>
@@ -946,7 +951,7 @@
         <input type="text" id="matchChoice" placeholder="输入编号（如 1），或告诉我你想起他方向" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goStep(5)">← 上一步</button>
+        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-primary" onclick="confirmMatch()">确认选择 →</button>
       </div>
     </div>
@@ -980,7 +985,7 @@
         <input type="text" id="jobChoice" placeholder="输入编号，或粘贴 JD 链接" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goStep(6)">← 上一步</button>
+        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-primary" onclick="confirmJob()">确认选择 →</button>
       </div>
     </div>
@@ -1002,7 +1007,7 @@
       <div id="optimizeContent"></div>
       <div class="resume-output hidden" id="optimizedResume" style="margin-top:16px;"></div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goStep(6)">← 上一步</button>
+        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-success" onclick="goStep(9)">进入模拟面试 🎤</button>
       </div>
     </div>
@@ -1042,7 +1047,7 @@
       </div>
 
       <div class="btn-group" style="justify-content:center;">
-        <button class="btn btn-secondary" onclick="goStep(8)">← 上一步</button>
+        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-success" onclick="startInterview()">开始面试 🎤</button>
       </div>
     </div>
@@ -1305,6 +1310,7 @@ function getUploadedFilesStr() {
 function goStep(n) {
   if (n < 1 || n > 9) return;
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('entrySection').classList.add('hidden');
   document.getElementById('step' + n).classList.add('active');
   document.querySelectorAll('.step-dot').forEach(d => {
     d.classList.remove('active');
@@ -1316,6 +1322,43 @@ function goStep(n) {
   const pct = ((n - 1) / 8) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
   state.currentStep = n;
+}
+
+function goBack() {
+  // From entry section: back to setup
+  if (state.currentStep === 0) {
+    document.getElementById('entrySection').classList.remove('active');
+    document.getElementById('entrySection').classList.add('hidden');
+    document.getElementById('setupSection').classList.remove('hidden');
+    return;
+  }
+
+  // From step 1: back to entry section
+  if (state.currentStep === 1) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('entrySection').classList.remove('hidden');
+    document.getElementById('entrySection').classList.add('active');
+    document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
+    document.querySelector('.step-dot[data-step="1"]').classList.add('active');
+    document.getElementById('progressFill').style.width = '0%';
+    state.currentStep = 0;
+    return;
+  }
+
+  // From step 6 in direct mode: back to entry section
+  if (state.currentStep === 6 && state.mode === 'direct') {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('entrySection').classList.remove('hidden');
+    document.getElementById('entrySection').classList.add('active');
+    document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
+    document.querySelector('.step-dot[data-step="1"]').classList.add('active');
+    document.getElementById('progressFill').style.width = '0%';
+    state.currentStep = 0;
+    return;
+  }
+
+  // Default: go to previous step
+  goStep(state.currentStep - 1);
 }
 
 // ===================== Init =====================
