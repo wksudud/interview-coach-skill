@@ -10,6 +10,27 @@
 | **模拟面试官** | `/interview-coach` | 独立的模拟面试练习 |
 | **简历创建与优化** | `/resume-builder` | 独立的简历创建与优化 |
 
+## 目录结构
+
+```text
+.
+├── SKILL.md                         # interview-coach 的根目录版本
+├── prompt-standalone.md             # 通用 AI 助手可直接粘贴的 prompt
+├── README.md                        # 项目说明
+├── .agents/skills/                  # OpenAI Codex Skills 入口
+│   ├── full-career/
+│   ├── interview-coach/
+│   └── resume-builder/
+├── .claude/skills/                  # Claude Code Skills 入口
+│   ├── full-career/
+│   ├── interview-coach/
+│   └── resume-builder/
+├── .claude/launch.json              # Web App 本地启动配置
+└── web-app/index.html               # 独立网页版
+```
+
+`.agents/skills` 与 `.claude/skills` 保持同一套最新 skill 内容；平台本地状态文件（如 `.claude/settings.local.json`、`.claude/worktrees/`）不会进入版本库。
+
 ---
 
 ## 🔥 一、一站式求职助手 Full Career（推荐）
