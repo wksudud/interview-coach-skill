@@ -19,7 +19,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/<your-username>/interview-coach-skill.git
+git clone https://github.com/wksudud/interview-coach-skill.git
 
 # 复制到 Claude Code 的 skills 目录
 cp -r interview-coach-skill/.claude/skills/interview-coach .claude/skills/
