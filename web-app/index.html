@@ -52,79 +52,118 @@
     font-size: 15px;
   }
 
-  /* Progress Bar */
-  .progress-container {
+  /* Layout: Sidebar + Content */
+  .app-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
     background: var(--card);
     border-radius: var(--radius);
-    padding: 20px 24px;
+    padding: 24px 16px;
     box-shadow: var(--shadow);
-    margin-bottom: 20px;
   }
-  .progress-steps {
+  .sidebar-steps {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     position: relative;
-    margin-bottom: 8px;
   }
-  .progress-steps::before {
+  .sidebar-steps::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 24px;
-    right: 24px;
-    height: 3px;
+    top: 18px;
+    left: 13px;
+    bottom: 18px;
+    width: 3px;
     background: var(--border);
-    transform: translateY(-50%);
     z-index: 0;
   }
-  .progress-bar-bg {
+  .sidebar-progress-fill {
     position: absolute;
-    top: 50%;
-    left: 24px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--success));
-    transform: translateY(-50%);
+    top: 18px;
+    left: 13px;
+    width: 3px;
+    background: linear-gradient(180deg, var(--primary), var(--success));
     z-index: 1;
-    transition: width 0.5s ease;
+    transition: height 0.5s ease;
   }
-  .step-dot {
+  .sidebar .step-dot {
     position: relative;
     z-index: 2;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 12px;
+    padding: 10px 0;
+    cursor: default;
   }
-  .step-dot .circle {
-    width: 36px;
-    height: 36px;
+  .sidebar .step-dot .circle {
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text-light);
     transition: all 0.3s;
-    cursor: default;
+    flex-shrink: 0;
   }
-  .step-dot.active .circle {
+  .sidebar .step-dot.active .circle {
     background: var(--primary);
     color: white;
-    box-shadow: 0 4px 12px rgba(108,92,231,0.35);
+    box-shadow: 0 3px 10px rgba(108,92,231,0.3);
   }
-  .step-dot.done .circle {
+  .sidebar .step-dot.done .circle {
     background: var(--success);
     color: white;
   }
-  .step-dot .label {
-    font-size: 11px;
+  .sidebar .step-dot .label {
+    font-size: 13px;
     color: var(--text-light);
-    white-space: nowrap;
+    line-height: 1.3;
   }
-  .step-dot.active .label { color: var(--primary); font-weight: 600; }
-  .step-dot.done .label { color: var(--success); }
+  .sidebar .step-dot.active .label { color: var(--primary); font-weight: 600; }
+  .sidebar .step-dot.done .label { color: var(--success); }
+  .sidebar .step-dot.clickable { cursor: pointer; }
+  .sidebar .step-dot.clickable .circle:hover { transform: scale(1.15); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+  /* Sidebar Footer */
+  .sidebar-footer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sidebar-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: inherit;
+  }
+  .sidebar-btn:hover { background: var(--border); color: var(--text); }
+  .sidebar-btn.active { background: #F3F0FF; color: var(--primary); font-weight: 600; }
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
 
   /* Card */
   .card {
@@ -391,12 +430,32 @@
   .summary-item .label { font-size: 13px; color: var(--text-light); margin-top: 4px; }
 
   /* Responsive */
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     body { padding: 12px; }
+    .app-layout { flex-direction: column; }
+    .sidebar {
+      width: 100%;
+      position: static;
+      padding: 16px 12px;
+    }
+    .sidebar-steps {
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 4px;
+      padding-bottom: 4px;
+    }
+    .sidebar-steps::before { display: none; }
+    .sidebar-progress-fill { display: none; }
+    .sidebar .step-dot {
+      flex-direction: column;
+      gap: 4px;
+      padding: 6px 8px;
+      flex-shrink: 0;
+    }
+    .sidebar .step-dot .circle { width: 24px; height: 24px; font-size: 10px; }
+    .sidebar .step-dot .label { font-size: 10px; white-space: nowrap; }
     .card { padding: 20px; }
     .form-row { grid-template-columns: 1fr; }
-    .progress-steps { overflow-x: auto; gap: 8px; }
-    .step-dot .label { font-size: 10px; }
     .summary-grid { grid-template-columns: 1fr; }
     .chat-msg { max-width: 95%; }
   }
@@ -521,7 +580,59 @@
   .qa-review-item .q-meta { font-size: 12px; color: var(--text-light); margin-top: 4px; }
   .next-btn-area { text-align: center; margin: 12px 0; }
   .chat-msg .msg-time { font-size: 10px; color: var(--text-light); margin-top: 4px; text-align: right; }
+
+  /* Tracker Section */
+  .platform-links { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+  .platform-links a {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    text-decoration: none; color: var(--text); background: #F0F2F5; transition: all 0.15s;
+  }
+  .platform-links a:hover { background: var(--primary); color: white; transform: translateY(-1px); }
+  .tracker-add-row {
+    display: grid; grid-template-columns: 1fr 1fr 120px 140px 120px auto;
+    gap: 8px; align-items: end; margin: 16px 0;
+  }
+  .tracker-add-row .form-group { margin-bottom: 0; }
+  .tracker-add-row .form-group label { font-size: 11px; margin-bottom: 3px; }
+  .tracker-add-row input, .tracker-add-row select {
+    width: 100%; padding: 8px 10px; border: 2px solid var(--border); border-radius: 8px;
+    font-size: 13px; font-family: inherit; background: #FAFBFC;
+  }
+  .tracker-add-row input:focus, .tracker-add-row select:focus {
+    outline: none; border-color: var(--primary);
+  }
+  .tracker-list { margin-top: 16px; }
+  .tracker-item {
+    display: grid; grid-template-columns: 1fr 1fr 100px 110px 110px 60px;
+    gap: 8px; align-items: center; padding: 10px 14px;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .tracker-item:hover { background: #F8F9FD; }
+  .tracker-item .status-select {
+    padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 12px; font-family: inherit; background: white; cursor: pointer;
+  }
+  .tracker-item .del-btn {
+    background: none; border: none; color: #E74C3C; cursor: pointer;
+    font-size: 16px; padding: 4px; border-radius: 4px;
+  }
+  .tracker-item .del-btn:hover { background: #FFEBEE; }
+  .tracker-header {
+    font-weight: 600; color: var(--text-light); font-size: 12px;
+    border-bottom: 2px solid var(--border); padding-bottom: 8px;
+  }
+  .tracker-empty { text-align: center; padding: 40px 0; color: var(--text-light); font-size: 14px; }
+  @media (max-width: 768px) {
+    .tracker-add-row { grid-template-columns: 1fr 1fr; }
+    .tracker-item { grid-template-columns: 1fr 1fr; gap: 4px; }
+  }
 </style>
+<!-- PDF.js for PDF text extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
 </head>
 <body>
 <div class="app" id="app">
@@ -531,51 +642,59 @@
     <p>从简历到面试，一站式搞定你的求职准备</p>
   </div>
 
-  <!-- Progress Bar -->
-  <div class="progress-container" id="progressBar">
-    <div class="progress-steps">
-      <div class="progress-bar-bg" id="progressFill" style="width:0%"></div>
-      <div class="step-dot active" data-step="1">
-        <div class="circle">1</div>
-        <div class="label">基本信息</div>
+  <div class="app-layout">
+    <!-- Sidebar: Step Directory -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-steps">
+        <div class="sidebar-progress-fill" id="progressFill" style="height:0%"></div>
+        <div class="step-dot active" data-step="1" onclick="jumpToStep(1)" title="跳转到基本信息">
+          <div class="circle">1</div>
+          <div class="label">基本信息</div>
+        </div>
+        <div class="step-dot" data-step="2" onclick="jumpToStep(2)" title="跳转到教育背景">
+          <div class="circle">2</div>
+          <div class="label">教育背景</div>
+        </div>
+        <div class="step-dot" data-step="3" onclick="jumpToStep(3)" title="跳转到工作经历">
+          <div class="circle">3</div>
+          <div class="label">工作经历</div>
+        </div>
+        <div class="step-dot" data-step="4" onclick="jumpToStep(4)" title="跳转到项目与技能">
+          <div class="circle">4</div>
+          <div class="label">项目与技能</div>
+        </div>
+        <div class="step-dot" data-step="5" onclick="jumpToStep(5)" title="跳转到简历生成">
+          <div class="circle">5</div>
+          <div class="label">简历生成</div>
+        </div>
+        <div class="step-dot" data-step="6" onclick="jumpToStep(6)" title="跳转到岗位匹配">
+          <div class="circle">6</div>
+          <div class="label">岗位匹配</div>
+        </div>
+        <div class="step-dot" data-step="7" onclick="jumpToStep(7)" title="跳转到职位搜索">
+          <div class="circle">7</div>
+          <div class="label">职位搜索</div>
+        </div>
+        <div class="step-dot" data-step="8" onclick="jumpToStep(8)" title="跳转到简历优化">
+          <div class="circle">8</div>
+          <div class="label">简历优化</div>
+        </div>
+        <div class="step-dot" data-step="9" onclick="jumpToStep(9)" title="跳转到模拟面试">
+          <div class="circle">9</div>
+          <div class="label">模拟面试</div>
+        </div>
       </div>
-      <div class="step-dot" data-step="2">
-        <div class="circle">2</div>
-        <div class="label">教育背景</div>
-      </div>
-      <div class="step-dot" data-step="3">
-        <div class="circle">3</div>
-        <div class="label">工作经历</div>
-      </div>
-      <div class="step-dot" data-step="4">
-        <div class="circle">4</div>
-        <div class="label">项目与技能</div>
-      </div>
-      <div class="step-dot" data-step="5">
-        <div class="circle">5</div>
-        <div class="label">简历生成</div>
-      </div>
-      <div class="step-dot" data-step="6">
-        <div class="circle">6</div>
-        <div class="label">岗位匹配</div>
-      </div>
-      <div class="step-dot" data-step="7">
-        <div class="circle">7</div>
-        <div class="label">职位搜索</div>
-      </div>
-      <div class="step-dot" data-step="8">
-        <div class="circle">8</div>
-        <div class="label">简历优化</div>
-      </div>
-      <div class="step-dot" data-step="9">
-        <div class="circle">9</div>
-        <div class="label">模拟面试</div>
+      <div class="sidebar-footer">
+        <button class="sidebar-btn" onclick="showWorkspace()">⚙️ 工作台</button>
+        <button class="sidebar-btn" onclick="showTracker()">📋 投递进度</button>
       </div>
     </div>
-  </div>
+
+    <!-- Main Content Area -->
+    <div class="content">
 
   <!-- API Setup: Multi-Provider Configuration -->
-  <div class="card" id="setupSection">
+  <div class="card section hidden" id="setupSection">
     <div class="api-setup">
       <div class="logo">🤖</div>
       <h2>配置 AI 服务</h2>
@@ -601,8 +720,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label>API 地址</label>
-          <input type="url" id="pf_url" placeholder="Anthropic: https://api.anthropic.com/v1/messages | OpenAI 兼容: https://api.deepseek.com/v1/chat/completions" />
+          <label>API URL</label>
+          <input type="url" id="pf_url" placeholder="https://api.deepseek.com/chat/completions" />
         </div>
         <div class="form-group">
           <label>API Key</label>
@@ -610,13 +729,15 @@
         </div>
         <div class="form-group">
           <label>模型名称</label>
-          <input type="text" id="pf_model" placeholder="Anthropic: claude-sonnet-4-6 | DeepSeek: deepseek-chat | GPT: gpt-4o" />
+          <input type="text" id="pf_model" placeholder="DeepSeek: deepseek-v4-flash / deepseek-v4-pro | Anthropic: claude-sonnet-4-6 | GPT: gpt-4o" />
         </div>
         <div class="btn-group" style="justify-content:center;flex-wrap:wrap;">
           <button class="btn btn-secondary" onclick="removeCurrentProvider()" id="pf_deleteBtn" style="display:none;">删除此服务商</button>
-          <button class="btn btn-primary" onclick="saveCurrentProvider()">保存配置</button>
+          <button class="btn btn-secondary" onclick="saveCurrentProvider()">保存配置</button>
+          <button class="btn btn-outline" onclick="testApiConnection()" id="pf_testBtn" style="font-size:13px;">🔌 测试连接</button>
           <button class="btn btn-success" onclick="initApp()">确认并开始</button>
         </div>
+        <div id="apiTestResult" style="margin-top:12px;font-size:13px;text-align:center;min-height:0;"></div>
       </div>
 
       <!-- Role Routing Config -->
@@ -660,14 +781,14 @@
   </div>
 
   <!-- Entry Section: Choose Mode -->
-  <div class="card section hidden" id="entrySection">
+  <div class="card section active" id="entrySection">
     <div style="text-align:center;padding:20px 0;">
       <div style="font-size:48px;margin-bottom:16px;">👋</div>
       <h2>欢迎使用 AI 求职全流程助手</h2>
       <p style="color:var(--text-light);margin:12px 0 28px;font-size:15px;">请选择你想做的事情，我将为你提供对应的服务</p>
 
       <div style="text-align:right;margin-bottom:12px;">
-        <button class="btn btn-secondary" onclick="goBack()" style="font-size:13px;padding:6px 16px;">← 返回配置</button>
+        <button class="btn btn-secondary" onclick="goBack()" style="font-size:13px;padding:6px 16px;">← 工作台</button>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:720px;margin:0 auto;">
@@ -719,6 +840,37 @@
         </div>
       </div>
     </div>
+  
+  <!-- Tracker Section -->
+  <div class="card section hidden" id="trackerSection">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <h2 style="margin:0;">📋 投递进度管理</h2>
+      <button class="btn btn-secondary" onclick="showSteps()" style="font-size:13px;padding:6px 16px;">← 返回步骤</button>
+    </div>
+    <p class="subtitle">管理你的求职投递记录，追踪每份申请的进度</p>
+    <div style="margin:20px 0 8px;"><label style="font-size:13px;font-weight:600;">求职平台快捷入口</label></div>
+    <div class="platform-links">
+      <a href="https://www.zhipin.com" target="_blank">🔵 BOSS直聘</a>
+      <a href="https://www.zhaopin.com" target="_blank">🔷 智联招聘</a>
+      <a href="https://www.lagou.com" target="_blank">🟢 拉勾网</a>
+      <a href="https://www.liepin.com" target="_blank">🟣 猎聘</a>
+      <a href="https://www.51job.com" target="_blank">🔶 前程无忧</a>
+      <a href="https://www.linkedin.com" target="_blank">🔷 LinkedIn</a>
+    </div>
+    <div style="margin:20px 0;">
+      <label style="font-size:13px;font-weight:600;margin-bottom:8px;display:block;">添加投递记录</label>
+      <div class="tracker-add-row">
+        <div class="form-group"><label>公司名称</label><input id="tr_company" placeholder="公司名称" /></div>
+        <div class="form-group"><label>职位</label><input id="tr_position" placeholder="职位名称" /></div>
+        <div class="form-group"><label>平台</label><select id="tr_platform"><option>BOSS直聘</option><option>智联招聘</option><option>拉勾网</option><option>猎聘</option><option>前程无忧</option><option>LinkedIn</option><option>其他</option></select></div>
+        <div class="form-group"><label>投递日期</label><input type="date" id="tr_date" /></div>
+        <div class="form-group"><label>状态</label><select id="tr_status"><option>已投递</option><option>简历筛选</option><option>面试中</option><option>已Offer</option><option>已拒绝</option></select></div>
+        <button class="btn btn-primary" onclick="addTrackerEntry()" style="padding:8px 20px;font-size:13px;">添加</button>
+      </div>
+    </div>
+    <div id="trackerList" class="tracker-list">
+      <div class="tracker-empty">暂无投递记录。添加你的第一条投递记录吧！</div>
+    </div>
   </div>
 
   <!-- Step 1: Basic Info -->
@@ -749,7 +901,7 @@
            ondrop="event.preventDefault();this.style.borderColor='var(--border)';this.style.background='';handleFileDrop(event)"
            onclick="document.getElementById('fileInput').click()">
         <p style="font-size:14px;color:var(--text-light);margin-bottom:6px;">📂 拖拽文件到此处，或点击选择文件</p>
-        <p style="font-size:12px;color:var(--text-light);">支持 .txt、.md、.pdf 格式（PDF 将以文本方式读取）</p>
+        <p style="font-size:12px;color:var(--text-light);">支持 .txt、.md、.pdf 格式</p>
       </div>
       <input type="file" id="fileInput" accept=".txt,.md,.pdf" multiple style="display:none" onchange="handleFileSelect(event)" />
       <div id="fileList" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
@@ -1084,19 +1236,107 @@
       </div>
     </div>
   </div>
+  </div>
+  </div>
 </div>
 
 <script>
 // ===================== State =====================
+
+// ===================== Application Tracker =====================
+function addTrackerEntry() {
+  var company = document.getElementById('tr_company').value.trim();
+  var position = document.getElementById('tr_position').value.trim();
+  var platform = document.getElementById('tr_platform').value;
+  var date = document.getElementById('tr_date').value;
+  var status = document.getElementById('tr_status').value;
+  if (!company || !position) { alert('请填写公司名称和职位'); return; }
+  if (!date) { date = new Date().toISOString().slice(0,10); }
+  state.trackerEntries.push({
+    id: Date.now(),
+    company: company,
+    position: position,
+    platform: platform,
+    date: date,
+    status: status
+  });
+  document.getElementById('tr_company').value = '';
+  document.getElementById('tr_position').value = '';
+  document.getElementById('tr_date').value = '';
+  saveTrackerToStorage();
+  renderTrackerEntries();
+}
+
+function deleteTrackerEntry(id) {
+  state.trackerEntries = state.trackerEntries.filter(function(e) { return e.id !== id; });
+  saveTrackerToStorage();
+  renderTrackerEntries();
+}
+
+function updateTrackerStatus(id, newStatus) {
+  state.trackerEntries.forEach(function(e) {
+    if (e.id === id) e.status = newStatus;
+  });
+  saveTrackerToStorage();
+}
+
+function renderTrackerEntries() {
+  var container = document.getElementById('trackerList');
+  if (state.trackerEntries.length === 0) {
+    container.innerHTML = '<div class="tracker-empty">暂无投递记录。添加你的第一条投递记录吧！</div>';
+    return;
+  }
+  var html = '<div class="tracker-item tracker-header">' +
+    '<span>公司</span><span>职位</span><span>平台</span><span>日期</span><span>状态</span><span></span>' +
+    '</div>';
+  state.trackerEntries.forEach(function(e) {
+    html += '<div class="tracker-item">' +
+      '<span>' + escHtml(e.company) + '</span>' +
+      '<span>' + escHtml(e.position) + '</span>' +
+      '<span>' + escHtml(e.platform) + '</span>' +
+      '<span>' + e.date + '</span>' +
+      '<span><select class="status-select" onchange="updateTrackerStatus(' + e.id + ', this.value)" style="background:' + getStatusColor(e.status) + '20;border-color:' + getStatusColor(e.status) + ';">' +
+        '<option ' + (e.status === '已投递' ? 'selected' : '') + '>已投递</option>' +
+        '<option ' + (e.status === '简历筛选' ? 'selected' : '') + '>简历筛选</option>' +
+        '<option ' + (e.status === '面试中' ? 'selected' : '') + '>面试中</option>' +
+        '<option ' + (e.status === '已Offer' ? 'selected' : '') + '>已Offer</option>' +
+        '<option ' + (e.status === '已拒绝' ? 'selected' : '') + '>已拒绝</option>' +
+      '</select></span>' +
+      '<span><button class="del-btn" onclick="deleteTrackerEntry(' + e.id + ')" title="删除">✕</button></span>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function getStatusColor(status) {
+  if (status === '已投递') return '#6C5CE7';
+  if (status === '简历筛选') return '#FDCB6E';
+  if (status === '面试中') return '#00B894';
+  if (status === '已Offer') return '#00A383';
+  if (status === '已拒绝') return '#E74C3C';
+  return '#636E72';
+}
+
+function saveTrackerToStorage() {
+  try { localStorage.setItem('job_tracker', JSON.stringify(state.trackerEntries)); } catch(e) {}
+}
+
+function loadTrackerFromStorage() {
+  try {
+    var saved = localStorage.getItem('job_tracker');
+    if (saved) { state.trackerEntries = JSON.parse(saved); }
+  } catch(e) {}
+}
+
 const state = {
   // Multi-provider API support
   apiProviders: [
     {
       id: 'provider-1',
       name: 'DeepSeek',
-      apiUrl: 'https://api.deepseek.com/v1/chat/completions',
+      apiUrl: 'https://api.deepseek.com/chat/completions',
       apiKey: '',
-      model: 'deepseek-chat',
+      model: 'deepseek-v4-flash',
       providerType: 'openai',
       isDefault: true
     }
@@ -1127,6 +1367,7 @@ const state = {
   userData: {},
   interviewActive: false,
   jobsFound: [],
+  trackerEntries: [],
   interviewQA: [],        // { question, userAnswer, referenceAnswer, score, suggestions, mode }
   currentQuestion: '',    // current question being asked
   awaitingAnswer: false,  // waiting for user to choose answer method
@@ -1184,6 +1425,10 @@ async function callAnthropic(provider, system, messages, maxTokens) {
     throw new Error(`API 错误 (${provider.name}): ${resp.status} - ${err}`);
   }
   const data = await resp.json();
+  // Handle Anthropic error responses that come with HTTP 200
+  if (data.type === 'error' || !data.content) {
+    throw new Error(`API 响应格式异常：返回数据缺少 content 字段。请检查 API 类型选择是否正确（如使用 DeepSeek/GPT 请选"OpenAI 兼容"，而非 Anthropic）。`);
+  }
   return data.content[0].text;
 }
 
@@ -1255,14 +1500,26 @@ function readFileContent(file) {
     };
     reader.readAsText(file);
   } else if (ext === 'pdf') {
-    // Read PDF as text (basic extraction — the API will handle further parsing)
+    // Use PDF.js to extract text from PDF
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = `[PDF 文件: ${file.name}]\n${e.target.result || '（PDF 内容已作为文本读取，可能包含格式字符）'}`;
-      uploadedFiles.push({ name: file.name, content: content.substring(0, 10000), type: ext, size: file.size });
-      updateFileListItem(file.name, '✅ 已读取（文本模式）');
+    reader.onload = async (e) => {
+      try {
+        const arrayBuffer = e.target.result;
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fullText += content.items.map(item => item.str).join(' ') + '\n';
+        }
+        const content = `[PDF 文件: ${file.name}]\n${fullText.trim() || '（未能从 PDF 中提取出文本内容，可能是扫描件）'}`;
+        uploadedFiles.push({ name: file.name, content: content.substring(0, 10000), type: ext, size: file.size });
+        updateFileListItem(file.name, '✅ 已读取');
+      } catch (pdfErr) {
+        updateFileListItem(file.name, '❌ PDF 解析失败：' + pdfErr.message);
+      }
     };
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
   }
 }
 
@@ -1321,16 +1578,15 @@ function goStep(n) {
     if (step === n) d.classList.add('active');
   });
   const pct = ((n - 1) / 8) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressFill').style.height = pct + '%';
   state.currentStep = n;
+  updateStepDotsClickable();
 }
 
 function goBack() {
-  // From entry section: back to setup
+  // From entry section: back to workspace
   if (state.currentStep === 0) {
-    document.getElementById('entrySection').classList.remove('active');
-    document.getElementById('entrySection').classList.add('hidden');
-    document.getElementById('setupSection').classList.remove('hidden');
+    showWorkspace();
     return;
   }
 
@@ -1341,7 +1597,7 @@ function goBack() {
     document.getElementById('entrySection').classList.add('active');
     document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
     document.querySelector('.step-dot[data-step="1"]').classList.add('active');
-    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressFill').style.height = '0%';
     state.currentStep = 0;
     return;
   }
@@ -1353,7 +1609,7 @@ function goBack() {
     document.getElementById('entrySection').classList.add('active');
     document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
     document.querySelector('.step-dot[data-step="1"]').classList.add('active');
-    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressFill').style.height = '0%';
     state.currentStep = 0;
     return;
   }
@@ -1370,7 +1626,7 @@ function initApp() {
   // Need at least one valid provider
   const validProviders = state.apiProviders.filter(p => p.apiKey && p.apiUrl && p.model);
   if (validProviders.length === 0) {
-    alert('请至少完整配置一个 AI 服务商（名称、API 地址、Key、模型）');
+    alert('请至少完整配置一个 AI 服务商（名称、URL、Key、模型）');
     return;
   }
 
@@ -1390,13 +1646,8 @@ function initApp() {
     localStorage.setItem('ai_role_routing', JSON.stringify(state.roleRouting));
   } catch (e) { /* ignore localStorage errors */ }
 
-  document.getElementById('setupSection').classList.add('hidden');
-
-  // Show entry mode selection
-  document.getElementById('entrySection').classList.remove('hidden');
-  document.getElementById('entrySection').classList.add('active');
-  state.mode = '';
-  state.existingResume = '';
+  // Switch to step view
+  showSteps();
 }
 
 // ===================== Mode Entry Selection =====================
@@ -1431,15 +1682,36 @@ function handleResumeFile(event) {
     alert('请上传 .txt、.md 或 .pdf 格式的文件');
     return;
   }
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    let content = e.target.result || '';
-    if (ext === 'pdf') content = content.substring(0, 10000);
-    document.getElementById('existingResumeInput').value = content;
-    document.getElementById('resumeInputStatus').textContent = '✅ 已读取：' + file.name;
-  };
-  if (ext === 'pdf') reader.readAsText(file);
-  else reader.readAsText(file);
+
+  if (ext === 'txt' || ext === 'md') {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('existingResumeInput').value = e.target.result || '';
+      document.getElementById('resumeInputStatus').textContent = '✅ 已读取：' + file.name;
+    };
+    reader.readAsText(file);
+  } else if (ext === 'pdf') {
+    document.getElementById('resumeInputStatus').textContent = '⏳ 正在解析 PDF...';
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const arrayBuffer = e.target.result;
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fullText += content.items.map(item => item.str).join(' ') + '\n';
+        }
+        const text = fullText.trim() || '（未能从 PDF 中提取出文本内容，可能是扫描件）';
+        document.getElementById('existingResumeInput').value = text;
+        document.getElementById('resumeInputStatus').textContent = '✅ 已读取：' + file.name;
+      } catch (pdfErr) {
+        document.getElementById('resumeInputStatus').textContent = '❌ PDF 解析失败：' + pdfErr.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
 }
 
 function confirmResumeInput() {
@@ -1660,6 +1932,109 @@ async function askAIAssist(step) {
   btn.disabled = false;
 }
 
+// ===================== API Connection Test =====================
+async function testApiConnection() {
+  const resultDiv = document.getElementById('apiTestResult');
+  const btn = document.getElementById('pf_testBtn');
+
+  saveCurrentProvider();
+  const p = getActiveProvider();
+
+  if (!p.apiUrl || !p.apiKey || !p.model) {
+    resultDiv.innerHTML = '<span style="color:#E74C3C;">⚠️ 请先填写完整的 API 配置（地址、Key、模型）</span>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ 测试中...';
+  resultDiv.innerHTML = '<span style="color:var(--text-light);">正在测试连接...</span>';
+
+  try {
+    const startTime = Date.now();
+    if (p.providerType === 'anthropic') {
+      const resp = await fetch(p.apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': p.apiKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: p.model, max_tokens: 50, system: 'You are a helpful assistant.', messages: [{ role: 'user', content: 'Hello' }] })
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status + ': ' + (await resp.text()).substring(0, 200));
+      const data = await resp.json();
+      resultDiv.innerHTML = '<span style="color:var(--success);">✅ 连接成功！(' + (Date.now() - startTime) + 'ms)</span>';
+    } else {
+      const resp = await fetch(p.apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + p.apiKey },
+        body: JSON.stringify({ model: p.model, max_tokens: 50, messages: [{ role: 'system', content: 'You are a helpful assistant.' }, { role: 'user', content: 'Hello' }], stream: false })
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status + ': ' + (await resp.text()).substring(0, 200));
+      const data = await resp.json();
+      resultDiv.innerHTML = '<span style="color:var(--success);">✅ 连接成功！(' + (Date.now() - startTime) + 'ms)</span>';
+    }
+  } catch (e) {
+    let msg = e.message;
+    if (msg.includes('Failed to fetch')) msg = '网络错误：无法连接到服务器，请检查 URL。';
+    else if (msg.includes('401')) msg = '认证失败（401）：API Key 无效。';
+    else if (msg.includes('403')) msg = '权限不足（403）：Key 无权限访问此模型。';
+    else if (msg.includes('404')) msg = '接口不存在（404）：URL 路径错误，可能需要 /v1/ 前缀。';
+    else if (msg.includes('429')) msg = '请求过多（429）：API 限流，请稍后重试。';
+    resultDiv.innerHTML = '<span style="color:#E74C3C;">❌ 连接失败：' + msg + '</span>';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🔌 测试连接';
+}
+
+// ===================== Step Quick Jump =====================
+function jumpToStep(n) {
+  showSteps();
+  if (n < 1 || n > 9) return;
+  if (state.interviewActive) return;
+  goStep(n);
+}
+
+function updateStepDotsClickable() {
+  document.querySelectorAll('.step-dot').forEach(dot => {
+    const step = parseInt(dot.dataset.step);
+    dot.classList.toggle('clickable', step <= state.currentStep);
+  });
+}
+// ===================== View Switching =====================
+function showWorkspace() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('entrySection').classList.add('hidden');
+  document.getElementById('trackerSection').classList.add('hidden');
+  document.getElementById('setupSection').classList.remove('hidden');
+  document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
+  document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+  var btn = document.querySelector('.sidebar-btn[onclick*="showWorkspace"]');
+  if (btn) btn.classList.add('active');
+  state.currentStep = 0;
+}
+
+function showTracker() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('entrySection').classList.add('hidden');
+  document.getElementById('setupSection').classList.add('hidden');
+  document.getElementById('trackerSection').classList.remove('hidden');
+  document.getElementById('trackerSection').classList.add('active');
+  document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
+  document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+  var btn = document.querySelector('.sidebar-btn[onclick*="showTracker"]');
+  if (btn) btn.classList.add('active');
+  state.currentStep = 0;
+  renderTrackerEntries();
+}
+
+function showSteps() {
+  document.getElementById('setupSection').classList.add('hidden');
+  document.getElementById('trackerSection').classList.remove('active');
+  document.getElementById('trackerSection').classList.add('hidden');
+  document.getElementById('entrySection').classList.remove('hidden');
+  document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+  goStep(1);
+}
+
+
 function getProviderFormData() {
   return {
     name: document.getElementById('pf_name').value.trim(),
@@ -1720,6 +2095,7 @@ function addProvider() {
   renderProviderTabs();
   renderProviderForm();
   populateRoutingSelects();
+  loadTrackerFromStorage();
 }
 
 function saveCurrentProvider() {
@@ -2769,7 +3145,8 @@ function resetAll() {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
   document.querySelector('.step-dot[data-step="1"]').classList.add('active');
-  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressFill').style.height = '0%';
+  updateStepDotsClickable();
 }
 
 // ===================== Keyboard shortcut & Init =====================
@@ -2800,6 +3177,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProviderTabs();
   renderProviderForm();
   populateRoutingSelects();
+  updateStepDotsClickable();
 });
 </script>
 </body>
