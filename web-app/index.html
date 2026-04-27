@@ -794,6 +794,42 @@
       </div>
     </div>
     <button class="btn btn-outline" onclick="addWorkEntry()" style="width:100%">+ 添加更多工作经历</button>
+
+    <!-- AI Assistant for Work Experience -->
+    <div class="ai-assist-panel" style="margin-top:20px;padding:16px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span style="font-size:18px;">🤖</span>
+        <span style="font-weight:600;font-size:14px;">AI 助手帮你写</span>
+        <span style="font-size:12px;color:var(--text-light);">描述你的工作内容，AI 帮你润色成 STAR 法则的简历描述</span>
+      </div>
+      <textarea class="ai-assist-input" rows="3" placeholder="例：我负责了订单系统的重构，把慢查询优化了，还引入了缓存，系统性能提升了很多..." style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+      <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
+        <div class="spinner"></div><span>正在生成...</span>
+      </div>
+      <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
+      <div class="btn-group" style="margin-top:8px;">
+        <button class="btn btn-primary" onclick="askAIAssist(3)" style="font-size:13px;padding:8px 20px;">✨ 生成简历描述</button>
+      </div>
+    </div>
+
+    <!-- Supplementary Materials Upload for Step 3 -->
+    <div style="margin-top:16px;">
+      <details style="cursor:pointer;">
+        <summary style="font-size:14px;color:var(--text-light);padding:8px 0;">📎 上传补充材料 <span style="font-size:12px;">(成绩单/证书/作品集)</span></summary>
+        <div style="margin-top:8px;">
+          <div style="border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;"
+               ondragover="event.preventDefault();this.style.borderColor='var(--primary)'"
+               ondragleave="this.style.borderColor='var(--border)'"
+               ondrop="event.preventDefault();this.style.borderColor='var(--border)';handleFileDrop(event)"
+               onclick="document.getElementById('fileInputStep3').click()">
+            <p style="font-size:13px;color:var(--text-light);">📂 拖拽或点击上传文件</p>
+          </div>
+          <input type="file" id="fileInputStep3" accept=".txt,.md,.pdf" multiple style="display:none" onchange="handleFileSelect(event)" />
+          <div id="fileListStep3" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+      </details>
+    </div>
+
     <div class="btn-group">
       <button class="btn btn-secondary" onclick="goStep(2)">← 上一步</button>
       <button class="btn btn-primary" onclick="saveStep3()">下一步 →</button>
@@ -817,6 +853,23 @@
       </div>
     </div>
     <button class="btn btn-outline" onclick="addProjectEntry()" style="width:100%;margin-bottom:16px;">+ 添加更多项目</button>
+
+    <!-- AI Assistant for Projects -->
+    <div class="ai-assist-panel" style="margin-bottom:20px;padding:16px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span style="font-size:18px;">🤖</span>
+        <span style="font-weight:600;font-size:14px;">AI 助手帮你写</span>
+        <span style="font-size:12px;color:var(--text-light);">描述你的项目内容，AI 帮你提炼成简历亮点</span>
+      </div>
+      <textarea class="ai-assist-input" rows="3" placeholder="例：我做了一个电商后台管理系统，用了 Spring Boot + Vue，实现了订单管理、用户管理等功能..." style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+      <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
+        <div class="spinner"></div><span>正在生成...</span>
+      </div>
+      <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
+      <div class="btn-group" style="margin-top:8px;">
+        <button class="btn btn-primary" onclick="askAIAssist(4)" style="font-size:13px;padding:8px 20px;">✨ 生成项目描述</button>
+      </div>
+    </div>
 
     <!-- Local Project Folder Import -->
     <h3 style="font-size:16px;margin:20px 0 8px;">从本地项目导入 <span style="font-weight:400;font-size:13px;color:var(--text-light)">(可选)</span></h3>
@@ -1354,14 +1407,12 @@ function confirmResumeInput() {
   state.existingResume = text;
 
   if (state.mode === 'optimize') {
-    // Skip to resume optimization (step 8)
+    // Parse existing resume and pre-fill all form fields, go through steps 1-4
     document.getElementById('entrySection').classList.remove('active');
     document.getElementById('entrySection').classList.add('hidden');
-    // Set a placeholder userData so the flow works
-    state.userData.target = state.userData.target || '目标岗位';
     state.resume = text;
-    goStep(8);
-    optimizeResume();
+    goStep(1);
+    parseExistingResume(text);
   } else if (state.mode === 'direct') {
     // Skip to career matching (step 6)
     // First generate a basic resume from their text
@@ -1374,7 +1425,196 @@ function confirmResumeInput() {
   }
 }
 
-// ===================== Provider Management =====================
+// ===================== Existing Resume Parsing =====================
+async function parseExistingResume(text) {
+  // Show parsing status
+  const container = document.getElementById('step1');
+  const statusDiv = document.createElement('div');
+  statusDiv.id = 'parseStatus';
+  statusDiv.className = 'loading';
+  statusDiv.innerHTML = '<div class="spinner"></div><span>正在分析你的简历并预填信息...</span>';
+  container.insertBefore(statusDiv, container.querySelector('.btn-group'));
+
+  const system = `你是一位简历解析专家。分析以下简历内容，提取结构化信息并返回 JSON 格式（只返回 JSON，不要其他文字）：
+{
+  "name": "姓名",
+  "contact": "联系方式",
+  "target": "目标岗位",
+  "years": "工作年限（选填：应届生/1-3年/3-5年/5-10年/10年以上）",
+  "city": "期望城市",
+  "links": "个人主页/GitHub",
+  "summary": "个人简介（2-3句话）",
+  "school": "学校",
+  "degree": "学历（博士/硕士/本科/大专）",
+  "major": "专业",
+  "eduTime": "就读时间",
+  "gpa": "GPA或核心课程",
+  "workExp": [
+    { "company": "公司", "title": "职位", "time": "工作时间", "achievements": "核心成就（STAR法则+量化数据）" }
+  ],
+  "projects": [
+    { "name": "项目名称", "role": "你的角色", "tech": "技术栈", "contribution": "你的贡献" }
+  ],
+  "skillsLang": "编程语言及熟练度",
+  "skillsTools": "框架与工具",
+  "skillsLangAbility": "语言能力",
+  "awards": "获奖情况",
+  "other": "其他信息"
+}
+如果某项信息缺失，用空字符串替代。工作经历和项目经历如果有则完整提取。`;
+
+  try {
+    const result = await callLLM(system, [
+      { role: 'user', content: `请解析以下简历内容，提取结构化信息：\n\n${text.substring(0, 8000)}` }
+    ], { maxTokens: 3072 });
+
+    const parsed = JSON.parse(result);
+    Object.assign(state.userData, parsed);
+
+    // Pre-fill form fields
+    prefillFormFields();
+
+    if (statusDiv) {
+      statusDiv.innerHTML = '<span style="color:var(--success);">✅ 简历已解析完成，请核对并补充信息后继续。</span>';
+      setTimeout(() => { if (statusDiv) statusDiv.remove(); }, 3000);
+    }
+  } catch (e) {
+    if (statusDiv) {
+      statusDiv.innerHTML = `<span style="color:#E74C3C;">⚠️ 自动解析失败：${e.message}，请手动填写信息。</span>`;
+      setTimeout(() => { if (statusDiv) statusDiv.remove(); }, 4000);
+    }
+    state.userData.target = state.userData.target || '目标岗位';
+  }
+}
+
+function prefillFormFields() {
+  const d = state.userData;
+  const setVal = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+  setVal('f_name', d.name);
+  setVal('f_contact', d.contact);
+  setVal('f_target', d.target);
+  setVal('f_years', d.years);
+  setVal('f_city', d.city);
+  setVal('f_links', d.links);
+  setVal('f_summary', d.summary);
+  setVal('f_school', d.school);
+  setVal('f_degree', d.degree);
+  setVal('f_major', d.major);
+  setVal('f_edu_time', d.eduTime);
+  setVal('f_gpa', d.gpa);
+  setVal('f_skills_lang', d.skillsLang);
+  setVal('f_skills_tools', d.skillsTools);
+  setVal('f_skills_lang_ability', d.skillsLangAbility);
+  setVal('f_awards', d.awards);
+  setVal('f_other', d.other);
+
+  // Pre-fill work experience entries
+  if (d.workExp && d.workExp.length > 0) {
+    const workFields = document.getElementById('workFields');
+    workFields.innerHTML = '';
+    d.workExp.forEach((w, idx) => {
+      const entry = document.createElement('div');
+      entry.className = 'work-entry';
+      entry.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;';
+      entry.innerHTML = `
+        <div class="form-row">
+          <div class="form-group"><label>公司名称</label><input type="text" class="f_work_company" value="${escHtml(w.company || '')}" /></div>
+          <div class="form-group"><label>职位</label><input type="text" class="f_work_title" value="${escHtml(w.title || '')}" /></div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group"><label>工作时间</label><input type="text" class="f_work_time" value="${escHtml(w.time || '')}" /></div>
+        </div>
+        <div class="form-group"><label>核心成就</label><textarea class="f_work_achievements tall" rows="4">${escHtml(w.achievements || '')}</textarea></div>
+        <button class="btn btn-secondary" onclick="this.parentElement.remove()" style="font-size:13px;padding:6px 16px;margin-top:8px;">删除</button>
+      `;
+      workFields.appendChild(entry);
+    });
+  }
+
+  // Pre-fill project entries
+  if (d.projects && d.projects.length > 0) {
+    const projFields = document.getElementById('projectFields');
+    projFields.innerHTML = '';
+    d.projects.forEach((p, idx) => {
+      const entry = document.createElement('div');
+      entry.className = 'project-entry';
+      entry.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;';
+      entry.innerHTML = `
+        <div class="form-row">
+          <div class="form-group"><label>项目名称</label><input type="text" class="f_proj_name" value="${escHtml(p.name || '')}" /></div>
+          <div class="form-group"><label>你的角色</label><input type="text" class="f_proj_role" value="${escHtml(p.role || '')}" /></div>
+        </div>
+        <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" value="${escHtml(p.tech || '')}" /></div>
+        <div class="form-group"><label>你的贡献</label><textarea class="f_proj_contribution" rows="3">${escHtml(p.contribution || '')}</textarea></div>
+        <button class="btn btn-secondary" onclick="this.parentElement.remove()" style="font-size:13px;padding:6px 16px;margin-top:8px;">删除</button>
+      `;
+      projFields.appendChild(entry);
+    });
+  }
+}
+
+// ===================== AI Chat Assistant for Steps 3 & 4 =====================
+async function askAIAssist(step) {
+  const btn = event.target;
+  const panel = btn.closest('.ai-assist-panel');
+  const input = panel.querySelector('.ai-assist-input');
+  const resultArea = panel.querySelector('.ai-assist-result');
+  const status = panel.querySelector('.ai-assist-status');
+  const prompt = input.value.trim();
+
+  if (!prompt) { alert('请描述你的工作内容或项目经历'); return; }
+
+  status.classList.remove('hidden');
+  resultArea.classList.add('hidden');
+  btn.disabled = true;
+
+  const target = state.userData.target || '技术岗位';
+  const isWork = step === 3;
+
+  const system = `你是简历优化专家。根据用户描述，帮他用 STAR 法则（情境、任务、行动、结果）生成高质量的简历描述。
+返回格式：2-4 条量化成就描述，每条一行，用数字序号开头。
+要求：
+1. 使用动词开头（设计、实现、优化、主导、带领等）
+2. 尽量补充量化数据（提升百分比、减少耗时、服务用户数等）
+3. 突出个人贡献，而非团队成果
+4. 语言简洁有力，每条不超过 60 字`;
+
+  try {
+    const result = await callLLM(system, [
+      { role: 'user', content: `我的目标岗位是 ${target}。请帮我将以下描述优化为 STAR 法则的简历成就描述：\n\n${prompt}` }
+    ], { maxTokens: 1024 });
+
+    resultArea.textContent = result;
+    resultArea.classList.remove('hidden');
+    status.classList.add('hidden');
+
+    // Add "apply" button
+    const existingApply = panel.querySelector('.ai-apply-btn');
+    if (existingApply) existingApply.remove();
+    const applyBtn = document.createElement('button');
+    applyBtn.className = 'btn btn-primary ai-apply-btn';
+    applyBtn.textContent = '✅ 应用到简历';
+    applyBtn.style.cssText = 'font-size:13px;padding:6px 20px;margin-top:8px;';
+    applyBtn.onclick = () => {
+      const textarea = isWork
+        ? document.querySelector('.f_work_achievements')
+        : document.querySelector('.f_proj_contribution');
+      if (textarea) {
+        if (textarea.value.trim()) {
+          textarea.value += '\n' + result;
+        } else {
+          textarea.value = result;
+        }
+        resultArea.textContent = '✅ 已应用！';
+        panel.querySelector('.ai-assist-input').value = '';
+      }
+    };
+    resultArea.after(applyBtn);
+  } catch (e) {
+    status.innerHTML = `<span style="color:#E74C3C;">生成失败：${e.message}</span>`;
+  }
+  btn.disabled = false;
+}
 
 function getProviderFormData() {
   return {
@@ -2468,6 +2708,12 @@ function resetAll() {
       <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" placeholder="如：Spring Boot, Redis" /></div>
       <div class="form-group"><label>你的贡献</label><textarea class="f_proj_contribution" rows="3" placeholder="STAR法则描述"></textarea></div>
     </div>`;
+  // Clear file lists
+  document.getElementById('fileList').innerHTML = '';
+  const fileList3 = document.getElementById('fileListStep3');
+  if (fileList3) fileList3.innerHTML = '';
+  uploadedFiles.length = 0;
+
   state.mode = '';
   state.existingResume = '';
   document.getElementById('resumeInputArea').classList.add('hidden');
