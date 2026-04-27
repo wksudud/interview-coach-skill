@@ -659,6 +659,64 @@
     </div>
   </div>
 
+  <!-- Entry Section: Choose Mode -->
+  <div class="card section hidden" id="entrySection">
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">👋</div>
+      <h2>欢迎使用 AI 求职全流程助手</h2>
+      <p style="color:var(--text-light);margin:12px 0 28px;font-size:15px;">请选择你想做的事情，我将为你提供对应的服务</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:720px;margin:0 auto;">
+        <div onclick="chooseMode('create')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
+             onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
+             onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
+          <div style="font-size:36px;margin-bottom:12px;">📝</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">创建新简历</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">
+            从零开始，通过问答收集信息生成专业简历，从基本资料到项目经历逐步完善。
+          </div>
+        </div>
+
+        <div onclick="chooseMode('optimize')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
+             onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
+             onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
+          <div style="font-size:36px;margin-bottom:12px;">✏️</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">修改现有简历</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">
+            已有简历但想优化？粘贴现有简历，AI 帮你诊断、润色、匹配目标岗位。
+          </div>
+        </div>
+
+        <div onclick="chooseMode('direct')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
+             onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
+             onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
+          <div style="font-size:36px;margin-bottom:12px;">🚀</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">已有简历直接找工作</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">
+            已有完整简历，直接进入岗位匹配和职位搜索，快速找到适合你的机会。
+          </div>
+        </div>
+      </div>
+
+      <!-- Resume input area (shown for optimize/direct modes) -->
+      <div id="resumeInputArea" class="hidden" style="max-width:600px;margin:24px auto 0;text-align:left;">
+        <div class="form-group">
+          <label>请粘贴你的简历内容 <span style="font-weight:400;color:var(--text-light);font-size:12px;">(支持 Markdown 或纯文本格式)</span></label>
+          <textarea id="existingResumeInput" rows="10" placeholder="在此粘贴你的简历内容..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:200px;"></textarea>
+        </div>
+        <div class="form-group" style="text-align:center;">
+          <label style="font-size:13px;color:var(--text-light);">或 <a href="#" onclick="document.getElementById('resumeFileInput').click();return false;" style="color:var(--primary);">上传简历文件</a>（支持 .txt、.md、.pdf）</label>
+          <input type="file" id="resumeFileInput" accept=".txt,.md,.pdf" style="display:none" onchange="handleResumeFile(event)" />
+        </div>
+        <div id="resumeInputStatus" style="font-size:13px;color:var(--success);text-align:center;margin-bottom:12px;"></div>
+        <div class="btn-group" style="justify-content:center;">
+          <button class="btn btn-secondary" onclick="cancelModeSelection()">← 返回选择</button>
+          <button class="btn btn-success" onclick="confirmResumeInput()" id="confirmResumeBtn">确认，下一步 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Step 1: Basic Info -->
   <div class="card section" id="step1">
     <h2>📋 基本信息</h2>
@@ -998,6 +1056,8 @@ const state = {
   interviewSources: [],
   customSource: '',
   currentStep: 1,
+  mode: '',              // 'create' | 'optimize' | 'direct'
+  existingResume: '',    // user's existing resume text
   resume: '',
   optimizedResume: '',
   matchChoice: '',
@@ -1234,7 +1294,84 @@ function initApp() {
   } catch (e) { /* ignore localStorage errors */ }
 
   document.getElementById('setupSection').classList.add('hidden');
-  goStep(1);
+
+  // Show entry mode selection
+  document.getElementById('entrySection').classList.remove('hidden');
+  document.getElementById('entrySection').classList.add('active');
+  state.mode = '';
+  state.existingResume = '';
+}
+
+// ===================== Mode Entry Selection =====================
+function chooseMode(mode) {
+  state.mode = mode;
+  if (mode === 'create') {
+    // Go directly to step 1
+    document.getElementById('entrySection').classList.remove('active');
+    document.getElementById('entrySection').classList.add('hidden');
+    goStep(1);
+  } else {
+    // Show resume input area
+    document.getElementById('resumeInputArea').classList.remove('hidden');
+    document.getElementById('confirmResumeBtn').textContent =
+      mode === 'optimize' ? '确认，进入简历优化 →' : '确认，进入岗位匹配 →';
+  }
+}
+
+function cancelModeSelection() {
+  state.mode = '';
+  state.existingResume = '';
+  document.getElementById('resumeInputArea').classList.add('hidden');
+  document.getElementById('existingResumeInput').value = '';
+  document.getElementById('resumeInputStatus').textContent = '';
+}
+
+function handleResumeFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['txt', 'md', 'pdf'].includes(ext)) {
+    alert('请上传 .txt、.md 或 .pdf 格式的文件');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    let content = e.target.result || '';
+    if (ext === 'pdf') content = content.substring(0, 10000);
+    document.getElementById('existingResumeInput').value = content;
+    document.getElementById('resumeInputStatus').textContent = '✅ 已读取：' + file.name;
+  };
+  if (ext === 'pdf') reader.readAsText(file);
+  else reader.readAsText(file);
+}
+
+function confirmResumeInput() {
+  const text = document.getElementById('existingResumeInput').value.trim();
+  if (!text) {
+    alert('请粘贴或上传你的简历内容');
+    return;
+  }
+  state.existingResume = text;
+
+  if (state.mode === 'optimize') {
+    // Skip to resume optimization (step 8)
+    document.getElementById('entrySection').classList.remove('active');
+    document.getElementById('entrySection').classList.add('hidden');
+    // Set a placeholder userData so the flow works
+    state.userData.target = state.userData.target || '目标岗位';
+    state.resume = text;
+    goStep(8);
+    optimizeResume();
+  } else if (state.mode === 'direct') {
+    // Skip to career matching (step 6)
+    // First generate a basic resume from their text
+    document.getElementById('entrySection').classList.remove('active');
+    document.getElementById('entrySection').classList.add('hidden');
+    state.userData.target = state.userData.target || '目标岗位';
+    state.resume = text;
+    goStep(6);
+    goStep6();
+  }
 }
 
 // ===================== Provider Management =====================
@@ -2331,7 +2468,18 @@ function resetAll() {
       <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" placeholder="如：Spring Boot, Redis" /></div>
       <div class="form-group"><label>你的贡献</label><textarea class="f_proj_contribution" rows="3" placeholder="STAR法则描述"></textarea></div>
     </div>`;
-  goStep(1);
+  state.mode = '';
+  state.existingResume = '';
+  document.getElementById('resumeInputArea').classList.add('hidden');
+  document.getElementById('existingResumeInput').value = '';
+  document.getElementById('resumeInputStatus').textContent = '';
+  // Go back to entry screen instead of step 1
+  document.getElementById('entrySection').classList.remove('hidden');
+  document.getElementById('entrySection').classList.add('active');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
+  document.querySelector('.step-dot[data-step="1"]').classList.add('active');
+  document.getElementById('progressFill').style.width = '0%';
 }
 
 // ===================== Keyboard shortcut & Init =====================
