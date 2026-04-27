@@ -26,18 +26,22 @@
     color: var(--text);
     min-height: 100vh;
     display: flex;
-    justify-content: center;
     padding: 20px;
   }
   .app {
-    max-width: 860px;
+    max-width: 1180px;
     width: 100%;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
   }
 
   /* Header */
   .header {
+    grid-column: 1 / -1;
     text-align: center;
-    padding: 32px 0 24px;
+    padding: 24px 0 12px;
   }
   .header h1 {
     font-size: 28px;
@@ -52,52 +56,72 @@
     font-size: 15px;
   }
 
-  /* Progress Bar */
+  /* Side Navigation */
   .progress-container {
     background: var(--card);
     border-radius: var(--radius);
-    padding: 20px 24px;
+    padding: 18px;
     box-shadow: var(--shadow);
     margin-bottom: 20px;
+    position: sticky;
+    top: 20px;
+    grid-column: 1;
+    grid-row: 2 / span 20;
+  }
+  .side-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+    margin: 2px 0 12px;
+  }
+  .side-action {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: #FAFBFC;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 14px;
+    font-family: inherit;
+    text-align: left;
+  }
+  .side-action:hover,
+  .side-action.active {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #F8F7FF;
   }
   .progress-steps {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 8px;
     position: relative;
     margin-bottom: 8px;
   }
-  .progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 24px;
-    right: 24px;
-    height: 3px;
-    background: var(--border);
-    transform: translateY(-50%);
-    z-index: 0;
-  }
-  .progress-bar-bg {
-    position: absolute;
-    top: 50%;
-    left: 24px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--success));
-    transform: translateY(-50%);
-    z-index: 1;
-    transition: width 0.5s ease;
-  }
+  .progress-steps::before,
+  .progress-bar-bg { display: none; }
   .step-dot {
     position: relative;
     z-index: 2;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
   }
+  .step-dot:hover { background: #F8F7FF; }
   .step-dot .circle {
-    width: 36px;
-    height: 36px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: var(--border);
     display: flex;
@@ -107,8 +131,9 @@
     font-weight: 600;
     color: var(--text-light);
     transition: all 0.3s;
-    cursor: default;
+    flex: 0 0 auto;
   }
+  .step-dot.active { background: #F8F7FF; }
   .step-dot.active .circle {
     background: var(--primary);
     color: white;
@@ -119,7 +144,7 @@
     color: white;
   }
   .step-dot .label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-light);
     white-space: nowrap;
   }
@@ -128,6 +153,7 @@
 
   /* Card */
   .card {
+    grid-column: 2;
     background: var(--card);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -393,10 +419,15 @@
   /* Responsive */
   @media (max-width: 640px) {
     body { padding: 12px; }
+    .app { display: block; max-width: 100%; }
+    .progress-container { position: static; margin-bottom: 12px; }
+    .progress-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     .card { padding: 20px; }
     .form-row { grid-template-columns: 1fr; }
-    .progress-steps { overflow-x: auto; gap: 8px; }
-    .step-dot .label { font-size: 10px; }
+    .step-dot .label { font-size: 12px; }
     .summary-grid { grid-template-columns: 1fr; }
     .chat-msg { max-width: 95%; }
   }
@@ -533,41 +564,46 @@
 
   <!-- Progress Bar -->
   <div class="progress-container" id="progressBar">
+    <div class="side-title">配置</div>
+    <button class="side-action" id="apiNavItem" onclick="showApiManager()">
+      <span>⚙️</span><span>API 管理</span>
+    </button>
+    <div class="side-title">流程目录</div>
     <div class="progress-steps">
       <div class="progress-bar-bg" id="progressFill" style="width:0%"></div>
-      <div class="step-dot active" data-step="1">
+      <div class="step-dot active" data-step="1" onclick="jumpToStep(1)">
         <div class="circle">1</div>
         <div class="label">基本信息</div>
       </div>
-      <div class="step-dot" data-step="2">
+      <div class="step-dot" data-step="2" onclick="jumpToStep(2)">
         <div class="circle">2</div>
         <div class="label">教育背景</div>
       </div>
-      <div class="step-dot" data-step="3">
+      <div class="step-dot" data-step="3" onclick="jumpToStep(3)">
         <div class="circle">3</div>
         <div class="label">工作经历</div>
       </div>
-      <div class="step-dot" data-step="4">
+      <div class="step-dot" data-step="4" onclick="jumpToStep(4)">
         <div class="circle">4</div>
         <div class="label">项目与技能</div>
       </div>
-      <div class="step-dot" data-step="5">
+      <div class="step-dot" data-step="5" onclick="jumpToStep(5)">
         <div class="circle">5</div>
         <div class="label">简历生成</div>
       </div>
-      <div class="step-dot" data-step="6">
+      <div class="step-dot" data-step="6" onclick="jumpToStep(6)">
         <div class="circle">6</div>
         <div class="label">岗位匹配</div>
       </div>
-      <div class="step-dot" data-step="7">
+      <div class="step-dot" data-step="7" onclick="jumpToStep(7)">
         <div class="circle">7</div>
         <div class="label">职位搜索</div>
       </div>
-      <div class="step-dot" data-step="8">
+      <div class="step-dot" data-step="8" onclick="jumpToStep(8)">
         <div class="circle">8</div>
         <div class="label">简历优化</div>
       </div>
-      <div class="step-dot" data-step="9">
+      <div class="step-dot" data-step="9" onclick="jumpToStep(9)">
         <div class="circle">9</div>
         <div class="label">模拟面试</div>
       </div>
@@ -578,8 +614,8 @@
   <div class="card" id="setupSection">
     <div class="api-setup">
       <div class="logo">🤖</div>
-      <h2>配置 AI 服务</h2>
-      <p>可配置多个 AI 服务，分别用于不同功能。<br>密钥仅保存在浏览器内存中，不会持久化到磁盘。</p>
+      <h2>API 管理</h2>
+      <p>管理多个 AI 服务商，并为不同任务分配专用模型。<br>密钥仅保存在浏览器内存中，不会持久化到磁盘。</p>
 
       <!-- Provider Tabs -->
       <div id="providerTabs" style="display:flex;gap:8px;margin-bottom:16px;justify-content:center;flex-wrap:wrap;"></div>
@@ -615,7 +651,7 @@
         <div class="btn-group" style="justify-content:center;flex-wrap:wrap;">
           <button class="btn btn-secondary" onclick="removeCurrentProvider()" id="pf_deleteBtn" style="display:none;">删除此服务商</button>
           <button class="btn btn-primary" onclick="saveCurrentProvider()">保存配置</button>
-          <button class="btn btn-success" onclick="initApp()">确认并开始</button>
+          <button class="btn btn-success" onclick="initApp()" id="apiContinueBtn">保存并进入</button>
         </div>
       </div>
 
@@ -666,10 +702,6 @@
       <h2>欢迎使用 AI 求职全流程助手</h2>
       <p style="color:var(--text-light);margin:12px 0 28px;font-size:15px;">请选择你想做的事情，我将为你提供对应的服务</p>
 
-      <div style="text-align:right;margin-bottom:12px;">
-        <button class="btn btn-secondary" onclick="goBack()" style="font-size:13px;padding:6px 16px;">← 返回配置</button>
-      </div>
-
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:720px;margin:0 auto;">
         <div onclick="chooseMode('create')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
              onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
@@ -714,7 +746,6 @@
         </div>
         <div id="resumeInputStatus" style="font-size:13px;color:var(--success);text-align:center;margin-bottom:12px;"></div>
         <div class="btn-group" style="justify-content:center;">
-          <button class="btn btn-secondary" onclick="cancelModeSelection()">← 返回选择</button>
           <button class="btn btn-success" onclick="confirmResumeInput()" id="confirmResumeBtn">确认，下一步 →</button>
         </div>
       </div>
@@ -756,7 +787,6 @@
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goBack()">← 返回</button>
       <button class="btn btn-primary" onclick="saveStep1()">下一步 →</button>
     </div>
   </div>
@@ -775,7 +805,6 @@
     </div>
     <div class="form-group"><label>GPA / 核心课程 <span class="optional">(可选)</span></label><input type="text" id="f_gpa" placeholder="如：3.8/4.0，或列出3-5门核心课程" /></div>
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
       <button class="btn btn-primary" onclick="saveStep2()">下一步 →</button>
     </div>
   </div>
@@ -836,7 +865,6 @@
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
       <button class="btn btn-primary" onclick="saveStep3()">下一步 →</button>
     </div>
   </div>
@@ -914,7 +942,6 @@
     <div class="form-group"><label>其他 <span class="optional">(开源贡献、博客、论文等)</span></label><textarea id="f_other" rows="2" placeholder="如：GitHub 500+ stars 开源项目作者"></textarea></div>
 
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
       <button class="btn btn-primary" onclick="saveStep4()">下一步 →</button>
     </div>
   </div>
@@ -930,7 +957,6 @@
     <div id="resumeResult" class="hidden">
       <div class="resume-output" id="resumeContent"></div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goBack()">← 返回修改</button>
         <button class="btn btn-primary" onclick="goStep(6)">确认，下一步 →</button>
       </div>
     </div>
@@ -951,7 +977,6 @@
         <input type="text" id="matchChoice" placeholder="输入编号（如 1），或告诉我你想起他方向" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-primary" onclick="confirmMatch()">确认选择 →</button>
       </div>
     </div>
@@ -985,7 +1010,6 @@
         <input type="text" id="jobChoice" placeholder="输入编号，或粘贴 JD 链接" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-primary" onclick="confirmJob()">确认选择 →</button>
       </div>
     </div>
@@ -1007,7 +1031,6 @@
       <div id="optimizeContent"></div>
       <div class="resume-output hidden" id="optimizedResume" style="margin-top:16px;"></div>
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-success" onclick="goStep(9)">进入模拟面试 🎤</button>
       </div>
     </div>
@@ -1047,7 +1070,6 @@
       </div>
 
       <div class="btn-group" style="justify-content:center;">
-        <button class="btn btn-secondary" onclick="goBack()">← 上一步</button>
         <button class="btn btn-success" onclick="startInterview()">开始面试 🎤</button>
       </div>
     </div>
@@ -1113,7 +1135,8 @@ const state = {
   // Interview question sources
   interviewSources: [],
   customSource: '',
-  currentStep: 1,
+  hasStarted: false,
+  currentStep: 0,
   mode: '',              // 'create' | 'optimize' | 'direct'
   existingResume: '',    // user's existing resume text
   resume: '',
@@ -1308,9 +1331,34 @@ function getUploadedFilesStr() {
 }
 
 // ===================== Navigation =====================
+function hideWorkflowViews() {
+  document.getElementById('setupSection').classList.add('hidden');
+  document.getElementById('entrySection').classList.remove('active');
+  document.getElementById('entrySection').classList.add('hidden');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+}
+
+function setApiNavActive(active) {
+  document.getElementById('apiNavItem').classList.toggle('active', active);
+}
+
+function showApiManager() {
+  hideWorkflowViews();
+  document.getElementById('setupSection').classList.remove('hidden');
+  setApiNavActive(true);
+}
+
+function jumpToStep(n) {
+  state.hasStarted = true;
+  goStep(n);
+}
+
 function goStep(n) {
   if (n < 1 || n > 9) return;
+  document.getElementById('setupSection').classList.add('hidden');
+  setApiNavActive(false);
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('entrySection').classList.remove('active');
   document.getElementById('entrySection').classList.add('hidden');
   document.getElementById('step' + n).classList.add('active');
   document.querySelectorAll('.step-dot').forEach(d => {
@@ -1322,44 +1370,8 @@ function goStep(n) {
   });
   const pct = ((n - 1) / 8) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
+  state.hasStarted = true;
   state.currentStep = n;
-}
-
-function goBack() {
-  // From entry section: back to setup
-  if (state.currentStep === 0) {
-    document.getElementById('entrySection').classList.remove('active');
-    document.getElementById('entrySection').classList.add('hidden');
-    document.getElementById('setupSection').classList.remove('hidden');
-    return;
-  }
-
-  // From step 1: back to entry section
-  if (state.currentStep === 1) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById('entrySection').classList.remove('hidden');
-    document.getElementById('entrySection').classList.add('active');
-    document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
-    document.querySelector('.step-dot[data-step="1"]').classList.add('active');
-    document.getElementById('progressFill').style.width = '0%';
-    state.currentStep = 0;
-    return;
-  }
-
-  // From step 6 in direct mode: back to entry section
-  if (state.currentStep === 6 && state.mode === 'direct') {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById('entrySection').classList.remove('hidden');
-    document.getElementById('entrySection').classList.add('active');
-    document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
-    document.querySelector('.step-dot[data-step="1"]').classList.add('active');
-    document.getElementById('progressFill').style.width = '0%';
-    state.currentStep = 0;
-    return;
-  }
-
-  // Default: go to previous step
-  goStep(state.currentStep - 1);
 }
 
 // ===================== Init =====================
@@ -1391,10 +1403,17 @@ function initApp() {
   } catch (e) { /* ignore localStorage errors */ }
 
   document.getElementById('setupSection').classList.add('hidden');
+  setApiNavActive(false);
 
-  // Show entry mode selection
+  if (state.hasStarted && state.currentStep > 0) {
+    goStep(state.currentStep);
+    return;
+  }
+
   document.getElementById('entrySection').classList.remove('hidden');
   document.getElementById('entrySection').classList.add('active');
+  state.hasStarted = true;
+  state.currentStep = 0;
   state.mode = '';
   state.existingResume = '';
 }
@@ -2724,11 +2743,12 @@ function resetAll() {
     else if (typeof state[k] === 'number') state[k] = 0;
     else state[k] = '';
   });
-  state.currentStep = 1;
+  state.currentStep = 0;
+  state.hasStarted = true;
   document.getElementById('interviewSummary').classList.add('hidden');
   document.getElementById('interviewSetup').classList.remove('hidden');
   document.querySelectorAll('input, textarea, select').forEach(el => {
-    if (!el.closest('.work-entry') && !el.closest('.project-entry')) {
+    if (!el.closest('.work-entry') && !el.closest('.project-entry') && !el.closest('#setupSection')) {
       el.value = '';
     }
   });
@@ -2763,7 +2783,8 @@ function resetAll() {
   document.getElementById('resumeInputArea').classList.add('hidden');
   document.getElementById('existingResumeInput').value = '';
   document.getElementById('resumeInputStatus').textContent = '';
-  // Go back to entry screen instead of step 1
+  document.getElementById('setupSection').classList.add('hidden');
+  setApiNavActive(false);
   document.getElementById('entrySection').classList.remove('hidden');
   document.getElementById('entrySection').classList.add('active');
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -2800,6 +2821,10 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProviderTabs();
   renderProviderForm();
   populateRoutingSelects();
+  if (!document.getElementById('setupSection').classList.contains('hidden')) {
+    setApiNavActive(true);
+    document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
+  }
 });
 </script>
 </body>
