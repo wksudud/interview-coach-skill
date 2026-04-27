@@ -1,8 +1,8 @@
 ---
 name: interview-coach
-description: 模拟面试官，针对不同岗位进行面试练习，涵盖技术面、行为面、系统设计等。给出结构化反馈和评分。
-argument-hint: [职位] [级别] [面试类型] [公司]
-allowed-tools: Read, Bash, Grep
+description: "模拟面试官，针对不同岗位进行面试练习，涵盖技术面、行为面、系统设计等。给出结构化反馈和评分。"
+argument-hint: "[职位] [级别] [面试类型] [公司]"
+allowed-tools: "Read, Bash, Grep"
 user-invocable: true
 ---
 
