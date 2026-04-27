@@ -596,8 +596,8 @@
         <div class="form-group">
           <label>API 类型</label>
           <select id="pf_type">
-            <option value="anthropic">Anthropic (Claude)</option>
             <option value="openai">OpenAI 兼容 (DeepSeek / Doubao / GPT 等)</option>
+            <option value="anthropic">Anthropic (Claude)</option>
           </select>
         </div>
         <div class="form-group">
@@ -1093,11 +1093,11 @@ const state = {
   apiProviders: [
     {
       id: 'provider-1',
-      name: 'Anthropic Claude',
-      apiUrl: 'https://api.anthropic.com/v1/messages',
+      name: 'DeepSeek',
+      apiUrl: 'https://api.deepseek.com/v1/chat/completions',
       apiKey: '',
-      model: 'claude-sonnet-4-6',
-      providerType: 'anthropic', // 'anthropic' | 'openai'
+      model: 'deepseek-chat',
+      providerType: 'openai',
       isDefault: true
     }
   ],
@@ -1204,7 +1204,8 @@ async function callOpenAI(provider, system, messages, maxTokens) {
     body: JSON.stringify({
       model: provider.model,
       max_tokens: maxTokens,
-      messages: msgs
+      messages: msgs,
+      stream: false
     })
   });
   if (!resp.ok) {
