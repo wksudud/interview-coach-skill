@@ -1,17 +1,66 @@
-# AI 面试与简历助手 Skills
+# AI 求职全流程助手
 
-包含两个强大的 AI Skill，支持 **Claude Code** 和 **OpenAI Codex CLI** 等主流 AI 编程助手。
+一站式求职解决方案，包含三个 AI Skill，支持 **Claude Code** 和 **OpenAI Codex CLI** 等主流 AI 编程助手。
 
 ## Skills 总览
 
 | Skill | 命令 | 功能 |
 |---|---|---|
-| **模拟面试官** | `/interview-coach` | 模拟面试练习，支持多岗位、多类型、简历关联提问 |
-| **简历创建与优化** | `/resume-builder` | 通过问答收集信息生成简历，或优化现有简历 |
+| **🔥 一站式求职助手（推荐）** | `/full-career` | **完整求职全流程**：简历生成 → 岗位匹配 → 真实职位搜索 → 定向优化简历 → 模拟面试 |
+| **模拟面试官** | `/interview-coach` | 独立的模拟面试练习 |
+| **简历创建与优化** | `/resume-builder` | 独立的简历创建与优化 |
 
 ---
 
-## 一、模拟面试官 Interview Coach
+## 🔥 一、一站式求职助手 Full Career（推荐）
+
+整合简历、求职、面试的全流程闭环。**一个命令走完所有环节。**
+
+### 完整流程
+
+```
+/full-career 后端开发 3年
+  ↓
+阶段一：信息收集 → 生成基础简历
+  ↓
+阶段二：职业匹配推荐（分析画像，推荐最适合的岗位）
+  ↓
+阶段三：真实招聘搜索（从 BOSS直聘、智联等搜索真实职位）
+  ↓
+阶段四：定向优化简历（基于真实 JD 逐项优化）
+  ↓
+阶段五：模拟面试（针对目标公司和岗位进行面试）
+```
+
+### 使用方法
+
+```bash
+# 克隆仓库
+git clone https://github.com/wksudud/interview-coach-skill.git
+
+# 复制到 Claude Code 的 skills 目录
+cp -r interview-coach-skill/.claude/skills/full-career .claude/skills/
+```
+
+重启后输入：
+
+```
+/full-career
+# 或带参数
+/full-career 后端开发 3年
+/full-career 前端开发 应届生
+```
+
+### 优势
+
+- ✅ 一次命令完成全部流程，无需切换 skill
+- ✅ 简历与面试关联，面试官基于简历提问
+- ✅ 真实职位驱动，优化有针对性
+- ✅ 适合从零开始准备面试的用户
+
+---
+
+## 二、模拟面试官 Interview Coach
 
 ### 功能特点
 
@@ -79,7 +128,7 @@ Skill 会：
 
 ---
 
-## 二、简历创建与优化 Resume Builder
+## 三、简历创建与优化 Resume Builder
 
 ### 功能特点
 
