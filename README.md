@@ -168,3 +168,32 @@ cp -r interview-coach-skill/.claude/skills/resume-builder .claude/skills/
 2. **优化现有简历模式**：粘贴简历 → 诊断分析 → 逐项优化 → 生成最终版
 3. 每个模块逐项问答，引导用户用量化数据和 STAR 法则
 4. 最终输出完整的 Markdown 格式简历
+
+---
+
+## 💻 网页版 Web App
+
+除了 Claude Code 命令行版本，还提供了一个**独立的网页版**，可直接在浏览器中运行完整的求职全流程。
+
+### 使用方式
+
+```bash
+# 克隆后直接用浏览器打开
+open interview-coach-skill/web-app/index.html
+# 或
+start interview-coach-skill/web-app/index.html
+```
+
+### 功能特点
+
+- 🎨 美观的步骤式向导界面
+- 📝 表单化信息收集（无需命令行交互）
+- 🤖 接入 Anthropic Claude API 实现 AI 功能
+- 📄 在线简历生成与优化
+- 🔍 真实职位搜索展示
+- 🎤 内置模拟面试聊天界面
+- 💾 API Key 仅保存在本地浏览器
+
+### 注意事项
+
+使用网页版需要提供 [Anthropic API Key](https://console.anthropic.com/)，密钥仅存储在本地浏览器中。
