@@ -14,6 +14,7 @@
 
 ```text
 .
+├── AGENT.md                         # 项目维护指南与乱码预防
 ├── SKILL.md                         # interview-coach 的根目录版本
 ├── prompt-standalone.md             # 通用 AI 助手可直接粘贴的 prompt
 ├── README.md                        # 项目说明
@@ -27,12 +28,13 @@
 │   └── resume-builder/
 ├── .claude/launch.json              # Web App 本地启动配置
 └── web-app/
-    ├── index.html                   # 独立网页版入口
-    └── assets/
-        ├── state.js                 # 应用状态
-        ├── api.js                   # API 服务商预设与调用层
-        ├── view.js                  # UI 渲染函数
-        └── actions.js               # 业务逻辑与事件处理
+    ├── index.html                   # 独立网页版入口（结构 + 样式）
+    ├── assets/
+    │   ├── state.js                 # 全局状态、常量、简历模板
+    │   ├── api.js                   # API 服务商预设与调用层
+    │   ├── view.js                  # UI 渲染、导航、乱码修复
+    │   └── actions.js               # 业务逻辑、PDF 生成、面试流程
+    └── templates/                   # 简历模板文件目录
 ```
 
 `.agents/skills` 与 `.claude/skills` 保持同一套最新 skill 内容；平台本地状态文件（如 `.claude/settings.local.json`、`.claude/worktrees/`）不会进入版本库。
@@ -226,29 +228,31 @@ start interview-coach-skill/web-app/index.html
 
 ### 功能特点
 
-- 🎨 美观的步骤式向导界面（共 6 步，覆盖求职全流程）
-- 📝 表单化信息收集 + 子步骤引导（基础信息 → 教育 → 工作经历 → 项目技能）
+- 🎨 美观的步骤式向导界面（9 步覆盖求职全流程）
+- 📝 表单化信息收集 + 5 个子步骤引导：基础信息 → 教育背景 → 工作经历 → 项目与技能 → 自我评价
 - 🤖 **三大 API 服务商预设**：DeepSeek、豆包（火山引擎）、千问（阿里云），URL 已预填
-- 🔀 **步骤级模型分配**：在每一步卡片顶部可直接切换使用的模型，也可在 API 管理页统一配置
-- 📎 **文件上传**：拖拽或点击上传 PDF/TXT/MD/DOCX/RTF/HTML 等格式
-- 📂 **本地项目导入**：选择项目文件夹，自动扫描代码 → AI 分析 → 勾选贡献点写入简历
-- 🎯 **题库来源选择**：可指定牛客网、力扣、BOSS直聘面经、知乎等面试题来源
-- 📄 在线简历生成与优化
-- 🔍 真实职位搜索展示
-- 🎤 内置模拟面试聊天界面，带评分和参考回答
-- 🔗 **申请进度追踪**：记录投递、面试状态
-- 💾 配置持久化（API Key 仅保存在浏览器内存）
+- 🔀 **步骤级模型分配**：每个使用 AI 的步骤可独立指定模型
+- 📎 **文件上传**：拖拽或点击上传 PDF/TXT/MD/DOCX/RTF/HTML
+- 📂 **本地项目导入**：选择文件夹 → 自动扫描代码 → AI 提炼贡献点 → 勾选写入简历
+- 🎯 **题库来源选择**：牛客网、力扣、BOSS直聘面经、知乎等
+- 📄 在线简历生成（Markdown 编辑 + 实时预览）
+- 📦 简历导出：PDF（直出，含 CJK 字体支持）、DOC、Markdown
+- 🔍 真实职位搜索（BOSS直聘、智联招聘、拉勾网、猎聘、前程无忧）
+- 🎤 模拟面试聊天界面，带评分反馈和参考回答
+- 🔗 **申请进度追踪**：记录投递、面试、Offer 状态
+- 💾 配置与进度持久化（API Key 仅存浏览器内存）
 
 ### 文件结构
 
 ```
 web-app/
 ├── index.html          # 主页面（结构 + 样式）
-└── assets/
-    ├── state.js        # 应用状态对象
-    ├── api.js          # API 服务商预设、调用层、连通性测试
-    ├── view.js         # UI 渲染（导航、聊天、追踪器、文件列表等）
-    └── actions.js      # 业务逻辑（文件处理、步骤控制、面试、初始化等）
+├── assets/
+│   ├── state.js        # 全局状态、步骤常量、简历模板
+│   ├── api.js          # API 服务商预设、LLM 调用、持久化
+│   ├── view.js         # UI 渲染、导航、repairUIStrings() 乱码修复
+│   └── actions.js      # 业务逻辑、PDF 生成、面试流程
+└── templates/          # 简历模板文件目录
 ```
 
 ### 配置说明
@@ -267,3 +271,10 @@ web-app/
 - 密钥仅存储在浏览器内存中，不持久化到磁盘
 - 推荐使用 Chrome/Edge 浏览器以获得完整功能体验（文件夹选择功能需要 Chromium 内核）
 - Docx 文件解析依赖 mammoth.js，PDF 解析依赖 pdf.js（从 CDN 加载）
+- PDF 导出优先使用 jsPDF + CJK 字体，CDN 字体不可用时自动降级为浏览器打印
+
+### 开发维护
+
+- 维护指南见 [AGENT.md](AGENT.md)，包含代码结构、常见修改入口、乱码修复策略
+- 修改 HTML 后必须用 `grep -on '\?/[a-z]*>' web-app/index.html` 检查无损坏标签
+- 中文乱码优先在 `view.js` 的 `repairUIStrings()` 中修复，不要大改 HTML 编码
