@@ -193,6 +193,8 @@ function saveSessionData() {
       ),
       resume: state.resume,
       optimizedResume: state.optimizedResume,
+      optimizeCompany: state.optimizeCompany,
+      optimizePosition: state.optimizePosition,
       existingResume: state.existingResume,
       mode: state.mode,
       currentStep: state.currentStep,
@@ -208,6 +210,7 @@ function saveSessionData() {
       jobChoice: state.jobChoice,
       jobsFound: state.jobsFound.slice(0, 10),
       jobSearchConfig: state.jobSearchConfig,
+      targetCompany: state.targetCompany,
       hasStarted: state.hasStarted,
       savedAt: new Date().toISOString()
     };
@@ -223,6 +226,8 @@ function loadSessionData() {
     if (data.userData && Object.keys(data.userData).length > 0) { state.userData = data.userData; }
     if (data.resume) state.resume = data.resume;
     if (data.optimizedResume) state.optimizedResume = data.optimizedResume;
+    if (data.optimizeCompany) state.optimizeCompany = data.optimizeCompany;
+    if (data.optimizePosition) state.optimizePosition = data.optimizePosition;
     if (data.existingResume) state.existingResume = data.existingResume;
     if (data.mode) state.mode = data.mode;
     if (data.currentStep) state.currentStep = data.currentStep;
@@ -238,6 +243,7 @@ function loadSessionData() {
     if (data.jobChoice) state.jobChoice = data.jobChoice;
     if (data.jobsFound && data.jobsFound.length > 0) state.jobsFound = data.jobsFound;
     if (data.jobSearchConfig) state.jobSearchConfig = data.jobSearchConfig;
+    if (data.targetCompany) state.targetCompany = data.targetCompany;
     if (data.hasStarted) state.hasStarted = true;
     return true;
   } catch (e) {

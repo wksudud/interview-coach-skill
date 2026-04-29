@@ -126,6 +126,8 @@ const state = {
   existingResume: '',
   resume: '',
   optimizedResume: '',
+  optimizeCompany: '',
+  optimizePosition: '',
   resumeTemplate: 'reference',
   resumeGeneratedOnce: false,
   resumeLayoutCompressionIndex: 0,
@@ -147,6 +149,7 @@ const state = {
   jobSearchProgress: { phase: '', platform: '', completed: 0, total: 0 },
   jobSearchCancelled: false,
 
+  targetCompany: '',
   interviewSources: [],
   customSource: '',
   chatHistory: [],

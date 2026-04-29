@@ -259,6 +259,9 @@ function goStep(n) {
   if (n === 1) {
     showResumeSubstep(state.currentResumeSubstep || 'basic');
   }
+  if (n === 4 && typeof renderPlatformOrderList === 'function') {
+    setTimeout(renderPlatformOrderList, 50);
+  }
 }
 
 // ===================== Chat UI =====================
@@ -560,16 +563,16 @@ function renderPlatformOrderList() {
   const container = document.getElementById('platformOrderList');
   if (!container) return;
   const config = state.jobSearchConfig;
-  const order = config.searchOrder.length > 0 ? config.searchOrder : config.platforms;
+  const order = config.platforms;
   container.innerHTML = order.map(key => {
     const plat = JOB_PLATFORMS.find(p => p.key === key);
     if (!plat) return '';
     const enabled = config.platforms.includes(key);
-    return `<div class="platform-chip ${enabled ? 'enabled' : 'disabled'}"
-             onclick="togglePlatform('${key}')"
-             style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid ${enabled ? 'var(--primary)' : 'var(--border)'};background:${enabled ? '#F3F0FF' : '#FAFBFC'};font-size:12px;font-weight:500;opacity:${enabled ? '1' : '0.5'};transition:all 0.2s;">
-             ${enabled ? '\u542f\u7528' : '\u505c\u7528'} ${plat.name}
-           </div>`;
+    return `<label class="platform-chip" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid ${enabled ? 'var(--primary)' : 'var(--border)'};background:${enabled ? '#F3F0FF' : '#FAFBFC'};font-size:12px;font-weight:500;opacity:${enabled ? '1' : '0.6'};transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;">
+             <input type="checkbox" ${enabled ? 'checked' : ''} onchange="togglePlatform('${key}')" style="display:none;">
+             <span style="display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid ${enabled ? 'var(--primary)' : 'var(--border)'};background:${enabled ? 'var(--primary)' : 'transparent'};flex-shrink:0;transition:all 0.2s;"></span>
+             ${enabled ? '\u5df2\u542f\u7528' : '\u5df2\u505c\u7528'} ${plat.name}
+           </label>`;
   }).join('');
 }
 
@@ -581,13 +584,8 @@ function togglePlatform(key) {
   } else {
     config.platforms.push(key);
   }
-  if (config.searchOrder.length > 0) {
-    // Keep searchOrder in sync
-    const ordIdx = config.searchOrder.indexOf(key);
-    if (ordIdx > -1) config.searchOrder.splice(ordIdx, 1);
-    else config.searchOrder.push(key);
-  }
   renderPlatformOrderList();
+  saveSessionData();
 }
 
 // ===================== Project Folder File Tree =====================

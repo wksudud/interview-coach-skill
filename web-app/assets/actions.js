@@ -1046,64 +1046,333 @@ function confirmJob() {
   state.jobChoice = choice;
   saveSessionData();
   goStep(5);
-  optimizeResume();
+  initOptimizeStep();
 }
 
 // ===================== Step 8: Optimize Resume =====================
-async function optimizeResume() {
-  document.getElementById('optimizeLoading').classList.remove('hidden');
-  document.getElementById('optimizeResult').classList.add('hidden');
+function initOptimizeStep() {
+  const posInput = document.getElementById('optimizePosition');
+  if (posInput && !posInput.value) {
+    posInput.value = state.optimizePosition || state.matchChoice || state.userData.target || '';
+  }
+  // Restore company selection
+  const sel = document.getElementById('optimizeCompanySelect');
+  const customDiv = document.getElementById('optimizeCustomCompanyDiv');
+  const customInput = document.getElementById('optimizeCustomCompanyName');
+  const presetKeys = ['byte','alibaba','tencent','google','meituan','startup'];
+  if (sel && state.optimizeCompany) {
+    if (presetKeys.includes(state.optimizeCompany)) {
+      sel.value = state.optimizeCompany;
+      if (customDiv) customDiv.classList.add('hidden');
+    } else {
+      sel.value = 'custom';
+      if (customDiv) customDiv.classList.remove('hidden');
+      if (customInput) customInput.value = state.optimizeCompany;
+    }
+  }
+  updateOptimizeCompany();
+  // Show quick-pick if job search yielded a company
+  renderOptimizeQuickCompany();
+}
 
-  const target = state.matchChoice || state.userData.target || '\u76ee\u6807\u5c97\u4f4d';
-  document.getElementById('optimizeSubtitle').textContent = `\u9488\u5bf9"${target}"\u8fdb\u884c\u5b9a\u5411\u4f18\u5316`;
+function renderOptimizeQuickCompany() {
+  const quickDiv = document.getElementById('optimizeQuickCompany');
+  const label = document.getElementById('optimizeQuickCompanyLabel');
+  if (!quickDiv || !label) return;
+  // Try to extract company from job search results
+  const jobCompany = extractCompanyFromJobSearch();
+  if (jobCompany) {
+    quickDiv.classList.remove('hidden');
+    label.textContent = jobCompany;
+  } else {
+    quickDiv.classList.add('hidden');
+  }
+}
 
-  const system = '\u4f60\u662f\u7b80\u5386\u4f18\u5316\u4e13\u5bb6\u3002\u8bf7\u57fa\u4e8e\u76ee\u6807\u5c97\u4f4d\u4f18\u5316\u7b80\u5386\uff0c\u5e76\u5728\u6700\u540e\u9644\u4e0a 3 \u6761\u4f18\u5316\u8bf4\u660e\u3002';
+function extractCompanyFromJobSearch() {
+  // Try to find company name from job choice or jobs found
+  if (state.jobChoice) {
+    // Try common patterns: "\u516c\u53f8\u540d - \u804c\u4f4d\u540d" or "\u3010\u516c\u53f8\u540d\u3011"
+    const m = state.jobChoice.match(/^[\u4e00-\u9fa5a-zA-Z]+(?=\s*[-|\u2014\u2500])/) ||
+             state.jobChoice.match(/[\u3010\u3011]?([\u4e00-\u9fa5a-zA-Z\u3000-\u303f\uff00-\uffef]+?)[\u3010\u3011]?[\s-|]/);
+    if (m) return m[0] || m[1];
+  }
+  if (state.jobsFound && state.jobsFound.length > 0 && state.jobsFound[0].company) {
+    return state.jobsFound[0].company;
+  }
+  return '';
+}
+
+function useQuickOptimizeCompany() {
+  const company = extractCompanyFromJobSearch();
+  if (!company) return;
+  state.optimizeCompany = company;
+  const sel = document.getElementById('optimizeCompanySelect');
+  const customDiv = document.getElementById('optimizeCustomCompanyDiv');
+  const customInput = document.getElementById('optimizeCustomCompanyName');
+  const presetKeys = ['byte','alibaba','tencent','google','meituan','startup'];
+  if (presetKeys.includes(company)) {
+    if (sel) sel.value = company;
+    if (customDiv) customDiv.classList.add('hidden');
+  } else {
+    if (sel) sel.value = 'custom';
+    if (customDiv) customDiv.classList.remove('hidden');
+    if (customInput) customInput.value = company;
+  }
+  updateOptimizeCompany();
+  saveSessionData();
+}
+
+function updateOptimizeCompany() {
+  const sel = document.getElementById('optimizeCompanySelect');
+  const customDiv = document.getElementById('optimizeCustomCompanyDiv');
+  const warning = document.getElementById('optimizeCustomWarning');
+  const isCustom = sel && sel.value === 'custom';
+  if (customDiv) customDiv.classList.toggle('hidden', !isCustom);
+  if (warning) warning.classList.toggle('hidden', !isCustom);
+  if (!isCustom) {
+    state.optimizeCompany = sel ? sel.value : '';
+  } else {
+    const customInput = document.getElementById('optimizeCustomCompanyName');
+    state.optimizeCompany = customInput ? customInput.value.trim() : '';
+  }
+  syncOptimizeState();
+}
+
+function syncOptimizeState() {
+  const posInput = document.getElementById('optimizePosition');
+  state.optimizePosition = posInput ? posInput.value.trim() : '';
+  saveSessionData();
+}
+
+function syncOptimizeEditorState() {
+  const editor = document.getElementById('optimizeMDEditor');
+  if (editor) state.optimizedResume = editor.value;
+}
+
+function getOptimizeCompanyHint() {
+  const company = state.optimizeCompany;
+  if (!company) return '';
+  const hints = {
+    byte: '\u76ee\u6807\u516c\u53f8\uff1a\u5b57\u8282\u8df3\u52a8\u3002\u4f18\u5316\u91cd\u70b9\uff1a\u7a81\u51fa\u7b97\u6cd5\u80fd\u529b\u548c\u9ad8\u5e76\u53d1\u9879\u76ee\u7ecf\u9a8c\uff0c\u5f3a\u8c03\u91cf\u5316\u6210\u679c\u548c\u5feb\u901f\u8fed\u4ee3\u80fd\u529b\u3002',
+    alibaba: '\u76ee\u6807\u516c\u53f8\uff1a\u963f\u91cc\u5df4\u5df4/\u8682\u8681\u3002\u4f18\u5316\u91cd\u70b9\uff1a\u7a81\u51fa\u5206\u5e03\u5f0f\u7cfb\u7edf\u7ecf\u9a8c\u548c\u4e1a\u52a1\u6df1\u5ea6\uff0c\u5f3a\u8c03\u6280\u672f\u9009\u578b\u7406\u7531\u548c\u67b6\u6784\u8bbe\u8ba1\u3002',
+    tencent: '\u76ee\u6807\u516c\u53f8\uff1a\u817e\u8baf\u3002\u4f18\u5316\u91cd\u70b9\uff1a\u7a81\u51fa\u4ea7\u54c1\u601d\u7ef4\u548c\u5168\u6808\u80fd\u529b\uff0c\u5f3a\u8c03\u7528\u6237\u4f53\u9a8c\u76f8\u5173\u7ecf\u9a8c\u548c\u5de5\u7a0b\u5b9e\u8df5\u3002',
+    google: '\u76ee\u6807\u516c\u53f8\uff1aGoogle/\u5fae\u8f6f\u3002\u4f18\u5316\u91cd\u70b9\uff1a\u7a81\u51fa\u7b97\u6cd5\u57fa\u7840\u548c\u7cfb\u7edf\u8bbe\u8ba1\u80fd\u529b\uff0c\u5f3a\u8c03\u4ee3\u7801\u8d28\u91cf\u548c\u5de5\u7a0b\u89c4\u8303\u3002',
+    meituan: '\u76ee\u6807\u516c\u53f8\uff1a\u7f8e\u56e2\u3002\u4f18\u5316\u91cd\u70b9\uff1a\u7a81\u51fa\u9ad8\u5e76\u53d1\u573a\u666f\u7ecf\u9a8c\uff0c\u5f3a\u8c03\u7cfb\u7edf\u97e7\u6027\u548c\u5bb9\u707e\u964d\u7ea7\u65b9\u6848\u3002',
+    startup: '\u76ee\u6807\u516c\u53f8\uff1a\u521b\u4e1a\u516c\u53f8\u3002\u4f18\u5316\u91cd\u70b9\uff1a\u7a81\u51fa\u6280\u672f\u5e7f\u5ea6\u548c\u72ec\u7acb\u89e3\u51b3\u95ee\u9898\u7684\u80fd\u529b\uff0c\u5f3a\u8c03 ownership \u548c\u4ece0\u52301\u7684\u7ecf\u9a8c\u3002'
+  };
+  if (hints[company]) return hints[company];
+  return `\u76ee\u6807\u516c\u53f8\uff1a${company}\u3002\u8bf7\u6839\u636e\u8be5\u516c\u53f8\u6240\u5c5e\u884c\u4e1a\u548c\u7279\u70b9\uff0c\u5728\u7b80\u5386\u4e2d\u9002\u5f53\u7a81\u51fa\u4e0e\u8be5\u516c\u53f8\u7684\u6280\u672f\u6808\u548c\u4e1a\u52a1\u65b9\u5411\u76f8\u5339\u914d\u7684\u7ecf\u9a8c\u3002`;
+}
+
+async function startOptimize() {
+  const optLoading = document.getElementById('optimizeLoading');
+  const optResult = document.getElementById('optimizeResult');
+  const optSubtitle = document.getElementById('optimizeSubtitle');
+  const editor = document.getElementById('optimizeMDEditor');
+  const actions = document.getElementById('optimizeActions');
+
+  if (!optLoading || !optResult || !editor) return;
+
+  // Sync state from inputs
+  updateOptimizeCompany();
+  syncOptimizeState();
+
+  const company = state.optimizeCompany || '';
+  const position = state.optimizePosition || state.matchChoice || state.userData.target || '\u76ee\u6807\u5c97\u4f4d';
+
+  optLoading.classList.remove('hidden');
+  optResult.classList.add('hidden');
+  if (actions) actions.classList.add('hidden');
+
+  const titleParts = [];
+  if (company) titleParts.push(company);
+  titleParts.push(position);
+  if (optSubtitle) optSubtitle.textContent = `\u9488\u5bf9 ${titleParts.join(' \u00b7 ')} \u8fdb\u884c\u5b9a\u5411\u4f18\u5316`;
+
+  const companyHint = getOptimizeCompanyHint();
+  const system = `\u4f60\u662f\u8d44\u6df1\u7b80\u5386\u4f18\u5316\u4e13\u5bb6\u3002\u8bf7\u57fa\u4e8e\u76ee\u6807\u516c\u53f8\u548c\u804c\u4f4d\uff0c\u5bf9\u7b80\u5386\u8fdb\u884c\u6df1\u5ea6\u4f18\u5316\uff0c\u4f7f\u7b80\u5386\u5185\u5bb9\u66f4\u8d34\u5408\u76ee\u6807\u96c7\u4e3b\u7684\u9700\u6c42\u3002\u8981\u6c42\u5728\u7b80\u5386\u4e2d\u4f53\u73b0\u5bf9\u76ee\u6807\u516c\u53f8\u548c\u5c97\u4f4d\u7684\u7406\u89e3\u3002${
+    companyHint ? '\n\n' + companyHint : ''
+  }\n\n\u4f18\u5316\u539f\u5219\uff1a\n1. \u9488\u5bf9\u76ee\u6807\u516c\u53f8\u8c03\u6574\u6280\u672f\u6808\u4fa7\u91cd\u548c\u9879\u76ee\u63cf\u8ff0\u7684\u4fa7\u91cd\u70b9\n2. \u91cf\u5316\u6210\u679c\uff0c\u4f7f\u7528 STAR \u6cd5\u5219\n3. \u4fdd\u7559\u4e2d\u6587\u7b80\u5386\u7684\u4e13\u4e1a\u683c\u5f0f\n4. \u5728\u81ea\u6211\u8bc4\u4ef7\u4e2d\u4f53\u73b0\u5bf9\u76ee\u6807\u516c\u53f8\u7684\u5339\u914d\u5ea6\n5. \u6700\u540e\u7528 ## \u4f18\u5316\u8bf4\u660e \u5217\u51fa\u672c\u6b21\u8c03\u6574\u7684\u5173\u952e\u70b9`;
+
   startProcess();
   try {
     const content = await callLLM(system, [
-      { role: 'user', content: `\u539f\u59cb\u7b80\u5386\uff1a\n${state.resume}\n\n\u76ee\u6807\u5c97\u4f4d\uff1a${target}\n\n\u8bf7\u8f93\u51fa\u4f18\u5316\u540e\u7684 Markdown \u7b80\u5386\u3002` }
+      { role: 'user', content: `\u539f\u59cb\u7b80\u5386\uff1a\n${state.resume}\n\n\u76ee\u6807\u516c\u53f8\uff1a${company || '\u4e0d\u9650'}\n\u76ee\u6807\u804c\u4f4d\uff1a${position}\n\n\u8bf7\u8f93\u51fa\u4f18\u5316\u540e\u7684\u5b8c\u6574 Markdown \u7b80\u5386\uff0c\u5e76\u5728\u672b\u5c3e\u9644\u4e0a\u4f18\u5316\u8bf4\u660e\u3002` }
     ], { maxTokens: 4096, providerId: getResolvedProviderId('resumeOptimization') });
 
     if (isProcessCancelled()) return;
-    state.optimizedResume = content;
+    const cleaned = stripResumeOutput(content);
+    state.optimizedResume = cleaned;
     saveSessionData();
-    document.getElementById('optimizeLoading').classList.add('hidden');
-    document.getElementById('optimizeResult').classList.remove('hidden');
-
-    const parts = content.split(/(?=## \u4f18\u5316\u8bf4\u660e|\u4f18\u5316\u8bf4\u660e)/);
-    document.getElementById('optimizeContent').innerHTML = `
-      <div class="feedback-card">
-        <strong>\u7b80\u5386\u4f18\u5316\u5b8c\u6210</strong>
-        <p>\u5df2\u7ecf\u6309\u76ee\u6807\u5c97\u4f4d\u91cd\u65b0\u6574\u7406\u91cd\u70b9\uff0c\u4f18\u5316\u540e\u7684\u7b80\u5386\u5982\u4e0b\uff1a</p>
-      </div>
-      <div class="resume-output">${parts[0] || content}</div>`;
-    if (parts[1]) {
-      document.getElementById('optimizeContent').innerHTML +=
-        `<div class="feedback-card"><strong>\u4f18\u5316\u8bf4\u660e</strong><div>${parts[1]}</div></div>`;
-    }
+    optLoading.classList.add('hidden');
+    optResult.classList.remove('hidden');
+    editor.value = cleaned;
+    updateOptimizePreview();
   } catch (e) {
-    document.getElementById('optimizeLoading').innerHTML = `<span style="color:#E74C3C;">\u4f18\u5316\u5931\u8d25\uff1a${e.message}</span>`;
+    optLoading.innerHTML = `<span style="color:#E74C3C;">\u4f18\u5316\u5931\u8d25\uff1a${e.message}</span>`;
+    if (actions) actions.classList.remove('hidden');
   } finally {
     endProcess();
   }
 }
 
+async function regenerateOptimizeResume() {
+  const actions = document.getElementById('optimizeActions');
+  if (actions) actions.classList.add('hidden');
+  await startOptimize();
+}
+
+function toggleOptimizePreview() {
+  const editor = document.getElementById('optimizeMDEditor');
+  const preview = document.getElementById('optimizePreviewMode');
+  const btn = document.getElementById('btnToggleOptimizePreview');
+  if (!editor || !preview) return;
+  const isPreview = !preview.classList.contains('hidden');
+  if (isPreview) {
+    preview.classList.add('hidden');
+    editor.style.display = '';
+    if (btn) btn.textContent = '\u5207\u6362\u9884\u89c8';
+  } else {
+    updateOptimizePreview();
+    preview.classList.remove('hidden');
+    editor.style.display = 'none';
+    if (btn) btn.textContent = '\u5207\u6362\u7f16\u8f91';
+  }
+}
+
+function updateOptimizePreview() {
+  const editor = document.getElementById('optimizeMDEditor');
+  const preview = document.getElementById('optimizePreviewContent');
+  if (!editor || !preview) return;
+  const md = editor.value || state.optimizedResume || '';
+  preview.innerHTML = renderMarkdown(md);
+}
+
+function copyOptimizeResumeMD() {
+  const editor = document.getElementById('optimizeMDEditor');
+  const text = editor ? editor.value : (state.optimizedResume || '');
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showProcessingToast('\u5df2\u590d\u5236 Markdown');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showProcessingToast('\u5df2\u590d\u5236 Markdown');
+  });
+}
+
+async function chatModifyOptimizeResume() {
+  const input = document.getElementById('optimizeChatInput');
+  const log = document.getElementById('optimizeChatLog');
+  const status = document.getElementById('optimizeChatStatus');
+  const editor = document.getElementById('optimizeMDEditor');
+  const prompt = input.value.trim();
+  const currentResume = editor ? editor.value : (state.optimizedResume || state.resume);
+  if (!prompt || !currentResume) return;
+
+  input.value = '';
+  input.disabled = true;
+  status.classList.remove('hidden');
+
+  // Show user message
+  const userDiv = document.createElement('div');
+  userDiv.style.cssText = 'background:#F3F0FF;padding:4px 8px;border-radius:6px;margin-bottom:4px;font-size:11px;';
+  userDiv.textContent = '\u4f60\uff1a' + prompt;
+  log.appendChild(userDiv);
+
+  const company = state.optimizeCompany || '';
+  const position = state.optimizePosition || state.matchChoice || '';
+  const contextNote = [company, position].filter(Boolean).length > 0
+    ? `\n\u6ce8\u610f\uff1a\u7b80\u5386\u9700\u8981\u9762\u5411\u76ee\u6807\u516c\u53f8 ${company || '\u4e0d\u9650'}\u3001\u76ee\u6807\u804c\u4f4d ${position || '\u4e0d\u9650'}\u3002`
+    : '';
+
+  startProcess();
+  try {
+    const result = await callLLM(
+      `\u4f60\u662f\u7b80\u5386\u4fee\u6539\u52a9\u624b\u3002\u6839\u636e\u7528\u6237\u8981\u6c42\u4fee\u6539\u7b80\u5386\u5185\u5bb9\uff0c\u4fdd\u6301\u9762\u5411\u76ee\u6807\u516c\u53f8\u548c\u804c\u4f4d\u7684\u4f18\u5316\u65b9\u5411\u3002\u76f4\u63a5\u8f93\u51fa\u4fee\u6539\u540e\u7684\u5b8c\u6574\u7b80\u5386 Markdown\uff0c\u4e0d\u8981\u4efb\u4f55\u89e3\u91ca\u3002`,
+      [{ role: 'user', content: `\u5f53\u524d\u7b80\u5386\uff1a\n${currentResume}\n${contextNote}\n\u4fee\u6539\u8981\u6c42\uff1a${prompt}\n\n\u8bf7\u8f93\u51fa\u4fee\u6539\u540e\u7684\u5b8c\u6574\u7b80\u5386\uff1a` }],
+      { maxTokens: 4096, providerId: getResolvedProviderId('resumeOptimization') }
+    );
+
+    if (isProcessCancelled()) return;
+    const cleaned = stripResumeOutput(result);
+    state.optimizedResume = cleaned;
+    if (editor) editor.value = cleaned;
+    updateOptimizePreview();
+    saveSessionData();
+
+    const aiDiv = document.createElement('div');
+    aiDiv.style.cssText = 'background:#E8F5E9;padding:4px 8px;border-radius:6px;margin-bottom:4px;font-size:11px;';
+    aiDiv.textContent = '\u5df2\u4fee\u6539';
+    log.appendChild(aiDiv);
+  } catch (e) {
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = 'color:#E74C3C;font-size:11px;padding:4px;';
+    errDiv.textContent = '\u4fee\u6539\u5931\u8d25\uff1a' + e.message;
+    log.appendChild(errDiv);
+  }
+  status.classList.add('hidden');
+  input.disabled = false;
+  input.focus();
+  log.scrollTop = log.scrollHeight;
+  endProcess();
+}
+
+// ===================== Company Hints =====================
+function getCompanyHint(companyKey) {
+  if (!companyKey) return '';
+  // Handle custom company names (not a preset key)
+  const hints = {
+    byte: '目标公司：字节跳动。该公司面试侧重算法能力、高并发系统设计、项目深度追问。请多出算法题和系统设计题，追问量化成果。',
+    alibaba: '目标公司：阿里巴巴/蚂蚁。该公司面试侧重技术深度、分布式架构、业务场景题。请多问分布式系统、数据库优化、电商场景题。',
+    tencent: '目标公司：腾讯。该公司面试侧重综合能力、产品思维、工程实践。请多问项目全栈能力、用户体验相关场景题。',
+    google: '目标公司：Google/微软。该公司面试侧重算法与数据结构、系统设计、代码质量。请多出经典算法题和系统设计题。',
+    meituan: '目标公司：美团。该公司面试侧重实战能力、业务理解、系统韧性。请多问高并发场景、容灾降级、数据一致性问题。',
+    startup: '目标公司：创业公司。该公司面试侧重技术广度、独立解决问题能力、ownership。请多问全栈场景题和故障排查题。'
+  };
+  if (hints[companyKey]) return hints[companyKey];
+  // Custom company: generate a generic but targeted hint
+  return `目标公司：${companyKey}。请根据该公司所属行业和规模，适当调整面试侧重点。建议覆盖通用技术深度、项目经验、场景题和行为题。注意：自定义公司没有预设的面试策略，效果可能不如预设选项理想。`;
+}
+
+function updateTargetCompany() {
+  const sel = document.getElementById('targetCompanySelect');
+  const customDiv = document.getElementById('customCompanyInput');
+  if (sel && sel.value === 'custom') {
+    if (customDiv) customDiv.classList.remove('hidden');
+    const customName = document.getElementById('customCompanyName');
+    state.targetCompany = customName ? customName.value.trim() : '';
+  } else {
+    if (customDiv) customDiv.classList.add('hidden');
+    state.targetCompany = sel ? sel.value : '';
+  }
+  saveSessionData();
+}
+
 // ===================== Step 9: Interview =====================
 function buildInterviewSystem() {
   const target = state.matchChoice || state.userData.target || '技术岗位';
-  return `你是一位资深面试官，请围绕目标岗位 ${target} 提问。题目要结合用户简历，覆盖技术深度、项目经验、场景题和行为题。反馈时请给出评分、优点、改进建议和参考回答。\n\n${getQuestionSourceInstruction()}\n\n用户信息：\n${collectAllData()}\n\n当前简历：\n${state.optimizedResume || state.resume}`;
+  const companyHint = getCompanyHint(state.targetCompany);
+  return `你是一位资深面试官，请围绕目标岗位 ${target} 提问。题目要结合用户简历，覆盖技术深度、项目经验、场景题和行为题。反馈时请给出评分、优点、改进建议和参考回答。\n${companyHint}\n${getQuestionSourceInstruction()}\n\n用户信息：\n${collectAllData()}\n\n当前简历：\n${state.optimizedResume || state.resume}`;
 }
 
 function buildInterviewPrepSystem() {
   const target = state.matchChoice || state.userData.target || '\u6280\u672f\u5c97\u4f4d';
   const resumeText = state.optimizedResume || state.resume || '';
-  return `\u4f60\u662f\u4e00\u4f4d\u4e2d\u6587\u6280\u672f\u9762\u8bd5\u6559\u7ec3\u3002\u8bf7\u56f4\u7ed5\u76ee\u6807\u5c97\u4f4d ${target}\uff0c\u57fa\u4e8e\u5019\u9009\u4eba\u7684\u7b80\u5386\u5185\u5bb9\uff0c\u8f93\u51fa\u4e00\u4efd\u201c\u9762\u8bd5\u524d\u51c6\u5907\u6e05\u5355\u201d\u3002\u8981\u6c42\uff1a
+  const companyHint = getCompanyHint(state.targetCompany);
+  return `\u4f60\u662f\u4e00\u4f4d\u4e2d\u6587\u6280\u672f\u9762\u8bd5\u6559\u7ec3\u3002\u8bf7\u56f4\u7ed5\u76ee\u6807\u5c97\u4f4d ${target}\uff0c\u57fa\u4e8e\u5019\u9009\u4eba\u7684\u7b80\u5386\u5185\u5bb9\uff0c\u8f93\u51fa\u4e00\u4efd"\u9762\u8bd5\u524d\u51c6\u5907\u6e05\u5355"\u3002\n${companyHint}\n\u8981\u6c42\uff1a
 - \u53ea\u8f93\u51fa Markdown \u6b63\u6587\uff0c\u4e0d\u8981\u5bd2\u6684
 - \u7ed3\u6784\u56fa\u5b9a\u4e3a\uff1a# \u603b\u4f53\u5224\u65ad\u3001## \u5fc5\u8bb2\u9879\u76ee\u3001## \u9ad8\u9891\u8ffd\u95ee\u3001## 30 \u5206\u949f\u901f\u67e5\u3001## \u5f00\u573a\u81ea\u6211\u4ecb\u7ecd
-- \u201c\u5fc5\u8bb2\u9879\u76ee\u201d\u5217\u51fa 2-3 \u4e2a\u9879\u76ee\uff0c\u6bcf\u4e2a\u9879\u76ee\u7ed9\u51fa 3 \u4e2a\u5fc5\u987b\u8bf4\u6e05\u695a\u7684\u70b9
-- \u201c\u9ad8\u9891\u8ffd\u95ee\u201d\u4f18\u5148\u8986\u76d6\u9879\u76ee\u6df1\u6316\u3001\u6280\u672f\u9009\u578b\u3001\u6027\u80fd\u4f18\u5316\u3001\u5f02\u5e38\u5904\u7406\u3001\u534f\u4f5c\u6c9f\u901a
-- \u201c30 \u5206\u949f\u901f\u67e5\u201d\u5199\u6210\u53ef\u6267\u884c\u6e05\u5355
-- \u201c\u5f00\u573a\u81ea\u6211\u4ecb\u7ecd\u201d\u7ed9\u51fa 120-180 \u5b57\u4e2d\u6587\u7248\u672c
+- "\u5fc5\u8bb2\u9879\u76ee"\u5217\u51fa 2-3 \u4e2a\u9879\u76ee\uff0c\u6bcf\u4e2a\u9879\u76ee\u7ed9\u51fa 3 \u4e2a\u5fc5\u987b\u8bf4\u6e05\u695a\u7684\u70b9
+- "\u9ad8\u9891\u8ffd\u95ee"\u4f18\u5148\u8986\u76d6\u9879\u76ee\u6df1\u6316\u3001\u6280\u672f\u9009\u578b\u3001\u6027\u80fd\u4f18\u5316\u3001\u5f02\u5e38\u5904\u7406\u3001\u534f\u4f5c\u6c9f\u901a
+- "30 \u5206\u949f\u901f\u67e5"\u5199\u6210\u53ef\u6267\u884c\u6e05\u5355
+- "\u5f00\u573a\u81ea\u6211\u4ecb\u7ecd"\u7ed9\u51fa 120-180 \u5b57\u4e2d\u6587\u7248\u672c
 
 \u5019\u9009\u4eba\u4fe1\u606f\uff1a
 ${collectAllData()}
@@ -2421,6 +2690,21 @@ document.addEventListener('DOMContentLoaded', () => {
   try { if (typeof repairUIStrings === 'function') repairUIStrings(); } catch (e) {}
   try { updateResumePhotoUI(); } catch (e) {}
   try { renderInterviewPrep(); } catch (e) {}
+  try {
+    const sel = document.getElementById('targetCompanySelect');
+    if (sel && state.targetCompany) {
+      const presetKeys = ['byte','alibaba','tencent','google','meituan','startup'];
+      if (presetKeys.includes(state.targetCompany)) {
+        sel.value = state.targetCompany;
+      } else {
+        sel.value = 'custom';
+        const customDiv = document.getElementById('customCompanyInput');
+        const customInput = document.getElementById('customCompanyName');
+        if (customDiv) customDiv.classList.remove('hidden');
+        if (customInput) customInput.value = state.targetCompany;
+      }
+    }
+  } catch (e) {}
   if (state.resume) {
     try { updateResumePreview(); } catch (e) {}
   }
@@ -2533,21 +2817,39 @@ function getJsPdfCtor() {
 // CJK font loading for Chinese PDF support
 var _cjkFontReady = false;
 var _cjkFontName = 'NotoSansSC';
+var _cjkFontBase64 = null;
+var _cjkFontExt = '';
 
 async function ensureCjkFont() {
   if (_cjkFontReady) return _cjkFontName;
   var jsPdf = getJsPdfCtor();
   if (!jsPdf) return null;
 
-  // Try loading a lightweight CJK font from multiple CDN sources
+  // If we have cached base64 from localStorage, try it first
+  if (_cjkFontBase64) {
+    try {
+      var filename = _cjkFontName + (_cjkFontExt ? '.' + _cjkFontExt : '.ttf');
+      jsPdf.addFileToVFS(filename, _cjkFontBase64);
+      jsPdf.addFont(filename, _cjkFontName, 'normal');
+      _cjkFontReady = true;
+      return _cjkFontName;
+    } catch (e) { _cjkFontBase64 = null; }
+  }
+
+  // Try multiple CDN sources with timeout fallback
   var urls = [
+    'https://cdn.jsdelivr.net/npm/@aspect-dev/cjk-fonts@1.0.0/NotoSansSC-Regular.ttf',
     'https://cdn.jsdelivr.net/gh/notofonts/noto-cjk@main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf',
-    'https://cdn.jsdelivr.net/npm/@aspect-dev/cjk-fonts@1.0.0/NotoSansSC-Regular.ttf'
+    'https://unpkg.com/@aspect-dev/cjk-fonts@1.0.0/NotoSansSC-Regular.ttf',
+    'https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf'
   ];
 
   for (var u = 0; u < urls.length; u++) {
     try {
-      var resp = await fetch(urls[u]);
+      var controller = new AbortController();
+      var timeout = setTimeout(function() { controller.abort(); }, 12000);
+      var resp = await fetch(urls[u], { signal: controller.signal });
+      clearTimeout(timeout);
       if (!resp.ok) continue;
       var buf = await resp.arrayBuffer();
       var bytes = new Uint8Array(buf);
@@ -2560,6 +2862,9 @@ async function ensureCjkFont() {
       var filename = _cjkFontName + '.' + ext;
       jsPdf.addFileToVFS(filename, base64);
       jsPdf.addFont(filename, _cjkFontName, 'normal');
+      // Cache for subsequent exports in this session
+      _cjkFontBase64 = base64;
+      _cjkFontExt = ext;
       _cjkFontReady = true;
       return _cjkFontName;
     } catch (e) {
@@ -3109,7 +3414,7 @@ async function downloadResumePDF() {
   const fontName = await ensureCjkFont();
   const jsPdfCtor = getJsPdfCtor();
   if (!fontName || !jsPdfCtor) {
-    alert('PDF \u7ec4\u4ef6\u6216\u4e2d\u6587\u5b57\u4f53\u672a\u6b63\u786e\u52a0\u8f7d\uff0c\u6682\u65f6\u65e0\u6cd5\u5bfc\u51fa PDF\u3002');
+    alert('PDF \u7ec4\u4ef6\u6216\u4e2d\u6587\u5b57\u4f53\u672a\u6b63\u786e\u52a0\u8f7d\u3002\u8bf7\u68c0\u67e5\u7f51\u7edc\u8fde\u63a5\u540e\u91cd\u8bd5\uff0c\u6216\u9009\u62e9\u5bfc\u51fa DOC / Markdown \u683c\u5f0f\u3002');
     return;
   }
 
@@ -3229,6 +3534,21 @@ document.addEventListener('DOMContentLoaded', () => {
   try { if (typeof repairUIStrings === 'function') repairUIStrings(); } catch (e) {}
   try { updateResumePhotoUI(); } catch (e) {}
   try { renderInterviewPrep(); } catch (e) {}
+  try {
+    const sel = document.getElementById('targetCompanySelect');
+    if (sel && state.targetCompany) {
+      const presetKeys = ['byte','alibaba','tencent','google','meituan','startup'];
+      if (presetKeys.includes(state.targetCompany)) {
+        sel.value = state.targetCompany;
+      } else {
+        sel.value = 'custom';
+        const customDiv = document.getElementById('customCompanyInput');
+        const customInput = document.getElementById('customCompanyName');
+        if (customDiv) customDiv.classList.remove('hidden');
+        if (customInput) customInput.value = state.targetCompany;
+      }
+    }
+  } catch (e) {}
   if (state.resume) {
     try { updateResumePreview(); } catch (e) {}
   }
