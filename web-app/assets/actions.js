@@ -161,6 +161,8 @@ function cancelModeSelection() {
   document.getElementById('resumeInputArea').classList.add('hidden');
   document.getElementById('existingResumeInput').value = '';
   document.getElementById('resumeInputStatus').textContent = '';
+  updateResumePhotoUI();
+  renderInterviewPrep();
 }
 
 function handleResumeFile(event) {
@@ -286,6 +288,7 @@ function prefillFormFields() {
   setVal('f_links', d.links);
   setVal('f_summary', d.summary);
   setVal('f_self_eval', d.selfEval);
+  updateResumePhotoUI();
 
   // Restore custom info fields
   const customInfoContainer = document.getElementById('customInfoFields');
@@ -435,6 +438,65 @@ function saveStep1() {
   }
   showResumeSubstep('education');
   saveSessionData();
+}
+
+function updateResumePhotoUI() {
+  const preview = document.getElementById('resumePhotoPreview');
+  const placeholder = document.getElementById('resumePhotoPlaceholder');
+  const status = document.getElementById('resumePhotoStatus');
+  const photoDataUrl = state.userData?.photoDataUrl || '';
+  if (!preview || !placeholder || !status) return;
+
+  if (photoDataUrl) {
+    preview.src = photoDataUrl;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    status.textContent = `\u5df2\u4e0a\u4f20\u7167\u7247${state.userData.photoFileName ? `\uff1a${state.userData.photoFileName}` : ''}`;
+    status.style.color = 'var(--success)';
+  } else {
+    preview.removeAttribute('src');
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+    status.textContent = '\u53ef\u4e0a\u4f20 JPG / PNG / WEBP\uff0c\u5efa\u8bae 2MB \u4ee5\u5185\u3002';
+    status.style.color = 'var(--text-light)';
+  }
+}
+
+function handleResumePhotoUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!/^image\/(png|jpeg|webp)$/i.test(file.type)) {
+    alert('\u8bf7\u4e0a\u4f20 JPG\u3001PNG \u6216 WEBP \u683c\u5f0f\u7684\u7167\u7247\u3002');
+    event.target.value = '';
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    alert('\u7167\u7247\u8bf7\u5c3d\u91cf\u63a7\u5236\u5728 2MB \u4ee5\u5185\u3002');
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.userData.photoDataUrl = typeof reader.result === 'string' ? reader.result : '';
+    state.userData.photoFileName = file.name;
+    saveSessionData();
+    updateResumePhotoUI();
+    if (state.resume) updateResumePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearResumePhoto() {
+  if (state.userData) {
+    delete state.userData.photoDataUrl;
+    delete state.userData.photoFileName;
+  }
+  const input = document.getElementById('resumePhotoInput');
+  if (input) input.value = '';
+  saveSessionData();
+  updateResumePhotoUI();
+  if (state.resume) updateResumePreview();
 }
 
 // ===================== Step 2: Education =====================
@@ -620,6 +682,7 @@ async function askModuleAI(modEl) {
 
   if (!btn || btn.disabled) return;
   btn.disabled = true;
+
   statusEl.classList.remove('hidden');
 
   const data = collectAllData();
@@ -671,18 +734,19 @@ function legacySaveStep5() {
 // ===================== Data Collection & Resume Generation =====================
 function collectAllData() {
   const d = state.userData;
-  let personalStr = `姓名：${d.name || ''}\n联系方式：${d.contact || ''}`;
-  if (d.target) personalStr += `\n目标岗位：${d.target}`;
-  if (d.years) personalStr += `\n工作年限：${d.years}`;
-  if (d.city) personalStr += `\n意向工作地：${d.city}`;
-  if (d.hometown) personalStr += `\n籍贯：${d.hometown}`;
-  if (d.birth) personalStr += `\n出生年月：${d.birth}`;
-  if (d.gender) personalStr += `\n性别：${d.gender}`;
-  if (d.links) personalStr += `\n个人主页：${d.links}`;
+  let personalStr = `\u59d3\u540d\uff1a${d.name || ''}\n\u8054\u7cfb\u65b9\u5f0f\uff1a${d.contact || ''}`;
+  if (d.target) personalStr += `\n\u76ee\u6807\u5c97\u4f4d\uff1a${d.target}`;
+  if (d.years) personalStr += `\n\u5de5\u4f5c\u5e74\u9650\uff1a${d.years}`;
+  if (d.city) personalStr += `\n\u610f\u5411\u5de5\u4f5c\u5730\uff1a${d.city}`;
+  if (d.hometown) personalStr += `\n\u7c4d\u8d2f\uff1a${d.hometown}`;
+  if (d.birth) personalStr += `\n\u51fa\u751f\u5e74\u6708\uff1a${d.birth}`;
+  if (d.gender) personalStr += `\n\u6027\u522b\uff1a${d.gender}`;
+  if (d.links) personalStr += `\n\u4e2a\u4eba\u4e3b\u9875\uff1a${d.links}`;
+  if (d.photoDataUrl) personalStr += `\n\u4e2a\u4eba\u7167\u7247\uff1a\u5df2\u4e0a\u4f20\u804c\u4e1a\u5f62\u8c61\u7167\uff0c\u53ef\u653e\u5728\u7b80\u5386\u9875\u7709\u5c55\u793a`; 
   if (d.customInfo && Object.keys(d.customInfo).length > 0) {
-    Object.entries(d.customInfo).forEach(([k, v]) => { if (v) personalStr += `\n${k}：${v}`; });
+    Object.entries(d.customInfo).forEach(([k, v]) => { if (v) personalStr += `\n${k}\uff1a${v}`; });
   }
-  if (d.summary) personalStr += `\n个人简介：${d.summary}`;
+  if (d.summary) personalStr += `\n\u4e2a\u4eba\u7b80\u4ecb\uff1a${d.summary}`;
 
   let workStr = '';
   if (d.workExp) {
@@ -693,37 +757,37 @@ function collectAllData() {
   let projStr = '';
   if (d.projects) {
     d.projects.forEach(p => {
-      projStr += `- ${p.name}（${p.role}）\n  技术栈：${p.tech}\n  贡献：${p.contribution}\n\n`;
+      projStr += `- ${p.name}\uff08${p.role}\uff09\n  \u6280\u672f\u6808\uff1a${p.tech}\n  \u8d21\u732e\uff1a${p.contribution}\n\n`;
     });
   }
   let extraStr = '';
-  if (d.selfEval) extraStr += `\n自我评价：\n${d.selfEval}\n`;
+  if (d.selfEval) extraStr += `\n\u81ea\u6211\u8bc4\u4ef7\uff1a\n${d.selfEval}\n`;
   if (d.customModules && d.customModules.length > 0) {
     d.customModules.forEach(m => {
-      extraStr += `\n${m.name}：\n${m.items}\n`;
+      extraStr += `\n${m.name}\uff1a\n${m.items}\n`;
     });
   }
 
-  return `个人信息：
+  return `\u4e2a\u4eba\u4fe1\u606f\uff1a
 ${personalStr}
 
-教育背景：
-学校：${d.school || ''}
-学历：${d.degree || ''}
-专业：${d.major || ''}
-时间：${d.eduTime || ''}
-GPA/课程：${d.gpa || ''}
+\u6559\u80b2\u80cc\u666f\uff1a
+\u5b66\u6821\uff1a${d.school || ''}
+\u5b66\u5386\uff1a${d.degree || ''}
+\u4e13\u4e1a\uff1a${d.major || ''}
+\u65f6\u95f4\uff1a${d.eduTime || ''}
+GPA/\u8bfe\u7a0b\uff1a${d.gpa || ''}
 
-工作经历：
-${workStr || '无'}
-项目经历：
-${projStr || '无'}
-专业技能：
-编程语言：${d.skillsLang || ''}
-框架工具：${d.skillsTools || ''}
-语言能力：${d.skillsLangAbility || ''}
+\u5de5\u4f5c\u7ecf\u5386\uff1a
+${workStr || '\u65e0'}
+\u9879\u76ee\u7ecf\u5386\uff1a
+${projStr || '\u65e0'}
+\u4e13\u4e1a\u6280\u80fd\uff1a
+\u7f16\u7a0b\u8bed\u8a00\uff1a${d.skillsLang || ''}
+\u6846\u67b6\u5de5\u5177\uff1a${d.skillsTools || ''}
+\u8bed\u8a00\u80fd\u529b\uff1a${d.skillsLangAbility || ''}
 
-其他信息：
+\u5176\u4ed6\u4fe1\u606f\uff1a
 获奖：${d.awards || ''}
 其他：${d.other || ''}${extraStr}${getUploadedFilesStr()}`;
 }
@@ -1028,6 +1092,62 @@ async function optimizeResume() {
 function buildInterviewSystem() {
   const target = state.matchChoice || state.userData.target || '技术岗位';
   return `你是一位资深面试官，请围绕目标岗位 ${target} 提问。题目要结合用户简历，覆盖技术深度、项目经验、场景题和行为题。反馈时请给出评分、优点、改进建议和参考回答。\n\n${getQuestionSourceInstruction()}\n\n用户信息：\n${collectAllData()}\n\n当前简历：\n${state.optimizedResume || state.resume}`;
+}
+
+function buildInterviewPrepSystem() {
+  const target = state.matchChoice || state.userData.target || '\u6280\u672f\u5c97\u4f4d';
+  const resumeText = state.optimizedResume || state.resume || '';
+  return `\u4f60\u662f\u4e00\u4f4d\u4e2d\u6587\u6280\u672f\u9762\u8bd5\u6559\u7ec3\u3002\u8bf7\u56f4\u7ed5\u76ee\u6807\u5c97\u4f4d ${target}\uff0c\u57fa\u4e8e\u5019\u9009\u4eba\u7684\u7b80\u5386\u5185\u5bb9\uff0c\u8f93\u51fa\u4e00\u4efd\u201c\u9762\u8bd5\u524d\u51c6\u5907\u6e05\u5355\u201d\u3002\u8981\u6c42\uff1a
+- \u53ea\u8f93\u51fa Markdown \u6b63\u6587\uff0c\u4e0d\u8981\u5bd2\u6684
+- \u7ed3\u6784\u56fa\u5b9a\u4e3a\uff1a# \u603b\u4f53\u5224\u65ad\u3001## \u5fc5\u8bb2\u9879\u76ee\u3001## \u9ad8\u9891\u8ffd\u95ee\u3001## 30 \u5206\u949f\u901f\u67e5\u3001## \u5f00\u573a\u81ea\u6211\u4ecb\u7ecd
+- \u201c\u5fc5\u8bb2\u9879\u76ee\u201d\u5217\u51fa 2-3 \u4e2a\u9879\u76ee\uff0c\u6bcf\u4e2a\u9879\u76ee\u7ed9\u51fa 3 \u4e2a\u5fc5\u987b\u8bf4\u6e05\u695a\u7684\u70b9
+- \u201c\u9ad8\u9891\u8ffd\u95ee\u201d\u4f18\u5148\u8986\u76d6\u9879\u76ee\u6df1\u6316\u3001\u6280\u672f\u9009\u578b\u3001\u6027\u80fd\u4f18\u5316\u3001\u5f02\u5e38\u5904\u7406\u3001\u534f\u4f5c\u6c9f\u901a
+- \u201c30 \u5206\u949f\u901f\u67e5\u201d\u5199\u6210\u53ef\u6267\u884c\u6e05\u5355
+- \u201c\u5f00\u573a\u81ea\u6211\u4ecb\u7ecd\u201d\u7ed9\u51fa 120-180 \u5b57\u4e2d\u6587\u7248\u672c
+
+\u5019\u9009\u4eba\u4fe1\u606f\uff1a
+${collectAllData()}
+
+\u5f53\u524d\u7b80\u5386\uff1a
+${resumeText}`;
+}
+
+function renderInterviewPrep() {
+  const result = document.getElementById('interviewPrepResult');
+  if (!result) return;
+  if (!state.interviewPrep) {
+    result.classList.add('hidden');
+    result.innerHTML = '';
+    return;
+  }
+  result.classList.remove('hidden');
+  result.innerHTML = renderMarkdown(state.interviewPrep);
+}
+
+async function generateInterviewPrep() {
+  const loading = document.getElementById('interviewPrepLoading');
+  const result = document.getElementById('interviewPrepResult');
+  if (loading) loading.classList.remove('hidden');
+  if (result) result.classList.add('hidden');
+
+  try {
+    const system = buildInterviewPrepSystem();
+    const prep = await callLLM(system, [{ role: 'user', content: '\u8bf7\u751f\u6210\u8fd9\u6b21\u6a21\u62df\u9762\u8bd5\u524d\u7684\u51c6\u5907\u6e05\u5355\u3002' }], {
+      maxTokens: 2200,
+      providerId: getResolvedProviderId('interviewQuestion')
+    });
+    state.interviewPrep = (prep || '').replace(/^```(?:markdown|md)?\s*/i, '').replace(/```$/i, '').trim();
+    state.interviewPrepGeneratedAt = new Date().toISOString();
+    saveSessionData();
+    renderInterviewPrep();
+  } catch (e) {
+    if (result) {
+      result.classList.remove('hidden');
+      result.innerHTML = `<div style="color:#E74C3C;">\u51c6\u5907\u6e05\u5355\u751f\u6210\u5931\u8d25\uff1a${escHtml(e.message || 'unknown error')}</div>`;
+    }
+  } finally {
+    if (loading) loading.classList.add('hidden');
+  }
 }
 
 // ===================== JSON Extraction Helper =====================
@@ -2133,6 +2253,19 @@ function legacyBuildResumeTemplateCss(templateKey) {
       color: #102033;
       font-weight: 700;
     }
+    .resume-photo-banner {
+      display: flex;
+      justify-content: center;
+      margin: 0 0 12px;
+    }
+    .resume-photo-image {
+      width: 86px;
+      height: 112px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 59, 87, 0.12);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
     .resume-sheet hr {
       border: none;
       border-top: 1px solid rgba(31, 59, 87, 0.18);
@@ -2283,19 +2416,21 @@ function escHtml(s) {
 
 // ===================== DOM Ready Init =====================
 document.addEventListener('DOMContentLoaded', () => {
-  try { loadProvidersFromStorage(); } catch (e) {}
-  try { loadApplicationsFromStorage(); } catch (e) {}
-  try { loadSessionData(); } catch (e) {}
-  try { renderApiConfig(); } catch (e) {}
-  setTimeout(() => { try { updateStepModelSelectors(); } catch(e){} }, 100);
-  try { renderPlatformOrderList(); } catch (e) {}
-  try { resetResumeSubsteps(); } catch (e) {}
   try { renderResumeTemplateCards(); } catch (e) {}
   try { syncResumeWorkspace(); } catch (e) {}
+  try { if (typeof repairUIStrings === 'function') repairUIStrings(); } catch (e) {}
+  try { updateResumePhotoUI(); } catch (e) {}
+  try { renderInterviewPrep(); } catch (e) {}
   if (state.resume) {
     try { updateResumePreview(); } catch (e) {}
   }
 });
+
+
+
+
+
+
 
 // ===================== Resume Workspace Overrides =====================
 function getResumeTemplateMeta(templateKey = state.resumeTemplate) {
@@ -2539,7 +2674,7 @@ function chooseResumeCompressionIndex(markdown) {
     const doc = new jsPdfCtor({ unit: 'mm', format: 'a4', compress: true });
     const spec = getResumePdfLayout(state.resumeTemplate, i);
     let pageCount = 1;
-    let y = spec.margins.top;
+    let y = spec.margins.top + (state.userData?.photoDataUrl ? 34 : 0);
     blocks.forEach(block => {
       const height = getPdfBlockHeight(doc, block, spec);
       if (y + height > spec.pageHeight - spec.margins.bottom) {
@@ -2668,6 +2803,12 @@ function buildResumeTemplateCss(templateKey, compressionIndex = 0) {
   `;
 }
 
+function buildResumePhotoMarkup() {
+  const photoDataUrl = state.userData?.photoDataUrl || '';
+  if (!photoDataUrl) return '';
+  return `<div class="resume-photo-banner"><img src="${photoDataUrl}" alt="resume photo" class="resume-photo-image" /></div>`;
+}
+
 function resumeHTML(content, templateKey, compressionIndex = state.resumeLayoutCompressionIndex || 0) {
   const activeKey = templateKey || state.resumeTemplate || 'reference';
   const name = (state.userData && state.userData.name) || '简历';
@@ -2683,6 +2824,7 @@ function resumeHTML(content, templateKey, compressionIndex = state.resumeLayoutC
 </head>
 <body class="resume-template-${activeKey}">
   <main class="resume-sheet">
+    ${buildResumePhotoMarkup()}
     ${body}
   </main>
 </body>
@@ -2760,7 +2902,7 @@ function updateResumePreview() {
   if (!previewEl) return;
   const markdown = getResumeMarkdownSource();
   state.resume = markdown;
-  previewEl.innerHTML = renderMarkdown(markdown);
+  previewEl.innerHTML = buildResumePhotoMarkup() + renderMarkdown(markdown);
   const fit = chooseResumeCompressionIndex(markdown);
   state.resumeLayoutCompressionIndex = fit.compressionIndex;
   applyResumePreviewTheme(state.resumeLayoutCompressionIndex);
@@ -2780,46 +2922,46 @@ function syncResumeWorkspace() {
   const exportLabel = document.getElementById('exportTemplateSummary');
   const meta = getResumeTemplateMeta();
 
-  if (startBtn) startBtn.textContent = state.resumeGeneratedOnce ? '重新生成简历' : '开始生成简历';
+  if (startBtn) startBtn.textContent = state.resumeGeneratedOnce ? '\u91cd\u65b0\u751f\u6210\u7b80\u5386' : '\u5f00\u59cb\u751f\u6210\u7b80\u5386';
   if (startHint) {
     startHint.textContent = state.resumeGeneratedOnce
-      ? `当前模板：${meta.name}。可以继续编辑，或切换模板后重新生成。`
-      : `先选模板，再开始生成。当前默认模板：${meta.name}。`;
+      ? `\u5f53\u524d\u6a21\u677f\uff1a${meta.name}\u3002\u53ef\u4ee5\u7ee7\u7eed\u7f16\u8f91\uff0c\u6216\u5207\u6362\u6a21\u677f\u540e\u91cd\u65b0\u751f\u6210\u3002`
+      : `\u5148\u9009\u6a21\u677f\uff0c\u518d\u5f00\u59cb\u751f\u6210\u3002\u5f53\u524d\u9ed8\u8ba4\u6a21\u677f\uff1a${meta.name}\u3002`;
   }
   if (regenBtn) regenBtn.disabled = !state.resumeGeneratedOnce;
   if (result) result.classList.toggle('hidden', !hasResume);
   if (editor && state.resume && editor.value !== state.resume) editor.value = state.resume;
-  if (previewBadge) previewBadge.textContent = `当前模板：${meta.name}`;
-  if (exportLabel) exportLabel.textContent = `导出将使用「${meta.name}」样式`;
+  if (previewBadge) previewBadge.textContent = `\u5f53\u524d\u6a21\u677f\uff1a${meta.name}`;
+  if (exportLabel) exportLabel.textContent = `\u5bfc\u51fa\u5c06\u4f7f\u7528\u300c${meta.name}\u300d\u6837\u5f0f`;
 }
 
 async function generateResume() {
   const loadingEl = document.getElementById('resumeLoading');
   const resultEl = document.getElementById('resumeResult');
   if (loadingEl) {
-    loadingEl.innerHTML = '<div class="spinner"></div><span>正在生成简历...</span>';
+    loadingEl.innerHTML = '<div class="spinner"></div><span>\u6b63\u5728\u751f\u6210\u7b80\u5386...</span>';
     loadingEl.style.display = 'flex';
   }
   if (resultEl) resultEl.classList.add('hidden');
 
   const data = collectAllData();
   const meta = getResumeTemplateMeta();
-  const system = `你是一位资深中文简历顾问，请直接输出 Markdown 格式的完整简历正文。
-要求：
-- 只输出简历正文，不要解释和前后缀
-- 用 # 作为姓名标题，下一行写联系方式
-- 使用 ## 组织主要模块，使用 ### 组织经历标题
-- 项目与经历优先写技术栈、职责、成果
-- 成果尽量量化，减少空话
-- 生成结果要适合一页式专业简历
+  const system = `\u4f60\u662f\u4e00\u4f4d\u8d44\u6df1\u4e2d\u6587\u7b80\u5386\u987e\u95ee\uff0c\u8bf7\u76f4\u63a5\u8f93\u51fa Markdown \u683c\u5f0f\u7684\u5b8c\u6574\u7b80\u5386\u6b63\u6587\u3002
+\u8981\u6c42\uff1a
+- \u53ea\u8f93\u51fa\u7b80\u5386\u6b63\u6587\uff0c\u4e0d\u8981\u89e3\u91ca\u548c\u524d\u540e\u7f00
+- \u7528 # \u4f5c\u4e3a\u59d3\u540d\u6807\u9898\uff0c\u4e0b\u4e00\u884c\u5199\u8054\u7cfb\u65b9\u5f0f
+- \u4f7f\u7528 ## \u7ec4\u7ec7\u4e3b\u8981\u6a21\u5757\uff0c\u4f7f\u7528 ### \u7ec4\u7ec7\u7ecf\u5386\u6807\u9898
+- \u9879\u76ee\u4e0e\u7ecf\u5386\u4f18\u5148\u5199\u6280\u672f\u6808\u3001\u804c\u8d23\u3001\u6210\u679c
+- \u6210\u679c\u5c3d\u91cf\u91cf\u5316\uff0c\u51cf\u5c11\u7a7a\u8bdd
+- \u751f\u6210\u7ed3\u679c\u8981\u9002\u5408\u4e00\u9875\u5f0f\u4e13\u4e1a\u7b80\u5386
 
-模板风格参考：
+\u6a21\u677f\u98ce\u683c\u53c2\u8003\uff1a
 ${meta.generationHint}`;
 
   startProcess();
   try {
     let content = await callLLM(system, [
-      { role: 'user', content: `请根据以下信息生成简历内容：\n\n${data}` }
+      { role: 'user', content: `\u8bf7\u6839\u636e\u4ee5\u4e0b\u4fe1\u606f\u751f\u6210\u7b80\u5386\u5185\u5bb9\uff1a\n\n${data}` }
     ], { maxTokens: 4096, providerId: getResolvedProviderId('resumeGeneration') });
 
     if (isProcessCancelled()) return;
@@ -2836,7 +2978,7 @@ ${meta.generationHint}`;
     if (loadingEl) loadingEl.style.display = 'none';
     if (resultEl) resultEl.classList.remove('hidden');
     syncResumeWorkspace();
-  } catch (e) {
+      loadingEl.innerHTML = `<span style="color:#E74C3C;">\u751f\u6210\u5931\u8d25\uff1a${e.message}</span>`;
     if (loadingEl) {
       loadingEl.innerHTML = `<span style="color:#E74C3C;">生成失败：${e.message}</span>`;
       loadingEl.style.display = 'flex';
@@ -2860,12 +3002,26 @@ function renderResumePdf(doc, blocks, spec) {
   const maxY = spec.pageHeight - spec.margins.bottom;
   let y = spec.margins.top;
   let pageCount = 1;
+  const photoDataUrl = state.userData?.photoDataUrl || '';
+  const photoWidth = 24;
+  const photoHeight = 32;
   const ensureSpace = (height) => {
     if (y + height <= maxY) return;
     doc.addPage();
     pageCount += 1;
     y = spec.margins.top;
   };
+
+  if (photoDataUrl) {
+    try {
+      doc.addImage(photoDataUrl, 'JPEG', (spec.pageWidth - photoWidth) / 2, y, photoWidth, photoHeight, undefined, 'FAST');
+    } catch {
+      try {
+        doc.addImage(photoDataUrl, 'PNG', (spec.pageWidth - photoWidth) / 2, y, photoWidth, photoHeight, undefined, 'FAST');
+      } catch {}
+    }
+    y += photoHeight + 4;
+  }
 
   blocks.forEach((block) => {
     const height = getPdfBlockHeight(doc, block, spec);
@@ -2920,7 +3076,7 @@ function renderResumePdf(doc, blocks, spec) {
       doc.setFont(_cjkFontReady ? _cjkFontName : 'helvetica', 'normal');
       doc.setFontSize(spec.font.body);
       block.items.forEach((item, idx) => {
-        const marker = block.type === 'ol' ? `${idx + 1}.` : '•';
+        const marker = block.type === 'ol' ? `${idx + 1}.` : '\u2022';
         doc.splitTextToSize(item, spec.usableWidth - spec.bulletIndent).forEach((line, lineIndex) => {
           if (lineIndex === 0) doc.text(marker, spec.margins.left, y);
           doc.text(line, spec.margins.left + spec.bulletIndent, y);
@@ -2946,52 +3102,36 @@ function renderResumePdf(doc, blocks, spec) {
 async function downloadResumePDF() {
   const markdown = getResumeMarkdownSource();
   if (!markdown) {
-    alert('请先生成或填写简历内容。');
+    alert('\u8bf7\u5148\u751f\u6210\u6216\u586b\u5199\u7b80\u5386\u5185\u5bb9\u3002');
     return;
   }
 
-  // Try jsPDF with embedded CJK font first
-  var fontName = await ensureCjkFont();
-  var jsPdfCtor = getJsPdfCtor();
-
-  if (fontName && jsPdfCtor) {
-    try {
-      var fit = chooseResumeCompressionIndex(markdown);
-      state.resumeLayoutCompressionIndex = fit.compressionIndex;
-      var doc = new jsPdfCtor({ unit: 'mm', format: 'a4', compress: true, putOnlyUsedFonts: true });
-      var spec = getResumePdfLayout(state.resumeTemplate, fit.compressionIndex);
-      var pageCount = renderResumePdf(doc, fit.blocks, spec);
-      var fileName = (state.userData.name || '简历') + '-简历.pdf';
-      doc.save(fileName);
-      saveSessionData();
-      updateResumePreview();
-      showProcessingToast(pageCount > 1 ? '已导出 PDF（自动分页）' : '已导出单页 PDF');
-      return;
-    } catch (e) {
-      console.warn('jsPDF export failed, falling back to browser print:', e);
-    }
-  }
-
-  // Fallback: browser native print-to-PDF
-  var html = resumeHTML(markdown, state.resumeTemplate, state.resumeLayoutCompressionIndex);
-  var printWindow = window.open('', '_blank', 'width=900,height=700');
-  if (!printWindow) {
-    alert('弹窗被拦截，请允许本站弹窗后重试。');
+  const fontName = await ensureCjkFont();
+  const jsPdfCtor = getJsPdfCtor();
+  if (!fontName || !jsPdfCtor) {
+    alert('PDF \u7ec4\u4ef6\u6216\u4e2d\u6587\u5b57\u4f53\u672a\u6b63\u786e\u52a0\u8f7d\uff0c\u6682\u65f6\u65e0\u6cd5\u5bfc\u51fa PDF\u3002');
     return;
   }
-  printWindow.document.write(html);
-  printWindow.document.close();
-  printWindow.onload = function() {
-    setTimeout(function() {
-      printWindow.print();
-    }, 500);
-  };
-  saveSessionData();
-  showProcessingToast('PDF 导出已触发，在打印对话框中选择「另存为 PDF」即可。');
+
+  try {
+    const fit = chooseResumeCompressionIndex(markdown);
+    state.resumeLayoutCompressionIndex = fit.compressionIndex;
+    const doc = new jsPdfCtor({ unit: 'mm', format: 'a4', compress: true, putOnlyUsedFonts: true });
+    const spec = getResumePdfLayout(state.resumeTemplate, fit.compressionIndex);
+    const pageCount = renderResumePdf(doc, fit.blocks, spec);
+    const fileName = (state.userData.name || '\u7b80\u5386') + '-\u7b80\u5386.pdf';
+    doc.save(fileName);
+    saveSessionData();
+    updateResumePreview();
+    showProcessingToast(pageCount > 1 ? '\u5df2\u5bfc\u51fa PDF\uff08\u81ea\u52a8\u5206\u9875\uff09' : '\u5df2\u5bfc\u51fa PDF');
+  } catch (e) {
+    console.error('PDF export failed:', e);
+    alert('PDF \u5bfc\u51fa\u5931\u8d25\uff1a' + e.message);
+  }
 }
 
 function downloadResumeDOCX() {
-  const name = state.userData.name || '简历';
+  const name = state.userData.name || '\u7b80\u5386';
   const html = resumeHTML(getResumeMarkdownSource(), state.resumeTemplate, state.resumeLayoutCompressionIndex).replace(
     '<html lang="zh-CN">',
     '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40" lang="zh-CN">'
@@ -3000,10 +3140,10 @@ function downloadResumeDOCX() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${name}-简历.doc`;
+  a.download = `${name}-\u7b80\u5386.doc`;
   a.click();
   URL.revokeObjectURL(url);
-  showProcessingToast('简历已导出为 DOC 文件');
+  showProcessingToast('\u7b80\u5386\u5df2\u5bfc\u51fa\u4e3a DOC \u6587\u4ef6');
 }
 
 function handleTemplateUpload(event) {
@@ -3011,7 +3151,7 @@ function handleTemplateUpload(event) {
   if (!file) return;
   const ext = file.name.split('.').pop().toLowerCase();
   if (!['txt', 'md', 'docx', 'pdf'].includes(ext)) {
-    alert('请上传 .txt、.md、.docx 或 .pdf 格式的模板文件');
+    alert('\u8bf7\u4e0a\u4f20 .txt\u3001.md\u3001.docx \u6216 .pdf \u683c\u5f0f\u7684\u6a21\u677f\u6587\u4ef6');
     return;
   }
 
@@ -3022,7 +3162,7 @@ function handleTemplateUpload(event) {
     });
   };
 
-  setStatus(`正在读取模板：${file.name}`);
+  setStatus(`\u6b63\u5728\u8bfb\u53d6\u6a21\u677f\uff1a${file.name}`);
   const onLoad = (text) => {
     state.customTemplate = text || '';
     state.resumeTemplate = 'custom';
@@ -3030,13 +3170,13 @@ function handleTemplateUpload(event) {
     renderResumeTemplateCards();
     syncResumeWorkspace();
     if (state.resume) updateResumePreview();
-    setStatus(`已加载模板：${file.name}`);
+    setStatus(`\u5df2\u52a0\u8f7d\u6a21\u677f\uff1a${file.name}`);
   };
 
   if (ext === 'pdf') {
-    extractPdfText(file).then(onLoad).catch(() => setStatus('PDF 模板解析失败'));
+    extractPdfText(file).then(onLoad).catch(() => setStatus('PDF \u6a21\u677f\u89e3\u6790\u5931\u8d25'));
   } else if (ext === 'docx') {
-    extractDocxText(file).then(onLoad).catch(() => setStatus('DOCX 模板解析失败'));
+    extractDocxText(file).then(onLoad).catch(() => setStatus('DOCX \u6a21\u677f\u89e3\u6790\u5931\u8d25'));
   } else {
     const reader = new FileReader();
     reader.onload = e => onLoad(e.target.result || '');
@@ -3047,7 +3187,7 @@ function handleTemplateUpload(event) {
 function goToTemplatePhase() {
   document.getElementById('contentPhase').classList.add('hidden');
   document.getElementById('templatePhase').classList.remove('hidden');
-  document.getElementById('step5Subtitle').textContent = '第二阶段：选择模板并导出最终简历';
+  document.getElementById('step5Subtitle').textContent = '\u7b2c\u4e8c\u9636\u6bb5\uff1a\u9009\u62e9\u6a21\u677f\u5e76\u5bfc\u51fa\u6700\u7ec8\u7b80\u5386';
   renderResumeTemplateCards();
   syncResumeWorkspace();
 }
@@ -3055,7 +3195,7 @@ function goToTemplatePhase() {
 function backToContentPhase() {
   document.getElementById('templatePhase').classList.add('hidden');
   document.getElementById('contentPhase').classList.remove('hidden');
-  document.getElementById('step5Subtitle').textContent = '第一阶段：选择模板并生成简历内容，生成后可继续编辑或对话修改';
+  document.getElementById('step5Subtitle').textContent = '\u7b2c\u4e00\u9636\u6bb5\uff1a\u9009\u62e9\u6a21\u677f\u5e76\u751f\u6210\u7b80\u5386\u5185\u5bb9\uff0c\u751f\u6210\u540e\u53ef\u7ee7\u7eed\u7f16\u8f91\u6216\u5bf9\u8bdd\u4fee\u6539';
   syncResumeWorkspace();
 }
 
@@ -3078,7 +3218,7 @@ function exportResume(format) {
     const blob = new Blob([getResumeMarkdownSource()], { type: 'text/markdown' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `${state.userData.name || '简历'}.md`;
+    a.download = `${state.userData.name || '\u7b80\u5386'}.md`;
     a.click();
   }
 }
@@ -3087,6 +3227,8 @@ document.addEventListener('DOMContentLoaded', () => {
   try { renderResumeTemplateCards(); } catch (e) {}
   try { syncResumeWorkspace(); } catch (e) {}
   try { if (typeof repairUIStrings === 'function') repairUIStrings(); } catch (e) {}
+  try { updateResumePhotoUI(); } catch (e) {}
+  try { renderInterviewPrep(); } catch (e) {}
   if (state.resume) {
     try { updateResumePreview(); } catch (e) {}
   }

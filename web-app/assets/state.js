@@ -158,6 +158,8 @@ const state = {
   currentQuestion: '',
   awaitingAnswer: false,
   awaitingInput: false,
+  interviewPrep: '',
+  interviewPrepGeneratedAt: '',
 
   applications: []
 };
