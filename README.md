@@ -1,280 +1,74 @@
-# AI 求职全流程助手
+# AI Job Search Copilot
 
-一站式求职解决方案，包含三个 AI Skill，支持 **Claude Code** 和 **OpenAI Codex CLI** 等主流 AI 编程助手，以及**独立网页版**。
+Open-source job search workspace with:
 
-## Skills 总览
+- a full web app for resume building, job matching, job search, resume optimization, and mock interviews
+- reusable skills for Claude Code and OpenAI Codex
+- direct PDF export, interview prep, and application tracking
 
-| Skill | 命令 | 功能 |
-|---|---|---|
-| **🔥 一站式求职助手（推荐）** | `/full-career` | **完整求职全流程**：简历生成 → 岗位匹配 → 真实职位搜索 → 定向优化简历 → 模拟面试 |
-| **模拟面试官** | `/interview-coach` | 独立的模拟面试练习 |
-| **简历创建与优化** | `/resume-builder` | 独立的简历创建与优化 |
+## Open Source Website
 
-## 目录结构
+This project is open source and ready to be deployed as a website on Netlify.
+
+- Repository: [wksudud/interview-coach-skill](https://github.com/wksudud/interview-coach-skill)
+- Publish directory: `web-app`
+- Entry page: `web-app/index.html`
+
+Once Netlify deployment is connected, this README should also show the public site URL.
+
+## Project Structure
 
 ```text
 .
-├── AGENT.md                         # 项目维护指南与乱码预防
-├── SKILL.md                         # interview-coach 的根目录版本
-├── prompt-standalone.md             # 通用 AI 助手可直接粘贴的 prompt
-├── README.md                        # 项目说明
-├── .agents/skills/                  # OpenAI Codex Skills 入口
-│   ├── full-career/
-│   ├── interview-coach/
-│   └── resume-builder/
-├── .claude/skills/                  # Claude Code Skills 入口
-│   ├── full-career/
-│   ├── interview-coach/
-│   └── resume-builder/
-├── .claude/launch.json              # Web App 本地启动配置
-└── web-app/
-    ├── index.html                   # 独立网页版入口（结构 + 样式）
-    ├── assets/
-    │   ├── state.js                 # 全局状态、常量、简历模板
-    │   ├── api.js                   # API 服务商预设与调用层
-    │   ├── view.js                  # UI 渲染、导航、乱码修复
-    │   └── actions.js               # 业务逻辑、PDF 生成、面试流程
-    └── templates/                   # 简历模板文件目录
+|-- AGENT.md
+|-- README.md
+|-- SKILL.md
+|-- prompt-standalone.md
+|-- .agents/
+|-- .claude/
+`-- web-app/
+    |-- index.html
+    |-- assets/
+    `-- templates/
 ```
 
-`.agents/skills` 与 `.claude/skills` 保持同一套最新 skill 内容；平台本地状态文件（如 `.claude/settings.local.json`、`.claude/worktrees/`）不会进入版本库。
+## Web App
 
----
+The web app includes:
 
-## 🔥 一、一站式求职助手 Full Career（推荐）
+- guided resume intake
+- personal photo upload
+- AI resume generation with template switching
+- direct PDF export
+- job direction matching
+- real job search workflow
+- interview preparation before mock interviews
+- mock interview chat and scoring
+- application tracker
 
-整合简历、求职、面试的全流程闭环。**一个命令走完所有环节。**
+## Local Run
 
-### 完整流程
-
-```
-/full-career 后端开发 3年
-  ↓
-阶段一：信息收集 → 生成基础简历
-  ├─ 基本资料收集（每次 1-2 个问题）
-  ├─ 补充材料上传（成绩单/证书/作品集，支持文件路径读取）
-  ├─ 本地项目导入（扫描代码目录，AI 分析贡献点，勾选写入简历）
-  └─ 生成结构化简历
-  ↓
-阶段二：职业匹配推荐（分析画像，推荐最适合的岗位）
-  ↓
-阶段三：真实招聘搜索（从 BOSS直聘、智联等搜索真实职位）
-  ↓
-阶段四：定向优化简历（基于真实 JD 逐项优化）
-  ↓
-阶段五：模拟面试（针对目标公司和岗位进行面试，可指定题库来源）
-```
-
-### 使用方法
+Open the app directly:
 
 ```bash
-# 克隆仓库
-git clone https://github.com/wksudud/interview-coach-skill.git
-
-# 复制到 Claude Code 的 skills 目录
-cp -r interview-coach-skill/.claude/skills/full-career .claude/skills/
+start web-app/index.html
 ```
 
-重启后输入：
-
-```
-/full-career
-# 或带参数
-/full-career 后端开发 3年
-/full-career 前端开发 应届生
-```
-
-### 新特性
-
-- ✅ **补充材料上传**：支持成绩单、证书、作品集等文件上传，AI 读取后丰富简历内容
-- ✅ **本地项目导入**：引导用户提供本地项目路径，自动扫描分析代码，提炼贡献点供用户选择写入简历
-- ✅ **题库来源选择**：面试阶段可指定牛客网、力扣、BOSS直聘面经等来源出题
-
----
-
-## 二、模拟面试官 Interview Coach
-
-### 功能特点
-
-- 🎯 **多岗位支持**：前端、后端、全栈、数据科学、产品经理、DevOps 等
-- 📊 **多面试类型**：技术面（八股/算法/框架）、行为面（STAR）、系统设计、综合
-- 📄 **简历解析**：上传简历，根据真实项目经历针对性提问
-- 🏢 **目标公司定制**：针对字节跳动、阿里、Google 等不同公司风格出题
-- 📂 **题目分类追踪**：自动记录覆盖领域，避免重复，确保全面
-- 📈 **多次面试历史**：跨 session 追踪进步，重点加强薄弱环节
-- 🔄 **面试中灵活调整**：随时补充简历、切换公司、换题型
-- 🌐 **中英文双语**：支持英文面试模式
-- 📎 **补充材料支持**：可上传成绩单、证书、项目文档，丰富面试背景
-- 🎯 **指定题库来源**：可从牛客网、力扣、BOSS直聘面经、知乎等来源获取真实面试题
-
-### 安装使用
-
-#### Claude Code
+Or serve it locally:
 
 ```bash
-# 克隆仓库
-git clone https://github.com/wksudud/interview-coach-skill.git
-
-# 复制到 Claude Code 的 skills 目录
-cp -r interview-coach-skill/.claude/skills/interview-coach .claude/skills/
-# 或者直接将 SKILL.md 放到 .claude/skills/interview-coach/
+npx http-server web-app -c-1
 ```
 
-重启 Claude Code 后，输入：
+## Netlify Deploy
 
-```
-/interview-coach
-```
+This repository is prepared for Netlify static deployment.
 
-带参数启动：
+- Build command: none
+- Publish directory: `web-app`
 
-```
-/interview-coach 前端开发 高级 技术面 字节跳动
-/interview-coach 后端开发 中级 综合
-/interview-coach 数据科学 初级 行为面
-```
+If you deploy from the Netlify UI, set the publish directory to `web-app`.
 
-#### OpenAI Codex CLI
+## License / Source
 
-```bash
-# 复制到 Codex 的 skills 目录
-cp SKILL.md .agents/skills/interview-coach/SKILL.md
-```
-
-在 Codex 中使用 `$interview-coach` 调用。
-
-#### 通用 AI 助手（ChatGPT、Gemini 等）
-
-将 `prompt-standalone.md` 的全部内容复制到 system prompt / 自定义指令中即可使用。
-
-### 使用示例
-
-```
-/interview-coach 后端开发 高级 系统设计 字节跳动
-```
-
-Skill 会：
-1. 询问是否有简历（提供文件路径或粘贴内容）或补充材料
-2. 分析简历中的技术栈和项目经验
-3. 结合字节跳动常见的面试风格（算法+项目深度）出题
-4. 支持指定题库来源（如牛客网面经风格）
-5. 一问一答，每题给出结构化反馈
-6. 结束时生成完整总结，包含题目覆盖分析和简历建议
-
----
-
-## 三、简历创建与优化 Resume Builder
-
-### 功能特点
-
-- 📝 **创建新简历**：通过引导式问答，逐步收集信息生成专业简历
-- 🔍 **优化现有简历**：粘贴简历内容，获取诊断报告和逐项优化建议
-- 📊 **STAR 法则**：引导用户用量化数据和 STAR 法则描述经历
-- 🎯 **岗位匹配**：推荐最适合的岗位方向，支持多维度分析
-- 🤖 **ATS 优化**：确保简历格式利于机器筛选
-- 📄 **Markdown 输出**：生成可直接使用的结构化简历
-- 📎 **补充材料上传**：支持成绩单、证书、作品集文件读取，丰富简历内容
-- 📂 **本地项目导入**：自动扫描项目代码，AI 分析技术贡献，供用户选择写入简历
-
-### 使用方法
-
-```bash
-# 克隆仓库（如果已克隆可跳过）
-git clone https://github.com/wksudud/interview-coach-skill.git
-
-# 复制到 Claude Code 的 skills 目录
-cp -r interview-coach-skill/.claude/skills/resume-builder .claude/skills/
-```
-
-重启 Claude Code 后，输入：
-
-```
-/resume-builder
-```
-
-带参数启动：
-
-```
-/resume-builder 后端开发 3年
-/resume-builder 前端开发 应届生
-```
-
-### 使用流程
-
-1. **创建新简历模式**：基本信息 → 教育背景 → 补充材料（可选）→ 工作经历 → 项目经历（支持本地代码导入）→ 实习经历 → 获奖 → 技能 → 其他
-2. **优化现有简历模式**：粘贴简历 → 诊断分析 → 逐项优化 → 生成最终版
-3. 每个模块逐项问答，引导用户用量化数据和 STAR 法则
-4. 生成基础简历后进入**职业匹配推荐**环节
-5. 支持**搜索真实招聘信息**并基于真实 JD 定向优化
-6. 最终输出完整的 Markdown 格式简历
-
----
-
-## 💻 网页版 Web App
-
-除了 Claude Code 命令行版本，还提供了一个**独立的网页版**，可直接在浏览器中运行完整的求职全流程。
-
-### 使用方式
-
-```bash
-# 使用 http-server 启动（推荐）
-npx http-server interview-coach-skill/web-app -c-1
-
-# 或直接用浏览器打开
-open interview-coach-skill/web-app/index.html
-# 或
-start interview-coach-skill/web-app/index.html
-```
-
-### 功能特点
-
-- 🎨 美观的步骤式向导界面（9 步覆盖求职全流程）
-- 📝 表单化信息收集 + 5 个子步骤引导：基础信息 → 教育背景 → 工作经历 → 项目与技能 → 自我评价
-- 🤖 **三大 API 服务商预设**：DeepSeek、豆包（火山引擎）、千问（阿里云），URL 已预填
-- 🔀 **步骤级模型分配**：每个使用 AI 的步骤可独立指定模型
-- 📎 **文件上传**：拖拽或点击上传 PDF/TXT/MD/DOCX/RTF/HTML
-- 📂 **本地项目导入**：选择文件夹 → 自动扫描代码 → AI 提炼贡献点 → 勾选写入简历
-- 🎯 **题库来源选择**：牛客网、力扣、BOSS直聘面经、知乎等
-- 📄 在线简历生成（Markdown 编辑 + 实时预览）
-- 📦 简历导出：PDF（直出，含 CJK 字体支持）、DOC、Markdown
-- 🔍 真实职位搜索（BOSS直聘、智联招聘、拉勾网、猎聘、前程无忧）
-- 🎤 模拟面试聊天界面，带评分反馈和参考回答
-- 🔗 **申请进度追踪**：记录投递、面试、Offer 状态
-- 💾 配置与进度持久化（API Key 仅存浏览器内存）
-
-### 文件结构
-
-```
-web-app/
-├── index.html          # 主页面（结构 + 样式）
-├── assets/
-│   ├── state.js        # 全局状态、步骤常量、简历模板
-│   ├── api.js          # API 服务商预设、LLM 调用、持久化
-│   ├── view.js         # UI 渲染、导航、repairUIStrings() 乱码修复
-│   └── actions.js      # 业务逻辑、PDF 生成、面试流程
-└── templates/          # 简历模板文件目录
-```
-
-### 配置说明
-
-1. 打开网页后，在 API 管理页面选择服务商：
-   - **DeepSeek**：`https://api.deepseek.com/v1/chat/completions`
-   - **豆包（火山引擎）**：`https://ark.cn-beijing.volces.com/api/v3/chat/completions`
-   - **千问（阿里云）**：`https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
-2. 填写对应服务商的 **API Key** 并选择模型
-3. 点击「测试连通性」验证，然后点击「保存并进入」
-4. 每个使用 AI 的步骤顶部都有模型选择下拉框，可随时切换
-
-### 注意事项
-
-- 首次使用需至少为一个 API 服务商填写 Key
-- 密钥仅存储在浏览器内存中，不持久化到磁盘
-- 推荐使用 Chrome/Edge 浏览器以获得完整功能体验（文件夹选择功能需要 Chromium 内核）
-- Docx 文件解析依赖 mammoth.js，PDF 解析依赖 pdf.js（从 CDN 加载）
-- PDF 导出优先使用 jsPDF + CJK 字体，CDN 字体不可用时自动降级为浏览器打印
-
-### 开发维护
-
-- 维护指南见 [AGENT.md](AGENT.md)，包含代码结构、常见修改入口、乱码修复策略
-- 修改 HTML 后必须用 `grep -on '\?/[a-z]*>' web-app/index.html` 检查无损坏标签
-- 中文乱码优先在 `view.js` 的 `repairUIStrings()` 中修复，不要大改 HTML 编码
+This website is open source. If you use or fork it, please keep the repository link visible in the deployed site.

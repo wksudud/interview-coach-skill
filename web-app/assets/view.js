@@ -621,7 +621,16 @@ function repairUIStrings() {
     ['#trackerEmpty p:last-of-type', '\u70b9\u51fb\u4e0a\u65b9\u201c\u65b0\u589e\u7533\u8bf7\u201d\u5f00\u59cb\u8ddf\u8e2a\u4f60\u7684\u6c42\u804c\u8fdb\u5ea6'],
     ['#fileDropZone p:first-of-type', '\u62d6\u62fd\u6587\u4ef6\u5230\u8fd9\u91cc\uff0c\u6216\u70b9\u51fb\u9009\u62e9\u6587\u4ef6'],
     ['#fileDropZone p:last-of-type', '\u652f\u6301 .txt / .md / .pdf / .docx / .rtf / .html'],
-    ['#folderImportArea p', '\u652f\u6301 Chrome / Edge\u3002\u5176\u4ed6\u6d4f\u89c8\u5668\u53ef\u4ee5\u5148\u4e0a\u4f20 ZIP\u3002']
+    ['#folderImportArea p', '\u652f\u6301 Chrome / Edge\u3002\u5176\u4ed6\u6d4f\u89c8\u5668\u53ef\u4ee5\u5148\u4e0a\u4f20 ZIP\u3002'],
+    ['#step6 h2', '\uD83C\uDFAF \u5c97\u4f4d\u5339\u914d\u63a8\u8350'],
+    ['#step6 .subtitle', '\u6839\u636e\u4f60\u7684\u7b80\u5386\u80cc\u666f\u548c\u6c42\u804c\u76ee\u6807\uff0cAI \u4f1a\u63a8\u8350\u66f4\u9002\u5408\u4f60\u7684\u65b9\u5411\u3002'],
+    ['#step6 .step-model-bar span', '\u5f53\u524d\u6b65\u9aa4\u4f7f\u7528\u6a21\u578b'],
+    ['#matchLoading span', '\u6b63\u5728\u5206\u6790\u4f60\u7684\u80cc\u666f\u5e76\u751f\u6210\u5c97\u4f4d\u5efa\u8bae...'],
+    ['#step7 h2', '\uD83D\uDD0D \u771f\u5b9e\u804c\u4f4d\u641c\u7d22'],
+    ['#step7 .subtitle', '\u4ece\u62db\u8058\u7f51\u7ad9\u641c\u7d22\u771f\u5b9e\u804c\u4f4d\uff0c\u5e76\u57fa\u4e8e JD \u7ee7\u7eed\u4f18\u5316\u7b80\u5386\u3002'],
+    ['#step7 .step-model-bar span', '\u5f53\u524d\u6b65\u9aa4\u4f7f\u7528\u6a21\u578b'],
+    ['#jobLoading span', '\u6b63\u5728\u641c\u7d22\u62db\u8058\u4fe1\u606f...'],
+    ['#skipJobConfirm p', '\u5df2\u8df3\u8fc7\u804c\u4f4d\u641c\u7d22\uff0c\u63a5\u4e0b\u6765\u5c06\u57fa\u4e8e\u4f60\u9009\u62e9\u7684\u65b9\u5411\u7ee7\u7eed\u8fdb\u884c\u7b80\u5386\u4f18\u5316\u3002'],
   ];
 
   textBySelector.forEach(([selector, value]) => {
@@ -660,17 +669,18 @@ function repairUIStrings() {
     f_edu_time: '\u4f8b\u5982\uff1a2017.09 - 2021.06',
     f_gpa: '\u4f8b\u5982\uff1a3.8/4.0\uff0c\u6216\u5217\u51fa 3-5 \u95e8\u6838\u5fc3\u8bfe\u7a0b',
     resumeChatInput: '\u544a\u8bc9 AI \u4f60\u60f3\u600e\u4e48\u4fee\u6539\u8fd9\u4efd\u7b80\u5386...',
+    jobSearchQuery: '\u7559\u7a7a\u5219\u81ea\u52a8\u641c\u7d22\uff0c\u4e5f\u53ef\u4ee5\u8f93\u5165\u5982\uff1aJava \u540e\u7aef \u5317\u4eac',
+    matchChoice: '\u4f8b\u5982\uff1a\u9009\u62e9\u7b2c 1 \u4e2a\u63a8\u8350\u65b9\u5411\uff0c\u6216\u624b\u52a8\u586b\u5199\u76ee\u6807\u5c97\u4f4d',
+    jobChoice: '\u4f8b\u5982\uff1a\u9009\u4e2d\u67d0\u4e2a JD \u6216\u624b\u52a8\u8f93\u5165\u76ee\u6807\u5c97\u4f4d',
     trackerCompany: '\u4f8b\u5982\uff1a\u5b57\u8282\u8df3\u52a8',
     trackerPosition: '\u4f8b\u5982\uff1a\u9ad8\u7ea7\u540e\u7aef\u5f00\u53d1\u5de5\u7a0b\u5e08',
     trackerUrl: '\u804c\u4f4d\u8be6\u60c5\u9875\u94fe\u63a5',
     trackerNotes: '\u4f8b\u5982\uff1a\u9762\u8bd5\u65f6\u95f4\u3001\u6c9f\u901a\u53cd\u9988\u3001\u540e\u7eed\u8ddf\u8fdb\u8ba1\u5212'
   };
-
   Object.entries(placeholderMap).forEach(([id, value]) => {
     const el = document.getElementById(id);
     if (el) el.placeholder = value;
   });
-
   const selectTextFixes = [
     ['#f_years option[value=""]', '\u8bf7\u9009\u62e9'],
     ['#f_gender option[value=""]', '\u8bf7\u9009\u62e9'],
@@ -679,7 +689,7 @@ function repairUIStrings() {
     ['#trackerStatus option[value="submitted"]', '\u5df2\u6295\u9012'],
     ['#trackerStatus option[value="resume-passed"]', '\u7b80\u5386\u901a\u8fc7'],
     ['#trackerStatus option[value="interviewing"]', '\u9762\u8bd5\u4e2d'],
-    ['#trackerStatus option[value="offer"]', '\u5df2\u62ff Offer'],
+    ['#trackerStatus option[value="offer"]', '\u5df2\u83b7 Offer'],
     ['#trackerStatus option[value="rejected"]', '\u5df2\u62d2\u7edd']
   ];
 

@@ -150,9 +150,9 @@ function chooseMode(mode) {
   } else {
     document.getElementById('resumeInputArea').classList.remove('hidden');
     document.getElementById('confirmResumeBtn').textContent =
-      mode === 'optimize' ? '确认，进入简历优化 →' : '确认，进入岗位匹配 →';
+      mode === 'optimize' ? '\u786e\u8ba4\uff0c\u8fdb\u5165\u7b80\u5386\u4f18\u5316 \u2192' : '\u786e\u8ba4\uff0c\u8fdb\u5165\u5c97\u4f4d\u5339\u914d \u2192';
   }
-  } catch (e) { alert('操作失败：' + e.message); }
+  } catch (e) { alert('\u64cd\u4f5c\u5931\u8d25\uff1a' + e.message); }
 }
 
 function cancelModeSelection() {
@@ -647,7 +647,7 @@ async function askSelfEvalAI(evt) {
 
   try {
     const result = await callLLM(system, [
-      { role: 'user', content: `请根据以下背景生成自我评价：\n\n${data}` }
+      { role: 'user', content: `\u8bf7\u6839\u636e\u4ee5\u4e0b\u80cc\u666f\u751f\u6210\u81ea\u6211\u8bc4\u4ef7\uff1a\n\n${data}` }
     ], { maxTokens: 512 });
 
     resultArea.textContent = result;
@@ -659,16 +659,16 @@ async function askSelfEvalAI(evt) {
     if (existingApply) existingApply.remove();
     const applyBtn = document.createElement('button');
     applyBtn.className = 'btn btn-primary btn-sm ai-apply-btn';
-    applyBtn.textContent = '✓ 应用到表单';
+    applyBtn.textContent = '\u2713 \u5e94\u7528\u5230\u8868\u5355';
     applyBtn.style.cssText = 'font-size:12px;padding:5px 16px;margin-top:8px;';
     applyBtn.onclick = () => {
       textarea.value = result;
-      resultArea.textContent = '✅ 已应用到表单';
+      resultArea.textContent = '\u2713 \u5df2\u5e94\u7528\u5230\u8868\u5355';
       panel.querySelectorAll('.ai-apply-btn').forEach(b => b.remove());
     };
     resultArea.after(applyBtn);
   } catch (e) {
-    status.innerHTML = `<span style="color:#E74C3C;font-size:12px;">生成失败：${e.message}</span>`;
+    status.innerHTML = `<span style="color:#E74C3C;font-size:12px;">\u751f\u6210\u5931\u8d25\uff1a${e.message}</span>`;
   }
   btn.disabled = false;
 }
@@ -678,7 +678,7 @@ async function askModuleAI(modEl) {
   const textarea = modEl.querySelector('.cm-items');
   const statusEl = modEl.querySelector('.ai-module-status');
   const btn = modEl.querySelector('.ai-module-btn');
-  const moduleName = nameInput.value.trim() || '补充信息';
+  const moduleName = nameInput.value.trim() || '\u8865\u5145\u4fe1\u606f';
 
   if (!btn || btn.disabled) return;
   btn.disabled = true;
@@ -686,16 +686,16 @@ async function askModuleAI(modEl) {
   statusEl.classList.remove('hidden');
 
   const data = collectAllData();
-  const system = `你是专业简历顾问。请根据用户背景和"${moduleName}"这个模块主题，生成适合填写的简历内容。要求：
-1. 内容真实合理，符合简历规范
-2. 如果是证书类，列出常见的相关认证
-3. 如果是技能类，列出具体条目
-4. 直接输出内容，不要任何前缀或解释
-5. 3-5 条为宜`;
+  const system = `\u4f60\u662f\u4e13\u4e1a\u7b80\u5386\u987e\u95ee\u3002\u8bf7\u6839\u636e\u7528\u6237\u80cc\u666f\u548c"${moduleName}"\u8fd9\u4e2a\u6a21\u5757\u4e3b\u9898\uff0c\u751f\u6210\u9002\u5408\u586b\u5199\u7684\u7b80\u5386\u5185\u5bb9\u3002\u8981\u6c42\uff1a
+1. \u5185\u5bb9\u771f\u5b9e\u5408\u7406\uff0c\u7b26\u5408\u7b80\u5386\u89c4\u8303
+2. \u5982\u679c\u662f\u8bc1\u4e66\u7c7b\uff0c\u5217\u51fa\u5e38\u89c1\u7684\u76f8\u5173\u8ba4\u8bc1
+3. \u5982\u679c\u662f\u6280\u80fd\u7c7b\uff0c\u5217\u51fa\u5177\u4f53\u6761\u76ee
+4. \u76f4\u63a5\u8f93\u51fa\u5185\u5bb9\uff0c\u4e0d\u8981\u4efb\u4f55\u524d\u7f00\u6216\u89e3\u91ca
+5. 3-5 \u6761\u4e3a\u5b9c`;
 
   try {
     const result = await callLLM(system, [
-      { role: 'user', content: `用户背景：\n${data}\n\n请为"${moduleName}"模块生成简历内容。` }
+      { role: 'user', content: `\u7528\u6237\u80cc\u666f\uff1a\n${data}\n\n\u8bf7\u4e3a"${moduleName}"\u6a21\u5757\u751f\u6210\u7b80\u5386\u5185\u5bb9\u3002` }
     ], { maxTokens: 512 });
 
     textarea.value = result;
@@ -704,7 +704,7 @@ async function askModuleAI(modEl) {
     textarea.style.borderColor = 'var(--success)';
     setTimeout(() => { textarea.style.borderColor = ''; }, 1500);
   } catch (e) {
-    statusEl.innerHTML = `<span style="color:#E74C3C;font-size:12px;">生成失败：${e.message}</span>`;
+    statusEl.innerHTML = `<span style="color:#E74C3C;font-size:12px;">\u751f\u6210\u5931\u8d25\uff1a${e.message}</span>`;
   }
   btn.disabled = false;
 }
@@ -829,7 +829,7 @@ async function legacyGenerateResume() {
     document.getElementById('resumeLoading').style.display = 'none';
     document.getElementById('resumeResult').classList.remove('hidden');
   } catch (e) {
-    document.getElementById('resumeLoading').innerHTML = `<span style="color:#E74C3C;">生成失败：${e.message}</span>`;
+    document.getElementById('resumeLoading').innerHTML = `<span style="color:#E74C3C;">\u751f\u6210\u5931\u8d25\uff1a${e.message}</span>`;
   } finally {
     endProcess();
   }
@@ -842,35 +842,35 @@ async function goStep6() {
   document.getElementById('matchResult').classList.add('hidden');
 
   const data = collectAllData();
-  const system = '你是职业顾问。请基于用户背景推荐 3 到 5 个岗位方向，只返回 JSON 数组：\n' +
+  const system = '\u4f60\u662f\u804c\u4e1a\u987e\u95ee\u3002\u8bf7\u57fa\u4e8e\u7528\u6237\u80cc\u666f\u63a8\u8350 3 \u5230 5 \u4e2a\u5c97\u4f4d\u65b9\u5411\uff0c\u53ea\u8fd4\u56de JSON \u6570\u7ec4\uff1a\n' +
     '[{"id":1,"title":"","match":90,"reason":"","demand":"","path":""}]';
 
   startProcess();
   try {
     const result = await callLLM(system, [
-      { role: 'user', content: `请根据下面的背景推荐岗位方向：\n\n${data}` }
+      { role: 'user', content: `\u8bf7\u6839\u636e\u4e0b\u9762\u7684\u80cc\u666f\u63a8\u8350\u5c97\u4f4d\u65b9\u5411\uff1a\n\n${data}` }
     ], { maxTokens: 2048, providerId: getResolvedProviderId('careerMatch') });
 
     const parsed = extractJSON(result);
     const matches = parsed || [];
     const container = document.getElementById('matchList');
-    container.innerHTML = '<h3 style="margin-bottom:16px;">根据你的背景，推荐以下方向：</h3>';
+    container.innerHTML = '<h3 style="margin-bottom:16px;">\u6839\u636e\u4f60\u7684\u80cc\u666f\uff0c\u63a8\u8350\u4ee5\u4e0b\u65b9\u5411\uff1a</h3>';
     matches.forEach(m => {
       container.innerHTML += `
         <div class="result-card">
-          <h4>推荐 ${m.id}：${m.title}</h4>
-          <div class="meta">匹配度：${m.match}%</div>
+          <h4>\u63a8\u8350 ${m.id}\uff1a${m.title}</h4>
+          <div class="meta">\u5339\u914d\u5ea6\uff1a${m.match}%</div>
           <div class="match-bar"><div class="fill" style="width:${m.match}%"></div></div>
-          <p>推荐理由：${m.reason}</p>
-          <p>市场需求：${m.demand}</p>
-          <p>发展路径：${m.path}</p>
+          <p>\u63a8\u8350\u7406\u7531\uff1a${m.reason}</p>
+          <p>\u5e02\u573a\u9700\u6c42\uff1a${m.demand}</p>
+          <p>\u53d1\u5c55\u8def\u5f84\uff1a${m.path}</p>
         </div>`;
     });
     state.matchData = matches;
     document.getElementById('matchLoading').classList.add('hidden');
     document.getElementById('matchResult').classList.remove('hidden');
   } catch (e) {
-    document.getElementById('matchLoading').innerHTML = `<span style="color:#E74C3C;">分析失败：${e.message}</span>`;
+    document.getElementById('matchLoading').innerHTML = `<span style="color:#E74C3C;">\u5206\u6790\u5931\u8d25\uff1a${e.message}</span>`;
   } finally {
     endProcess();
   }
@@ -901,8 +901,8 @@ function updateJobProgress(phase, detail, pct) {
 async function searchJobs() {
   state.jobSearchCancelled = false;
   const query = document.getElementById('jobSearchQuery').value.trim();
-  const target = state.userData.target || '技术岗位';
-  const city = state.userData.city || '北京';
+  const target = state.userData.target || '\u6280\u672f\u5c97\u4f4d';
+  const city = state.userData.city || '\u5317\u4eac';
   const config = state.jobSearchConfig;
 
   // Show progress panel, hide old UI
@@ -924,34 +924,34 @@ async function searchJobs() {
 
   try {
     // Phase 1: Analyze resume to extract keywords
-    updateJobProgress('analyze', '正在分析简历，提取岗位关键词...', 5);
-    appendProgressDetail('🔍 分析简历关键词...');
-    const keywordSys = '你是一个简历分析助手。请从简历中提取 3-5 个最核心的求职关键词（包括技术栈、岗位方向），只返回 JSON 数组：["关键词1","关键词2"]';
+    updateJobProgress('analyze', '\u6b63\u5728\u5206\u6790\u7b80\u5386\uff0c\u63d0\u53d6\u5c97\u4f4d\u5173\u952e\u8bcd...', 5);
+    appendProgressDetail('\uD83D\uDD0D \u5206\u6790\u7b80\u5386\u5173\u952e\u8bcd...');
+    const keywordSys = '\u4f60\u662f\u4e00\u4e2a\u7b80\u5386\u5206\u6790\u52a9\u624b\u3002\u8bf7\u4ece\u7b80\u5386\u4e2d\u63d0\u53d6 3-5 \u4e2a\u6700\u6838\u5fc3\u7684\u6c42\u804c\u5173\u952e\u8bcd\uff08\u5305\u62ec\u6280\u672f\u6808\u3001\u5c97\u4f4d\u65b9\u5411\uff09\uff0c\u53ea\u8fd4\u56de JSON \u6570\u7ec4\uff1a["\u5173\u952e\u8bcd1","\u5173\u952e\u8bcd2"]';
     let keywords = [];
     try {
       const kwResult = await callLLM(keywordSys, [
-        { role: 'user', content: `请从以下简历提取关键词：\n\n${state.resume}` }
+        { role: 'user', content: `\u8bf7\u4ece\u4ee5\u4e0b\u7b80\u5386\u63d0\u53d6\u5173\u952e\u8bcd\uff1a\n\n${state.resume}` }
       ], { maxTokens: 256, providerId: getResolvedProviderId('jobSearch') });
       keywords = extractJSON(kwResult) || [];
     } catch { keywords = [target]; }
     completed++;
-    updateJobProgress('analyze', `识别关键词：${keywords.join('、')}`, Math.round(completed / totalSteps * 100));
-    updateLastProgressDetail('✅ 分析完成，关键词：' + keywords.join('、'));
+    updateJobProgress('analyze', `\u8bc6\u522b\u5173\u952e\u8bcd\uff1a${keywords.join('\u3001')}`, Math.round(completed / totalSteps * 100));
+    updateLastProgressDetail('\u2713 \u5206\u6790\u5b8c\u6210\uff0c\u5173\u952e\u8bcd\uff1a' + keywords.join('\u3001'));
     if (isProcessCancelled()) { handleJobSearchCancelled(); return; }
 
     // Phase 2: Search each platform
     for (let i = 0; i < platforms.length; i++) {
       const platform = platforms[i];
-      appendProgressDetail(`🔎 搜索 ${platform.name}...`);
-      updateJobProgress('searching', `搜索 ${platform.name}`, Math.round((completed + (i / platforms.length)) / (totalSteps + 1) * 100));
+      appendProgressDetail(`\uD83D\uDD0E \u641c\u7d22 ${platform.name}...`);
+      updateJobProgress('searching', `\u641c\u7d22 ${platform.name}`, Math.round((completed + (i / platforms.length)) / (totalSteps + 1) * 100));
 
-      const searchSys = `你是招聘信息整理助手。请生成 ${resultsPerPlatform} 条来自 ${platform.name}（${platform.url}）的职位信息。要求：职位要真实合理，返回 JSON 数组：
+      const searchSys = `\u4f60\u662f\u62db\u8058\u4fe1\u606f\u6574\u7406\u52a9\u624b\u3002\u8bf7\u751f\u6210 ${resultsPerPlatform} \u6761\u6765\u81ea ${platform.name}\uff08${platform.url}\uff09\u7684\u804c\u4f4d\u4fe1\u606f\u3002\u8981\u6c42\uff1a\u804c\u4f4d\u8981\u771f\u5b9e\u5408\u7406\uff0c\u8fd4\u56de JSON \u6570\u7ec4\uff1a
 [{"id":${i*resultsPerPlatform+1},"title":"","company":"","location":"","salary":"","requirements":"","source":"${platform.name}"}]`;
 
       try {
         const searchQuery = query || `${keywords.slice(0, 3).join(' ')} ${city}`;
         const result = await callLLM(searchSys, [
-          { role: 'user', content: `围绕关键词 ${keywords.join('、')} 和城市 ${city}，生成${resultsPerPlatform}条 ${platform.name} 的招聘信息。搜索意图：${searchQuery}` }
+          { role: 'user', content: `\u56f4\u7ed5\u5173\u952e\u8bcd ${keywords.join('\u3001')} \u548c\u57ce\u5e02 ${city}\uff0c\u751f\u6210${resultsPerPlatform}\u6761 ${platform.name} \u7684\u62db\u8058\u4fe1\u606f\u3002\u641c\u7d22\u610f\u56fe\uff1a${searchQuery}` }
         ], { maxTokens: 2048, providerId: getResolvedProviderId('jobSearch') });
 
         if (isProcessCancelled()) { handleJobSearchCancelled(); return; }
@@ -961,28 +961,28 @@ async function searchJobs() {
           j.platform = platform.name;
         });
         allJobs = allJobs.concat(jobs);
-        updateLastProgressDetail(`✅ ${platform.name} 找到 ${jobs.length} 个职位`);
+        updateLastProgressDetail(`\u2713 ${platform.name} \u627e\u5230 ${jobs.length} \u4e2a\u804c\u4f4d`);
       } catch (e) {
-        updateLastProgressDetail(`⚠️ ${platform.name} 搜索出错，跳过`);
+        updateLastProgressDetail(`\u26A0\uFE0F ${platform.name} \u641c\u7d22\u51fa\u9519\uff0c\u5df2\u8df3\u8fc7`);
       }
       completed++;
-      updateJobProgress('searching', `完成 ${platform.name}`, Math.round(completed / (totalSteps + 1) * 100));
+      updateJobProgress('searching', `\u5b8c\u6210 ${platform.name}`, Math.round(completed / (totalSteps + 1) * 100));
     }
 
     // Phase 3: Aggregate
     if (isProcessCancelled()) { handleJobSearchCancelled(); return; }
-    appendProgressDetail('✨ 整理搜索结果...');
-    updateJobProgress('done', '搜索完成', 100);
+    appendProgressDetail('\u2728 \u6574\u7406\u641c\u7d22\u7ed3\u679c...');
+    updateJobProgress('done', '\u641c\u7d22\u5b8c\u6210', 100);
 
     state.jobsFound = allJobs;
     const container = document.getElementById('jobList');
-    container.innerHTML = '<h3 style="margin-bottom:16px;">为你找到以下职位：</h3>';
+    container.innerHTML = '<h3 style="margin-bottom:16px;">\u4e3a\u4f60\u627e\u5230\u4ee5\u4e0b\u804c\u4f4d\uff1a</h3>';
     allJobs.forEach(j => {
       container.innerHTML += `
         <div class="job-item" onclick="selectJob(${j.id})">
           <h4>${j.title} - ${j.company}</h4>
-          <div class="meta">📍 ${j.location} | 💰 ${j.salary} | 📋 ${j.platform}</div>
-          <p style="font-size:14px;margin:8px 0;">🧾 ${j.requirements}</p>
+          <div class="meta">\uD83D\uDCCD ${j.location} | \uD83D\uDCB0 ${j.salary} | \uD83D\uDCCB ${j.platform}</div>
+          <p style="font-size:14px;margin:8px 0;">\uD83E\uDDFE ${j.requirements}</p>
         </div>`;
     });
     setTimeout(() => {
@@ -992,14 +992,14 @@ async function searchJobs() {
   } catch (e) {
     document.getElementById('jobProgressPanel').classList.add('hidden');
     document.getElementById('jobLoading').classList.remove('hidden');
-    document.getElementById('jobLoading').innerHTML = `<span style="color:#E74C3C;">搜索失败：${e.message}</span>`;
+    document.getElementById('jobLoading').innerHTML = `<span style="color:#E74C3C;">\u641c\u7d22\u5931\u8d25\uff1a${e.message}</span>`;
   } finally {
     endProcess();
   }
 }
 
 function handleJobSearchCancelled() {
-  appendProgressDetail('⚠️ 搜索已取消');
+  appendProgressDetail('\u26A0\uFE0F \u641c\u7d22\u5df2\u53d6\u6d88');
   state.jobSearchCancelled = true;
   setTimeout(() => {
     document.getElementById('jobProgressPanel').classList.add('hidden');
@@ -1054,14 +1054,14 @@ async function optimizeResume() {
   document.getElementById('optimizeLoading').classList.remove('hidden');
   document.getElementById('optimizeResult').classList.add('hidden');
 
-  const target = state.matchChoice || state.userData.target || '目标岗位';
-  document.getElementById('optimizeSubtitle').textContent = `针对"${target}"进行定向优化`;
+  const target = state.matchChoice || state.userData.target || '\u76ee\u6807\u5c97\u4f4d';
+  document.getElementById('optimizeSubtitle').textContent = `\u9488\u5bf9"${target}"\u8fdb\u884c\u5b9a\u5411\u4f18\u5316`;
 
-  const system = '你是简历优化专家。请基于目标岗位优化简历，并在最后附上 3 条优化说明。';
+  const system = '\u4f60\u662f\u7b80\u5386\u4f18\u5316\u4e13\u5bb6\u3002\u8bf7\u57fa\u4e8e\u76ee\u6807\u5c97\u4f4d\u4f18\u5316\u7b80\u5386\uff0c\u5e76\u5728\u6700\u540e\u9644\u4e0a 3 \u6761\u4f18\u5316\u8bf4\u660e\u3002';
   startProcess();
   try {
     const content = await callLLM(system, [
-      { role: 'user', content: `原始简历：\n${state.resume}\n\n目标岗位：${target}\n\n请输出优化后的 Markdown 简历。` }
+      { role: 'user', content: `\u539f\u59cb\u7b80\u5386\uff1a\n${state.resume}\n\n\u76ee\u6807\u5c97\u4f4d\uff1a${target}\n\n\u8bf7\u8f93\u51fa\u4f18\u5316\u540e\u7684 Markdown \u7b80\u5386\u3002` }
     ], { maxTokens: 4096, providerId: getResolvedProviderId('resumeOptimization') });
 
     if (isProcessCancelled()) return;
@@ -1070,19 +1070,19 @@ async function optimizeResume() {
     document.getElementById('optimizeLoading').classList.add('hidden');
     document.getElementById('optimizeResult').classList.remove('hidden');
 
-    const parts = content.split(/(?=## 优化说明|优化说明)/);
+    const parts = content.split(/(?=## \u4f18\u5316\u8bf4\u660e|\u4f18\u5316\u8bf4\u660e)/);
     document.getElementById('optimizeContent').innerHTML = `
       <div class="feedback-card">
-        <strong>简历优化完成</strong>
-        <p>已经按目标岗位重新整理重点，优化后的简历如下：</p>
+        <strong>\u7b80\u5386\u4f18\u5316\u5b8c\u6210</strong>
+        <p>\u5df2\u7ecf\u6309\u76ee\u6807\u5c97\u4f4d\u91cd\u65b0\u6574\u7406\u91cd\u70b9\uff0c\u4f18\u5316\u540e\u7684\u7b80\u5386\u5982\u4e0b\uff1a</p>
       </div>
       <div class="resume-output">${parts[0] || content}</div>`;
     if (parts[1]) {
       document.getElementById('optimizeContent').innerHTML +=
-        `<div class="feedback-card"><strong>优化说明</strong><div>${parts[1]}</div></div>`;
+        `<div class="feedback-card"><strong>\u4f18\u5316\u8bf4\u660e</strong><div>${parts[1]}</div></div>`;
     }
   } catch (e) {
-    document.getElementById('optimizeLoading').innerHTML = `<span style="color:#E74C3C;">优化失败：${e.message}</span>`;
+    document.getElementById('optimizeLoading').innerHTML = `<span style="color:#E74C3C;">\u4f18\u5316\u5931\u8d25\uff1a${e.message}</span>`;
   } finally {
     endProcess();
   }
@@ -2978,9 +2978,9 @@ ${meta.generationHint}`;
     if (loadingEl) loadingEl.style.display = 'none';
     if (resultEl) resultEl.classList.remove('hidden');
     syncResumeWorkspace();
-      loadingEl.innerHTML = `<span style="color:#E74C3C;">\u751f\u6210\u5931\u8d25\uff1a${e.message}</span>`;
+  } catch (e) {
     if (loadingEl) {
-      loadingEl.innerHTML = `<span style="color:#E74C3C;">生成失败：${e.message}</span>`;
+      loadingEl.innerHTML = `<span style="color:#E74C3C;">\u751f\u6210\u5931\u8d25\uff1a${e.message}</span>`;
       loadingEl.style.display = 'flex';
     }
   } finally {

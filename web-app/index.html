@@ -59,6 +59,34 @@
     margin-top: 6px;
     font-size: 15px;
   }
+  .header-links {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .header-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.8);
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(31,59,87,0.06);
+  }
+  .header-link strong {
+    color: var(--primary-dark);
+  }
+  .header-link:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+  }
 
   /* Side Navigation */
   .progress-container {
@@ -1102,6 +1130,17 @@
   <div class="header">
     <h1>AI &#27714;&#32844;&#20840;&#27969;&#31243;&#21161;&#25163;</h1>
     <p>&#20174;&#31616;&#21382;&#29983;&#25104;&#21040;&#38754;&#35797;&#20934;&#22791;&#65292;&#19968;&#31449;&#24335;&#23436;&#25104;&#20320;&#30340;&#27714;&#32844;&#24037;&#20316;&#27969;</p>
+    <div class="header-links">
+      <a class="header-link" href="https://github.com/wksudud/interview-coach-skill" target="_blank" rel="noopener noreferrer">
+        <span>&#128279;</span>
+        <strong>&#26412;&#31449;&#24050;&#24320;&#28304;</strong>
+        <span>GitHub Repository</span>
+      </a>
+      <a class="header-link" href="https://github.com/wksudud/interview-coach-skill/blob/master/README.md" target="_blank" rel="noopener noreferrer">
+        <span>&#128196;</span>
+        <span>&#26597;&#30475;&#24320;&#28304;&#35828;&#26126;</span>
+      </a>
+    </div>
   </div>
 
   <div class="progress-container" id="progressBar">
@@ -1360,11 +1399,11 @@
         </div>
         <textarea class="ai-assist-input" rows="3" placeholder="&#20363;&#22914;&#65306;&#25226;&#36825;&#27573;&#32463;&#21382;&#25913;&#25104;&#26356;&#31526;&#21512;&#21518;&#31471;&#24320;&#21457;&#23703;&#20301;&#30340;&#35828;&#27861;&#65292;&#31361;&#20986;&#24615;&#33021;&#20248;&#21270;&#21644;&#31995;&#32479;&#31283;&#23450;&#24615;&#26041;&#38754;&#30340;&#36129;&#29486;&#12290;" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
         <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
-          <div class="spinner"></div><span>姝ｅ湪鐢熸垚...</span>
+          <div class="spinner"></div><span>&#27491;&#22312;&#29983;&#25104;...</span>
         </div>
         <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
         <div class="btn-group" style="margin-top:8px;">
-          <button class="btn btn-primary" onclick="askAIAssist(3, event)" style="font-size:13px;padding:8px 20px;">鐢熸垚绠€鍘嗘弿杩</button>
+          <button class="btn btn-primary" onclick="askAIAssist(3, event)" style="font-size:13px;padding:8px 20px;">&#29983;&#25104;&#24037;&#20316;&#25551;&#36848;</button>
         </div>
       </div>
 
@@ -1621,46 +1660,46 @@
 
   <!-- Step 3: Career Matching -->
   <div class="card section" id="step6">
-    <h2>馃幆 鑱屼笟鍖归厤鎺ㄨ崘</h2>
-    <p class="subtitle">AI 姝ｅ湪鍒嗘瀽浣犵殑鑳屾櫙锛屾帹鑽愭渶閫傚悎鐨勫矖浣嶆柟鍚</p>
+    <h2>&#127919; &#23703;&#20301;&#21305;&#37197;&#25512;&#33616;</h2>
+    <p class="subtitle">AI &#20250;&#32467;&#21512;&#20320;&#30340;&#31616;&#21382;&#32972;&#26223;&#21644;&#27714;&#32844;&#30446;&#26631;&#65292;&#25512;&#33616;&#26368;&#36866;&#21512;&#30340;&#23703;&#20301;&#26041;&#21521;&#12290;</p>
     <div class="step-model-bar">
-      <span>馃 鏈楠?AI 妯″瀷锛</span>
+      <span>&#24403;&#21069;&#27493;&#39588;&#20351;&#29992;&#27169;&#22411;</span>
       <select class="step-model-select" data-role="careerMatch"></select>
     </div>
     <div class="loading" id="matchLoading">
       <div class="spinner"></div>
-      <span>姝ｅ湪鍒嗘瀽浣犵殑鑱屼笟鏂瑰悜...</span>
+      <span>&#27491;&#22312;&#20998;&#26512;&#20320;&#30340;&#32972;&#26223;&#24182;&#29983;&#25104;&#23703;&#20301;&#24314;&#35758;...</span>
     </div>
     <div id="matchResult" class="hidden">
       <div id="matchList"></div>
       <div class="form-group mt-12">
-        <label>浣犵殑閫夋嫨</label>
-        <input type="text" id="matchChoice" placeholder="杈撳叆缂栧彿锛堝 1锛夛紝鎴栧憡璇夋垜浣犳兂璧蜂粬鏂瑰悜" />
+        <label>&#30830;&#35748;&#30446;&#26631;&#26041;&#21521;</label>
+        <input type="text" id="matchChoice" placeholder="&#20363;&#22914;&#65306;&#36873;&#25321;&#31532; 1 &#20010;&#25512;&#33616;&#26041;&#21521;&#65292;&#25110;&#25163;&#21160;&#22635;&#20889;&#30446;&#26631;&#23703;&#20301;" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-primary" onclick="confirmMatch()">纭閫夋嫨 鈫</button>
+        <button class="btn btn-primary" onclick="confirmMatch()">&#30830;&#35748;&#26041;&#21521;</button>
       </div>
     </div>
   </div>
 
   <!-- Step 4: Job Search -->
   <div class="card section" id="step7">
-    <h2>馃攳 鐪熷疄鑱屼綅鎼滅储</h2>
-    <p class="subtitle">浠庢嫑鑱樼綉绔欐悳绱㈢湡瀹炶亴浣嶏紝鍩轰簬鐪熷疄 JD 浼樺寲绠€鍘</p>
+    <h2>&#128269; &#30495;&#23454;&#32844;&#20301;&#25628;&#32034;</h2>
+    <p class="subtitle">&#20174;&#25307;&#32856;&#32593;&#31449;&#25628;&#32034;&#30495;&#23454;&#32844;&#20301;&#65292;&#24182;&#26681;&#25454;&#30495;&#23454; JD &#32487;&#32493;&#20248;&#21270;&#31616;&#21382;&#12290;</p>
     <div class="step-model-bar">
-      <span>馃 鏈楠?AI 妯″瀷锛</span>
+      <span>&#24403;&#21069;&#27493;&#39588;&#20351;&#29992;&#27169;&#22411;</span>
       <select class="step-model-select" data-role="jobSearch"></select>
     </div>
 
     <!-- Platform Config -->
     <details id="jobPlatformConfig" style="margin-bottom:16px;">
-      <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--text-light);padding:8px 0;">馃搵 鎼滅储璁剧疆 <span style="font-weight:400;font-size:12px;">(鐐瑰嚮灞曞紑)</span></summary>
+      <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--text-light);padding:8px 0;">&#25628;&#32034;&#24179;&#21488;&#19982;&#31574;&#30053; <span style="font-weight:400;font-size:12px;">(&#21487;&#36873;&#39640;&#32423;&#37197;&#32622;)</span></summary>
       <div style="margin-top:12px;padding:14px;background:#F8F9FD;border-radius:10px;">
-        <div style="font-size:13px;font-weight:600;margin-bottom:8px;">鎼滅储骞冲彴锛堟嫋鎷借皟鏁撮『搴忥級</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;">&#25628;&#32034;&#39034;&#24207;&#19982;&#24179;&#21488;&#21551;&#29992;&#24773;&#20917;</div>
         <div id="platformOrderList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
         <div class="form-row" style="grid-template-columns:1fr 1fr;">
           <div class="form-group">
-            <label style="font-size:12px;">姣忎釜骞冲彴缁撴灉鏁</label>
+            <label style="font-size:12px;">&#27599;&#20010;&#24179;&#21488;&#30340;&#32844;&#20301;&#25968;</label>
             <select id="jobResultsPerPlatform" onchange="state.jobSearchConfig.resultsPerPlatform=parseInt(this.value)">
               <option value="2">2 &#26465;</option>
               <option value="3" selected>3 &#26465;</option>
@@ -1674,15 +1713,15 @@
 
     <div class="form-row single">
       <div class="form-group">
-        <label>鎼滅储鍏抽敭璇?<span class="optional">(鍙€夎嚜瀹氫箟)</span></label>
-        <input type="text" id="jobSearchQuery" placeholder="鐣欑┖鑷姩鎼滅储锛屾垨杈撳叆锛欽ava 鍚庣 鍖椾含" />
+        <label>&#25628;&#32034;&#20851;&#38190;&#35789;<span class="optional">(&#21487;&#36873;&#65292;&#30041;&#31354;&#21017;&#33258;&#21160;&#29983;&#25104;)</span></label>
+        <input type="text" id="jobSearchQuery" placeholder="&#30041;&#31354;&#21017;&#33258;&#21160;&#25628;&#32034;&#65292;&#20063;&#21487;&#36755;&#20837;&#22914;&#65306;Java &#21518;&#31471; &#21271;&#20140;" />
       </div>
     </div>
     <div class="btn-group" style="justify-content:space-between;">
       <div></div>
       <div>
-        <button class="btn btn-secondary" onclick="skipJobSearch()">璺宠繃</button>
-        <button class="btn btn-primary" onclick="searchJobs()">鎼滅储鑱屼綅</button>
+        <button class="btn btn-secondary" onclick="skipJobSearch()">&#36339;&#36807;</button>
+        <button class="btn btn-primary" onclick="searchJobs()">&#24320;&#22987;&#25628;&#32034;</button>
       </div>
     </div>
 
@@ -1692,29 +1731,29 @@
         <div id="jobProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:3px;transition:width 0.5s ease;"></div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span id="jobProgressText" style="font-size:13px;color:var(--text-light);">鍑嗗鎼滅储...</span>
-        <button class="btn btn-secondary btn-sm" onclick="cancelJobSearch()" style="font-size:11px;padding:4px 12px;">鍙栨秷鎼滅储</button>
+        <span id="jobProgressText" style="font-size:13px;color:var(--text-light);">&#20934;&#22791;&#25628;&#32034;...</span>
+        <button class="btn btn-secondary btn-sm" onclick="cancelJobSearch()" style="font-size:11px;padding:4px 12px;">&#21462;&#28040;&#25628;&#32034;</button>
       </div>
       <div id="jobProgressDetail" style="max-height:200px;overflow-y:auto;padding:8px;background:#FAFBFC;border-radius:8px;border:1px solid var(--border);"></div>
     </div>
 
     <div class="loading hidden" id="jobLoading">
       <div class="spinner"></div>
-      <span>姝ｅ湪鎼滅储鎷涜仒淇℃伅...</span>
+      <span>&#27491;&#22312;&#25628;&#32034;&#25307;&#32856;&#20449;&#24687;...</span>
     </div>
     <div id="jobResult" class="hidden">
       <div class="job-list" id="jobList"></div>
       <div class="form-group mt-12">
-        <label>閫夋嫨鑱屼綅锛堣緭鍏ョ紪鍙凤紝鎴栫矘璐翠綘鎵惧埌鐨?JD 閾炬帴/鍐呭锛</label>
-        <input type="text" id="jobChoice" placeholder="杈撳叆缂栧彿锛屾垨绮樿创 JD 閾炬帴" />
+        <label>&#30830;&#35748;&#35201;&#29992;&#20110;&#20248;&#21270;&#31616;&#21382;&#30340;&#32844;&#20301; JD &#25110;&#32844;&#20301;&#21517;&#31216;</label>
+        <input type="text" id="jobChoice" placeholder="&#20363;&#22914;&#65306;&#36873;&#20013;&#26576;&#20010; JD &#25110;&#25163;&#21160;&#36755;&#20837;&#30446;&#26631;&#23703;&#20301;" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-primary" onclick="confirmJob()">纭閫夋嫨 鈫</button>
+        <button class="btn btn-primary" onclick="confirmJob()">&#30830;&#35748;&#32844;&#20301;</button>
       </div>
     </div>
     <div id="skipJobConfirm" class="hidden">
-      <p style="color:var(--text-light);text-align:center;margin-top:16px;">宸茶烦杩囪亴浣嶆悳绱紝灏嗗熀浜庝綘閫夋嫨鐨勬柟鍚戣繘琛岀畝鍘嗕紭鍖</p>
-      <div class="btn-group"><button class="btn btn-primary" onclick="goStep(5)">杩涘叆绠€鍘嗕紭鍖</button></div>
+      <p style="color:var(--text-light);text-align:center;margin-top:16px;">&#24050;&#36339;&#36807;&#32844;&#20301;&#25628;&#32034;&#65292;&#25509;&#19979;&#26469;&#23558;&#22522;&#20110;&#20320;&#36873;&#25321;&#30340;&#26041;&#21521;&#32487;&#32493;&#36827;&#34892;&#31616;&#21382;&#20248;&#21270;&#12290;</p>
+      <div class="btn-group"><button class="btn btn-primary" onclick="goStep(5)">&#36827;&#20837;&#31616;&#21382;&#20248;&#21270;</button></div>
     </div>
   </div>
 
