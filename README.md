@@ -1,275 +1,179 @@
 # AI Job Search Copilot · AI 求职全流程助手
 
-一站式 AI 求职工作台，覆盖从简历创建到模拟面试的完整求职链路。
+一个把简历准备、岗位匹配、职位搜索、定向优化、模拟面试和申请跟踪串起来的 AI 求职工作台。
 
-提供 **Web 应用**（可视化界面）和 **Claude Code 技能**（命令行 AI 助手）两种形态，共享核心能力。
+项目同时提供两种形态：
+
+- Web 应用：适合可视化地完成完整求职流程
+- Skill 套件：适合在 Claude Code / Codex 里用命令式方式调用
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Netlify Status](https://img.shields.io/badge/deploy-ready-brightgreen)](#)
+[![Site](https://img.shields.io/badge/site-netlify-00C7B7.svg)](https://interview-coach-skill.netlify.app)
 
----
+在线体验：[interview-coach-skill.netlify.app](https://interview-coach-skill.netlify.app)
 
-## 项目简介
+## 项目亮点
 
-无论你是正在准备面试的求职者，还是希望系统化管理求职流程的职场人，这个项目都能帮你：
+- 一站式流程：从准备简历到面试演练和投递记录，尽量在一个工具里完成
+- 双使用方式：既能在浏览器里操作，也能作为 AI skill 在终端中复用
+- 零后端部署：Web 版是纯静态站点，部署简单，适合个人快速使用
+- 隐私优先：API Key 和会话数据保存在浏览器本地，不依赖项目自带后端
+- 中文优先：交互、简历生成、公司定向优化和面试反馈都围绕中文求职场景设计
 
-- **10 分钟**生成一份专业中文简历，直接导出 PDF
-- 针对**具体公司和岗位**智能优化简历
-- 进行**交互式模拟面试**，获得结构化评分和反馈
-- 一站式追踪所有投递申请
+## Web 应用能做什么
 
-所有 AI 调用均通过你自备的 API Key（支持 DeepSeek / 豆包 / 千问），数据仅保存在浏览器本地。
+Web 端围绕一条完整用户路径组织：
 
----
+`API 管理 → 简历内容收集 → 简历生成 → 岗位匹配 → 职位搜索 → 简历优化 → 模拟面试 → 申请跟踪`
 
-## 功能一览
+核心能力包括：
 
-### Web 应用
+- API 管理：内置 DeepSeek、豆包、千问三类 OpenAI 兼容接口配置
+- 创建或导入简历：支持从零填写，也支持粘贴现有简历直接继续后续流程
+- 多格式材料解析：可读取 `txt`、`md`、`pdf`、`docx`、`rtf`、`html`
+- AI 简历生成：基于结构化信息生成中文 Markdown 简历
+- 模板切换：内置参考简历版、现代专业版、紧凑高密版 3 套模板
+- 多格式导出：支持导出 PDF、DOC、Markdown
+- 岗位匹配：根据简历背景生成更适合的求职方向建议
+- 职位搜索：按平台组合模拟搜索 BOSS 直聘、智联、拉勾、猎聘、前程无忧
+- 定向优化：可针对目标公司和岗位优化简历
+- 模拟面试：支持面试准备、题目来源选择、逐题评分与总结反馈
+- 申请跟踪：记录公司、岗位、平台、状态、链接和备注
 
-```
-API 配置 → 简历内容 → 简历生成 → 岗位匹配 → 职位搜索 → 简历优化 → 模拟面试 → 申请追踪
-```
+## 3 个 Skill 的定位
 
-| 步骤 | 功能 | 亮点 |
-|------|------|------|
-| **API 配置** | 选择 AI 服务商并填写 Key | 三平台预设（DeepSeek/豆包/千问），各步骤可独立指定模型 |
-| **简历内容** | 5 个子步骤收集信息 | 基本信息→教育背景→工作经历→项目经历→自我评价。支持文件上传解析（PDF/DOCX）、项目文件夹导入、AI 辅助描述 |
-| **简历生成** | AI 生成 + 模板切换 | 3 套内置模板（校园/社招/高密），支持上传自定义模板参考，在线编辑 Markdown，对话式修改，一键导出 PDF/DOC/MD |
-| **岗位匹配** | AI 分析并推荐方向 | 基于简历背景智能匹配岗位方向，用户可确认或自定义 |
-| **职位搜索** | 多平台模拟搜索 | BOSS直聘/智联招聘/拉勾/猎聘/前程无忧，可单选或多选平台 |
-| **简历优化** | 公司+职位定向优化 | 预设公司面试风格（字节/阿里/腾讯/美团/Google/创业公司/自定义），快捷选取上一步的公司，对话修改，重新生成 |
-| **模拟面试** | 交互式面试练习 | 面试前准备清单、题目来源选择（牛客/LeetCode/BOSS面经/知乎/自定义）、逐题评分反馈、面试总结 |
-| **申请追踪** | 投递记录管理 | 公司/职位/平台/状态/链接/备注，支持增删改查和状态统计 |
+仓库里同时维护了 3 个可安装 skill，分别位于 `.claude/skills/` 和 `.agents/skills/` 下，方便在不同 AI 编程环境中复用。
 
-### Claude Code 技能
+### `interview-coach`
 
-提供 3 个可安装的 Claude Code 技能，在终端中直接使用：
+适合单独做模拟面试训练。
 
-| 技能 | 命令 | 核心能力 |
-|------|------|----------|
-| `interview-coach` | `/interview-coach [职位] [级别] [类型] [公司]` | 技术面/行为面/系统设计模拟，结构化评分 |
-| `resume-builder` | `/resume-builder [创建/优化] [参数...]` | 问答式简历生成，定向简历优化 |
-| `full-career` | `/full-career` | 全流程一站式求职助手 |
+- 输入岗位、级别、面试类型、公司等信息
+- 围绕技术面、行为面、系统设计等场景持续提问
+- 对每题给出结构化评分、优点和改进建议
 
----
+### `resume-builder`
+
+适合单独做简历创建或简历优化。
+
+- 通过问答收集简历素材
+- 生成中文简历内容
+- 针对目标公司和岗位做定向优化
+
+### `full-career`
+
+适合把多个环节串起来一次完成。
+
+- 信息收集
+- 简历生成
+- 岗位匹配
+- 职位搜索
+- 简历优化
+- 模拟面试
+
+如果你更偏好图形界面，优先用 Web 应用；如果你更习惯在 AI coding assistant 里直接对话，优先用 skill。
 
 ## 快速开始
 
-### 前提条件
-
-- 一个 AI 服务商的 API Key（[DeepSeek](https://platform.deepseek.com/)、[豆包/火山引擎](https://console.volcengine.com/)、[千问/阿里云](https://dashscope.console.aliyun.com/) 任选其一）
-- 现代浏览器（Chrome / Edge / Firefox）
-
-### Web 应用
+### 1. 克隆项目
 
 ```bash
-# 克隆仓库
 git clone https://github.com/wksudud/interview-coach-skill.git
 cd interview-coach-skill
+```
 
-# 启动本地服务器
+### 2. 启动 Web 应用
+
+这是一个纯静态项目，直接起一个本地文件服务器即可：
+
+```bash
 npx http-server web-app -c-1 -p 8788
 ```
 
-打开 `http://localhost:8788`，在 API 管理页面选择服务商并填入 Key，即可开始使用。
+然后访问 [http://localhost:8788](http://localhost:8788)。
 
-> 也可以直接双击打开 `web-app/index.html`，但某些功能（如文件上传）在 `file://` 协议下可能受限。
+也可以直接打开 `web-app/index.html`，但上传和解析等能力在 `file://` 场景下可能受限，仍建议走本地 HTTP 服务。
 
-### Claude Code 技能
+### 3. 配置 AI 服务
+
+首次进入后，在页面的 API 管理区域填写你自己的 API Key。当前预置了：
+
+- DeepSeek
+- 豆包（火山引擎）
+- 千问（阿里云）
+
+项目本身不提供后端代管 Key，调用全部通过你填写的兼容接口完成。
+
+## Skill 安装
+
+如果你想把它作为 skill 使用，可以按对应环境安装：
 
 ```bash
-# 在项目根目录下注册技能
 claude skills install .claude/skills/interview-coach
 claude skills install .claude/skills/resume-builder
 claude skills install .claude/skills/full-career
 ```
 
-安装后即可在 Claude Code 中通过 `/` 命令调用。
+仓库中也保留了 `.agents/skills/` 版本，方便在支持该目录约定的其他 agent 环境中直接使用。
 
----
+## 技术实现
 
-## 技术架构
+项目当前的 Web 端实现特点：
 
-```
-web-app/
-  index.html       ← 页面结构 + 嵌入式 CSS（约 1100 行）
-  assets/
-    state.js       ← 常量定义、模板配置、全局状态对象
-    api.js         ← LLM 调用封装、localStorage 持久化、会话恢复
-    view.js        ← 视图渲染、步骤导航、模板卡片、聊天 UI
-    actions.js     ← 业务逻辑：文件处理、简历生成、PDF 导出、面试引擎
-```
+- 前端形态：单页静态应用，核心代码位于 `web-app/`
+- 技术栈：Vanilla JS + HTML + 内嵌 CSS，无构建步骤
+- LLM 接口：OpenAI 兼容 `/chat/completions` 风格 API
+- 文档解析：`pdf.js` 解析 PDF，`mammoth.js` 解析 DOCX
+- PDF 导出：基于 `jsPDF`，并针对中文字体做了兼容处理
+- 数据存储：浏览器 `localStorage` 持久化会话与配置
+- 部署方式：Netlify 静态托管，`netlify.toml` 发布目录为 `web-app`
 
-**技术选型**：
+## 隐私与数据说明
 
-| 层面 | 方案 |
-|------|------|
-| 前端框架 | **无** — 纯 Vanilla JS，零依赖构建 |
-| AI 接口 | OpenAI 兼容 API（`/v1/chat/completions`） |
-| PDF 生成 | jsPDF 2.5 + 动态加载 CJK 字体（多 CDN 源 + 超时回退） |
-| PDF 解析 | pdf.js 3.11 |
-| DOCX 解析 | Mammoth.js 1.8 |
-| 数据存储 | localStorage（按会话自动保存和恢复） |
-| 部署 | 纯静态文件，任意 HTTP 服务器即可 |
+- API Key 只保存在当前浏览器本地
+- 简历内容、面试记录、申请跟踪等数据默认只保存在本地会话中
+- 由于会调用你配置的第三方模型接口，请在使用前确认所选模型服务商的数据策略
 
-**设计原则**：
-
-- **零后端**：所有逻辑在浏览器中运行，无需服务器
-- **隐私优先**：API Key 和简历数据仅存储在用户浏览器本地
-- **渐进增强**：核心流程不依赖任何 CDN，字体和解析库有降级方案
-- **中文优先**：从 UI 到 PDF 输出全程中文支持
-
----
+如果你打算把它用于真实求职材料，建议避免上传不必要的敏感附件，并优先使用你信任的模型服务。
 
 ## 项目结构
 
 ```text
 .
-├── AGENT.md                     ← AI 代理开发指南（给 LLM 看的项目手册）
-├── README.md                    ← 本文件
-├── SKILL.md                     ← interview-coach 技能定义（根级，兼容旧版）
-├── prompt-standalone.md         ← 独立系统提示词（可用于 ChatGPT / 其他平台）
-├── netlify.toml                 ← 静态站点部署配置
-├── .claude/
-│   ├── launch.json              ← 本地开发服务器启动配置
-│   ├── settings.local.json      ← 权限许可列表
-│   └── skills/                  ← Claude Code 技能
-│       ├── interview-coach/SKILL.md
-│       ├── resume-builder/SKILL.md
-│       └── full-career/SKILL.md
-├── .agents/
-│   └── skills/                  ← OpenAI Codex 技能（与 .claude/skills 内容相同）
-│       ├── interview-coach/SKILL.md
-│       ├── resume-builder/SKILL.md
-│       └── full-career/SKILL.md
-└── web-app/                     ← Web 应用（部署目录）
-    ├── index.html               ← 单文件 SPA（HTML + CSS）
+├── README.md
+├── SKILL.md
+├── prompt-standalone.md
+├── netlify.toml
+├── .claude/skills/
+├── .agents/skills/
+└── web-app/
+    ├── index.html
     ├── assets/
-    │   ├── state.js             ← 常量 · 模板配置 · 全局状态
-    │   ├── api.js               ← LLM 调用 · localStorage 持久化
-    │   ├── view.js              ← 渲染 · 导航 · 聊天 UI · 追踪表格
-    │   └── actions.js           ← 上传解析 · 简历生成 · PDF 导出 · 面试引擎
-    └── templates/               ← 自定义简历模板文件存放（预留目录）
+    └── templates/
 ```
 
----
+## 适合谁使用
 
-## 技能详情
+- 想快速准备中文技术岗简历的同学
+- 想围绕特定公司风格做简历和面试训练的求职者
+- 想把求职流程做成一个可复用 AI 工具链的开发者
+- 想研究“纯前端 + AI 接口”产品形态的独立开发者
 
-### 1. interview-coach — 模拟面试官
+## 开发与检查
 
-模拟真实技术面试场景，根据职位、级别和公司定制出题策略。
-
-```
-/interview-coach [职位] [级别] [面试类型] [公司]
-```
-
-**支持的面试类型**：
-- **技术面**（9 类）：算法与数据结构、编程语言基础、框架与中间件、数据库、网络协议、操作系统、前端专精、安全、测试
-- **行为面**（6 类）：项目经验、团队协作、冲突处理、失败经历、领导力、职业规划
-- **系统设计**（4 类）：总体架构、组件设计、数据方案、权衡分析
-
-**公司定制**：
-对预设公司会自动调整出题策略。字节跳动偏重算法和高并发，阿里/蚂蚁偏重分布式和业务场景，腾讯偏重综合能力，Google/微软偏重算法和系统设计。
-
-**面试流程**：
-1. 收集基本信息 → 2. 分析简历 → 3. 逐题出题 → 4. 每次回答后给出评分+优点+改进建议+参考回答 → 5. 面试结束时输出综合评估报告
-
-### 2. resume-builder — 简历创建与优化
-
-通过结构化问答收集信息，生成或优化中文简历。支持真实职位检索和针对性优化。
-
-```
-/resume-builder [模式]
-/resume-builder 创建
-/resume-builder 优化
-```
-
-**简历内容覆盖**：基本信息 → 求职意向 → 教育背景 → 工作经历（STAR 量化） → 项目经历 → 技能 → 自我评价
-
-**公司优化策略**（内置）：
-- 字节跳动：突出算法能力、高并发经验、快速迭代
-- 阿里巴巴：突出分布式系统、业务深度、技术选型
-- 腾讯：突出产品思维、全栈能力、工程实践
-- 美团：突出高并发场景、系统韧性、容灾方案
-- Google/微软：突出算法基础、代码质量、系统设计
-- 创业公司：突出技术广度、独立能力、ownership
-
-### 3. full-career — 一站式求职助手
-
-串联全流程的求职助手。一次对话完成从信息收集到模拟面试的全部环节。
-
-```
-/full-career
-```
-
-**五阶段流程**：
-1. 信息收集 → 2. 简历生成 → 3. 岗位匹配 → 4. 真实职位搜索 → 5. 简历优化 → 6. 模拟面试
-
-适合求职目标清晰、希望高效完成全部准备工作的用户。
-
-### 技能 vs Web 应用
-
-| 能力 | `interview-coach` | `resume-builder` | `full-career` | Web 应用 |
-|------|:---:|:---:|:---:|:---:|
-| 简历生成 | — | ✅ | ✅ | ✅ |
-| 简历模板 | — | — | — | ✅ 3 + 自定义 |
-| 简历优化 | — | ✅ | ✅ | ✅ 公司定制 |
-| 岗位匹配 | — | ✅ | ✅ | ✅ |
-| 职位搜索 | — | ✅ (WebSearch) | ✅ (WebSearch) | ✅ (AI 模拟) |
-| 模拟面试 | ✅ | — | ✅ | ✅ |
-| 公司定制 | ✅ | ✅ | ✅ | ✅ |
-| PDF 导出 | — | — | — | ✅ |
-| DOC/MD 导出 | — | — | — | ✅ |
-| 申请追踪 | — | — | — | ✅ |
-| 图形界面 | — | — | — | ✅ |
-| 纯文本交互 | ✅ | ✅ | ✅ | — |
-
----
-
-## 开发指南
-
-### 如何贡献
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/your-feature`)
-3. 提交改动 (`git commit -m 'Add some feature'`)
-4. 推送到分支 (`git push origin feature/your-feature`)
-5. 创建 Pull Request
-
-### 代码检查
+如果你要继续修改前端脚本，至少可以先做语法检查：
 
 ```bash
-# JS 语法检查
 node --check web-app/assets/state.js
 node --check web-app/assets/api.js
 node --check web-app/assets/view.js
 node --check web-app/assets/actions.js
 ```
 
-### 常见调试
+## License
 
-| 问题 | 排查路径 |
-|------|----------|
-| 按钮点击无反应 | 检查 `actions.js` 函数是否存在 → 浏览器控制台报错 |
-| 页面中文乱码 | 检查 `index.html` 源文件编码（UTF-8） → `view.js` 的 `repairUIStrings()` |
-| 模板切换不生效 | 检查 `state.resumeTemplate` → `renderResumeTemplateCards()` |
-| PDF 中文不显示 | 检查 `ensureCjkFont()` → CDN 字体加载 → 网络连接 |
-| 会话恢复失败 | 检查 `api.js` 的 `loadSessionData()` → localStorage 数据 |
+本项目基于 MIT License 开源。
 
-### 架构约定
+如果这个项目对你有帮助，欢迎给仓库点一个 Star：
 
-- **HTML 只负责排版**：`index.html` 中的 `onclick` 等内联事件处理器通过 `actions.js` / `view.js` 绑定
-- **状态集中管理**：全局状态统一在 `state.js` 的 `state` 对象中
-- **持久化按需声明**：新增状态字段需在 `api.js` 的 `saveSessionData()` / `loadSessionData()` 中注册
-- **步骤 ID 统一管理**：步骤顺序由 `TOP_LEVEL_STEP_IDS` 数组控制
-
----
-
-## 许可
-
-本项目基于 MIT 协议开源。使用或二次开发时请保留原作者仓库链接。
-
-如果本项目对你有帮助，欢迎 ⭐ Star！
-
-GitHub: [wksudud/interview-coach-skill](https://github.com/wksudud/interview-coach-skill)
+[wksudud/interview-coach-skill](https://github.com/wksudud/interview-coach-skill)
