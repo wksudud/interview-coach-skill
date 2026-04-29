@@ -778,6 +778,9 @@
     .template-cards-grid { grid-template-columns: 1fr; }
     .resume-phase-intro { flex-direction: column; }
     .resume-phase-actions { min-width: 0; }
+	  .entry-mode-card { cursor: pointer; padding: 28px 16px; border: 2px solid var(--border); border-radius: 16px; transition: all 0.2s; background: #FAFBFC; }
+	  .entry-mode-card:hover { border-color: var(--primary); background: #F8F7FF; }
+	  #entrySection div[style*="cursor:pointer"]:hover { border-color: var(--primary) !important; background: #F8F7FF !important; }
   }
 
   /* Platform Chips */
@@ -1215,23 +1218,17 @@
       <p style="color:var(--text-light);margin:12px 0 28px;font-size:15px;">&#35831;&#36873;&#25321;&#20320;&#24819;&#20570;&#30340;&#20107;&#24773;&#65292;&#25105;&#20250;&#20026;&#20320;&#25552;&#20379;&#23545;&#24212;&#30340;&#27714;&#32844;&#26381;&#21153;</p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:720px;margin:0 auto;">
-        <div onclick="chooseMode('create')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
-             onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
-             onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
+        <div onclick="chooseMode('create')" class="entry-mode-card" data-mode="create" class="entry-mode-card" data-mode="optimize" class="entry-mode-card" data-mode="direct" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;">
           <div style="font-size:36px;margin-bottom:12px;">&#128221;</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;">创建新简历</div>
           <div style="font-size:13px;color:var(--text-light);line-height:1.6;">从零开始收集信息并生成简历，适合第一次准备简历的情况。</div>
         </div>
-        <div onclick="chooseMode('optimize')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
-             onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
-             onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
+        <div onclick="chooseMode('optimize')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;">
           <div style="font-size:36px;margin-bottom:12px;">&#9999;</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;">修改简历</div>
           <div style="font-size:13px;color:var(--text-light);line-height:1.6;">粘贴现有简历，AI 根据目标岗位定向优化。</div>
         </div>
-        <div onclick="chooseMode('direct')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
-             onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
-             onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
+        <div onclick="chooseMode('direct')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;">
           <div style="font-size:36px;margin-bottom:12px;">&#128269;</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;">搜索岗位</div>
           <div style="font-size:13px;color:var(--text-light);line-height:1.6;">粘贴现有简历，直接搜索匹配岗位。</div>
@@ -1409,14 +1406,14 @@
 
       <div style="margin-top:16px;">
         <details style="cursor:pointer;">
-          <summary style="font-size:14px;color:var(--text-light);padding:8px 0;">涓婁紶琛ュ厖鏉愭枡 <span style="font-size:12px;">(璇佷功 / 浣滃搧 / 璇存槑鏂囨。)</span></summary>
+          <summary style="font-size:14px;color:var(--text-light);padding:8px 0;">上传补充材料 <span style="font-size:12px;">(证书 / 作品 / 说明文档)</span></summary>
           <div style="margin-top:8px;">
             <div style="border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;"
                  ondragover="event.preventDefault();this.style.borderColor='var(--primary)'"
                  ondragleave="this.style.borderColor='var(--border)'"
                  ondrop="event.preventDefault();this.style.borderColor='var(--border)';handleFileDrop(event)"
                  onclick="document.getElementById('fileInputStep3').click()">
-              <p style="font-size:13px;color:var(--text-light);">鎷栨嫿鎴栫偣鍑讳笂浼犳枃浠</p>
+              <p style="font-size:13px;color:var(--text-light);">拖拽或点击上传文件</p>
             </div>
             <input type="file" id="fileInputStep3" accept=".txt,.md,.pdf,.docx,.rtf,.html,.htm" multiple style="display:none" onchange="handleFileSelect(event)" />
             <div id="fileListStep3" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
@@ -1425,25 +1422,25 @@
       </div>
 
       <div class="btn-group">
-        <button class="btn btn-secondary" onclick="showResumeSubstep('education')">涓婁竴姝</button>
-        <button class="btn btn-primary" onclick="saveStep3()">涓嬩竴灏忔 鈫</button>
+        <button class="btn btn-secondary" onclick="showResumeSubstep('education')">上一步</button>
+        <button class="btn btn-primary" onclick="saveStep3()">下一小步 →</button>
       </div>
     </div>
 
     <div class="substep-panel" data-substep-panel="projects">
       <div class="substep-title">
-        <h3>椤圭洰銆佹妧鑳戒笌鍏朵粬淇℃伅</h3>
-        <span>鏈€鍚庢妸浜偣椤圭洰鍜屾妧鑳借ˉ瀹屾暣</span>
+        <h3>项目、技能与其他信息</h3>
+        <span>最后把亮点项目和技能补充完整</span>
       </div>
 
-      <h3 style="font-size:16px;margin-bottom:12px;">椤圭洰缁忓巻</h3>
+      <h3 style="font-size:16px;margin-bottom:12px;">项目经历</h3>
       <div id="projectFields">
         <div class="project-entry" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
           <div class="form-row">
-            <div class="form-group"><label>椤圭洰鍚嶇О</label><input type="text" class="f_proj_name" placeholder="椤圭洰鍚嶇О" /></div>
-            <div class="form-group"><label>浣犵殑瑙掕壊</label><input type="text" class="f_proj_role" placeholder="濡傦細鎶€鏈礋璐ｄ汉" /></div>
+            <div class="form-group"><label>项目名称</label><input type="text" class="f_proj_name" placeholder="项目名称" /></div>
+            <div class="form-group"><label>你的角色</label><input type="text" class="f_proj_role" placeholder="如：技术负责人" /></div>
           </div>
-          <div class="form-group"><label>鎶€鏈爤</label><input type="text" class="f_proj_tech" placeholder="濡傦細Spring Boot, Redis, Kafka, Kubernetes" /></div>
+          <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" placeholder="如：Spring Boot, Redis, Kafka, Kubernetes" /></div>
           <div class="form-group"><label>&#20320;&#30340;&#36129;&#29486;</label><textarea class="f_proj_contribution" rows="3" placeholder="&#29992; STAR &#27861;&#21017;&#25551;&#36848;&#65292;&#23613;&#37327;&#37327;&#21270;&#32467;&#26524;&#12290;"></textarea></div>
         </div>
       </div>
@@ -1577,7 +1574,8 @@
         </div>
         <div class="template-status-row">
           <div class="template-status-text" id="templateUploadStatus">&#21487;&#19978;&#20256; PDF / DOCX / Markdown &#27169;&#26495;&#20316;&#20026;&#21442;&#32771;&#65292;&#31995;&#32479;&#20250;&#23558;&#20854;&#19982;&#20869;&#32622;&#27169;&#26495;&#19968;&#36215;&#29992;&#20110;&#29983;&#25104;&#19982;&#23548;&#20986;&#12290;</div>
-          <button class="btn btn-outline btn-sm" onclick="document.getElementById('templateFileInput2').click()">&#19978;&#20256;&#21442;&#32771;&#27169;&#26495;</button>
+          <label class="btn btn-outline btn-sm" for="templateFileInput2" style="cursor:pointer;">&#19978;&#20256;&#21442;&#32771;&#27169;&#26495;</label>
+          <input type="file" id="templateFileInput2" accept=".pdf,.docx,.txt,.md" style="display:none" onchange="handleTemplateUpload2(event)" />
         </div>
         <div id="generationTemplateCards" class="template-cards-grid"></div>
       </div>
@@ -1630,8 +1628,6 @@
           <div class="template-summary-chip" id="exportTemplateSummary">&#23548;&#20986;&#23558;&#20351;&#29992;&#24403;&#21069;&#27169;&#26495;&#30340;&#25490;&#29256;&#21644;&#26679;&#24335;</div>
         </div>
       </div>
-      <input type="file" id="templateFileInput2" accept=".pdf,.docx,.txt,.md" style="display:none" onchange="handleTemplateUpload2(event)" />
-
       <!-- Quick built-in templates -->
       <div id="exportTemplateCards" class="template-cards-grid"></div>
 
@@ -1692,7 +1688,7 @@
     </div>
 
     <!-- Platform Config -->
-    <details id="jobPlatformConfig" style="margin-bottom:16px;">
+    <details id="jobPlatformConfig" open style="margin-bottom:16px;">
       <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--text-light);padding:8px 0;">&#25628;&#32034;&#24179;&#21488;&#19982;&#31574;&#30053; <span style="font-weight:400;font-size:12px;">(&#21487;&#36873;&#39640;&#32423;&#37197;&#32622;)</span></summary>
       <div style="margin-top:12px;padding:14px;background:#F8F9FD;border-radius:10px;">
         <div style="font-size:13px;font-weight:600;margin-bottom:8px;">&#25628;&#32034;&#39034;&#24207;&#19982;&#24179;&#21488;&#21551;&#29992;&#24773;&#20917;</div>
@@ -1757,7 +1753,92 @@
     </div>
   </div>
 
-  <!-- Step 9: Mock Interview -->
+    <!-- Step 8: Resume Optimization -->
+  <div class="card section" id="step8">
+    <h2>&#x1F3AF; &#x7B80;&#x5386;&#x5B9A;&#x5411;&#x4F18;&#x5316;</h2>
+    <p class="subtitle" id="optimizeSubtitle">针对目标公司和职位进行简历定向优化</p>
+    <div class="step-model-bar">
+      <span>当前步骤使用模型</span>
+      <select class="step-model-select" data-role="resumeOptimization"></select>
+    </div>
+
+    <!-- Company & Position Setup -->
+    <div id="optimizeSetup" style="margin-bottom:16px;padding:14px 16px;background:#F8F9FD;border-radius:12px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px;">目标公司与职位</div>
+      <div id="optimizeQuickCompany" class="hidden" style="margin-bottom:10px;padding:10px 14px;background:#E8F5E9;border-radius:8px;border:1px solid #A5D6A7;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:13px;font-weight:600;">快捷选取：</span>
+        <span id="optimizeQuickCompanyLabel" style="font-size:13px;color:#2E7D32;font-weight:600;"></span>
+        <button class="btn btn-success btn-sm" onclick="useQuickOptimizeCompany()" style="padding:4px 14px;font-size:12px;">使用此公司</button>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;">
+        <div class="form-group" style="flex:1;min-width:140px;margin-bottom:0;">
+          <label style="font-size:12px;">选择公司</label>
+          <select id="optimizeCompanySelect" onchange="updateOptimizeCompany()" style="width:100%;padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-size:13px;">
+            <option value="">不限公司</option>
+            <option value="byte">字节跳动</option>
+            <option value="alibaba">阿里巴巴/蚂蚁</option>
+            <option value="tencent">腾讯</option>
+            <option value="google">Google / 微软</option>
+            <option value="meituan">美团</option>
+            <option value="startup">创业公司</option>
+            <option value="custom">自定义公司...</option>
+          </select>
+        </div>
+        <div id="optimizeCustomCompanyDiv" class="form-group hidden" style="flex:1;min-width:140px;margin-bottom:0;">
+          <label style="font-size:12px;">自定义公司</label>
+          <input type="text" id="optimizeCustomCompanyName" placeholder="输入公司名称..." oninput="updateOptimizeCompany()" style="width:100%;padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-size:13px;" />
+        </div>
+        <div class="form-group" style="flex:1;min-width:140px;margin-bottom:0;">
+          <label style="font-size:12px;">目标职位</label>
+          <input type="text" id="optimizePosition" placeholder="例如：高级后端开发" oninput="syncOptimizeState()" style="width:100%;padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-size:13px;" />
+        </div>
+      </div>
+      <div id="optimizeCustomWarning" class="hidden" style="margin-top:8px;padding:7px 10px;background:#FFF8E1;border-radius:6px;border:1px solid #FFE082;font-size:12px;color:#E65100;">
+        &#x26A0; 自定义公司没有预设策略，效果可能不如预设公司。
+      </div>
+    </div>
+
+    <div class="btn-group" id="optimizeActions" style="justify-content:center;margin-bottom:16px;">
+      <button class="btn btn-primary" id="btnStartOptimize" onclick="startOptimize()">开始优化简历</button>
+    </div>
+
+    <div class="loading hidden" id="optimizeLoading">
+      <div class="spinner"></div><span>正在优化简历...</span>
+    </div>
+
+    <div id="optimizeResult" class="hidden">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-weight:700;font-size:15px;">优化后简历</span>
+        <span style="font-size:12px;color:var(--text-light);">可直接编辑，也可用下方对话修改</span>
+      </div>
+      <textarea id="optimizeMDEditor" style="width:100%;min-height:250px;padding:12px;border:2px solid var(--border);border-radius:10px;font-family:'SF Mono','Menlo','Consolas',monospace;font-size:13px;line-height:1.6;resize:vertical;background:#FAFBFC;margin-bottom:12px;" oninput="syncOptimizeEditorState()"></textarea>
+      <div id="optimizePreviewMode" class="hidden" style="padding:24px 28px;border:2px solid var(--border);border-radius:10px;background:white;min-height:150px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div id="optimizePreviewContent" class="resume-preview-body"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+        <button class="btn btn-outline btn-sm" id="btnToggleOptimizePreview" onclick="toggleOptimizePreview()">切换预览</button>
+        <button class="btn btn-outline btn-sm" onclick="regenerateOptimizeResume()">重新生成</button>
+        <button class="btn btn-outline btn-sm" onclick="copyOptimizeResumeMD()">复制 Markdown</button>
+        <span style="flex:1;"></span>
+        <button class="btn btn-secondary btn-sm" onclick="goStep(4)">← 返回</button>
+        <button class="btn btn-primary" onclick="goStep(6)">进入模拟面试 →</button>
+      </div>
+      <div style="padding:14px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span>&#x1F916;</span><span style="font-weight:600;font-size:13px;">对话修改简历</span>
+        </div>
+        <div id="optimizeChatLog" style="max-height:120px;overflow-y:auto;margin-bottom:8px;border:1px solid var(--border);border-radius:8px;padding:8px;background:white;font-size:12px;min-height:30px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="optimizeChatInput" placeholder="告诉 AI 你想怎么修改..." style="flex:1;padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;" onkeydown="if(event.key==='Enter')chatModifyOptimizeResume()" />
+          <button class="btn btn-primary btn-sm" onclick="chatModifyOptimizeResume()">发送</button>
+        </div>
+        <div id="optimizeChatStatus" class="loading hidden" style="padding:6px 0;"><div class="spinner" style="width:16px;height:16px;border-width:2px;"></div><span style="font-size:12px;">AI 正在修改...</span></div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Step 9: Mock Interview -->
 
   <div class="card section" id="step9">
     <h2>&#27169;&#25311;&#38754;&#35797;</h2>
@@ -1768,6 +1849,30 @@
       <span>&#22238;&#31572;&#35780;&#20272;&#27169;&#22411;</span>
       <select class="step-model-select" data-role="interviewEval" style="max-width:200px;"></select>
     </div>
+        <div style="margin-bottom:12px;padding:12px 14px;background:#F8F9FD;border-radius:8px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <label style="font-size:13px;font-weight:600;white-space:nowrap;">目标公司</label>
+        <select id="targetCompanySelect" onchange="updateTargetCompany()" style="flex:1;min-width:150px;padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:white;">
+          <option value="">不限公司（通用模式）</option>
+          <option value="byte">字节跳动</option>
+          <option value="alibaba">阿里巴巴/蚂蚁</option>
+          <option value="tencent">腾讯</option>
+          <option value="google">Google / 微软</option>
+          <option value="meituan">美团</option>
+          <option value="startup">创业公司</option>
+          <option value="custom">自定义公司...</option>
+        </select>
+      </div>
+      <div id="customCompanyInput" class="hidden" style="margin-top:10px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="customCompanyName" placeholder="输入公司名称，如：华为、小米、Netflix..." style="flex:1;padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;" oninput="updateTargetCompany()" />
+        </div>
+        <div style="margin-top:6px;padding:8px 10px;background:#FFF8E1;border-radius:6px;border:1px solid #FFE082;font-size:12px;color:#E65100;line-height:1.5;">
+          &#x26A0; 自定义公司没有预设的面试策略，AI 将通过公司名称自行推断面试风格，效果可能不如预设公司理想。建议优先选择预设选项。
+        </div>
+      </div>
+    </div>
+
     <div id="interviewSetup">
       <p style="text-align:center;color:var(--text-light);margin-bottom:16px;">&#24320;&#22987;&#27169;&#25311;&#21069;&#65292;&#20808;&#29992;&#19979;&#38754;&#30340;&#20934;&#22791;&#24037;&#20316;&#21306;&#26816;&#26597;&#30446;&#26631;&#23703;&#20301;&#12289;&#31616;&#21382;&#20142;&#28857;&#21644;&#21487;&#33021;&#30340;&#38382;&#39064;&#37325;&#28857;&#12290;<br />&#20934;&#22791;&#23436;&#25104;&#21518;&#65292;&#21487;&#20197;&#36873;&#25321;<strong>&#33258;&#24049;&#22238;&#31572;</strong>&#33719;&#24471;&#35780;&#20998;&#19982;&#21453;&#39304;&#65292;&#20063;&#21487;&#20197;&#20808;&#26597;&#30475;<strong>&#21442;&#32771;&#22238;&#31572;</strong>&#36827;&#34892;&#28909;&#36523;&#12290;</p>
 
