@@ -1,35 +1,39 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 求职全流程助手</title>
+<title>AI &#27714;&#32844;&#20840;&#27969;&#31243;&#21161;&#25163;</title>
 <style>
   :root {
-    --primary: #6C5CE7;
-    --primary-light: #A29BFE;
-    --primary-dark: #5A4BD1;
-    --bg: #F8F9FD;
+    --primary: #1F3B57;
+    --primary-light: #D7E4F2;
+    --primary-dark: #15293D;
+    --accent: #C98512;
+    --bg: #F3F5F8;
     --card: #FFFFFF;
-    --text: #2D3436;
-    --text-light: #636E72;
-    --border: #E8ECF1;
-    --success: #00B894;
-    --warning: #FDCB6E;
-    --shadow: 0 4px 24px rgba(108,92,231,0.10);
-    --radius: 16px;
+    --text: #1F2937;
+    --text-light: #667085;
+    --border: #D9E2EC;
+    --success: #138A63;
+    --warning: #D97706;
+    --shadow: 0 18px 48px rgba(31,59,87,0.10);
+    --radius: 20px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    background: var(--bg);
+    background:
+      radial-gradient(circle at top left, rgba(201,133,18,0.12), transparent 24%),
+      radial-gradient(circle at top right, rgba(31,59,87,0.12), transparent 28%),
+      linear-gradient(180deg, #f7f9fc 0%, #f1f4f8 100%);
     color: var(--text);
     min-height: 100vh;
     display: flex;
     padding: 20px;
   }
   .app {
-    max-width: 1180px;
+    max-width: 1240px;
     width: 100%;
     display: grid;
     grid-template-columns: 240px minmax(0, 1fr);
@@ -44,9 +48,9 @@
     padding: 24px 0 12px;
   }
   .header h1 {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--primary), #E17055);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -96,6 +100,10 @@
     border-color: var(--primary);
     color: var(--primary);
     background: #F8F7FF;
+  }
+  .side-action[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
   }
   .progress-steps {
     display: flex;
@@ -157,8 +165,10 @@
     background: var(--card);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 32px;
+    padding: 30px;
     margin-bottom: 20px;
+    max-width: 920px;
+    border: 1px solid rgba(31,59,87,0.06);
   }
   .card h2 {
     font-size: 20px;
@@ -248,6 +258,7 @@
     color: var(--primary);
   }
   .btn-outline:hover { background: rgba(108,92,231,0.06); }
+  .btn-outline:hover { background: rgba(31,59,87,0.06); }
   .btn-group { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
 
   /* API Key Setup */
@@ -346,6 +357,65 @@
     margin-bottom: 16px;
   }
 
+  /* Resume Preview (rendered HTML) */
+  .resume-preview-body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #222;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .resume-preview-body h1 {
+    font-size: 24px;
+    text-align: center;
+    margin: 0 0 4px;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+  .resume-preview-body h1 + p {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    margin: 0 0 16px;
+  }
+  .resume-preview-body h2 {
+    font-size: 16px;
+    color: #1a1a1a;
+    border-bottom: 2px solid #444;
+    padding-bottom: 4px;
+    margin: 20px 0 10px;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  .resume-preview-body h3 {
+    font-size: 15px;
+    margin: 10px 0 4px;
+    color: #333;
+    font-weight: 600;
+  }
+  .resume-preview-body p {
+    margin: 4px 0;
+    font-size: 14px;
+  }
+  .resume-preview-body ul, .resume-preview-body ol {
+    margin: 6px 0;
+    padding-left: 20px;
+  }
+  .resume-preview-body li {
+    font-size: 14px;
+    margin: 3px 0;
+    line-height: 1.6;
+  }
+  .resume-preview-body hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 12px 0;
+  }
+  .resume-preview-body strong {
+    font-weight: 600;
+  }
+
   /* Loading */
   .loading {
     display: flex;
@@ -399,6 +469,381 @@
     font-size: 14px;
     line-height: 1.6;
   }
+  .api-test-status {
+    margin-top: 8px;
+    min-height: 20px;
+    font-size: 12px;
+    text-align: center;
+    color: var(--text-light);
+  }
+  .api-test-status.success { color: var(--success); }
+  .api-test-status.error { color: #E74C3C; }
+
+  /* Provider Preset Cards */
+  .provider-presets {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .provider-card {
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    background: #FAFBFC;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .provider-card:hover { border-color: var(--primary-light); background: #F8F7FF; }
+  .provider-card.active {
+    border-color: var(--primary);
+    background: #F3F0FF;
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+  .provider-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .provider-name { font-size: 16px; font-weight: 700; flex: 1; }
+  .provider-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--border);
+    color: var(--text-light);
+    font-weight: 500;
+  }
+  .provider-badge.preset-tag {
+    background: #E8F5E9;
+    color: #2E7D32;
+    font-weight: 600;
+  }
+  .provider-badge.active-badge {
+    background: var(--primary);
+    color: white;
+  }
+  .provider-badge.inactive-badge {
+    background: #F5F5F5;
+    color: #999;
+  }
+  .provider-card-body { margin-bottom: 8px; }
+  .provider-card-body .form-group { margin-bottom: 10px; }
+  .provider-card-body .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .provider-key-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  .provider-key-input:focus { outline: none; border-color: var(--primary); }
+  .provider-model-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: white;
+  }
+  .provider-model-select:focus { outline: none; border-color: var(--primary); }
+  .provider-custom-model {
+    width: 100%;
+    padding: 6px 12px;
+    margin-top: 6px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: inherit;
+  }
+  .provider-custom-model:focus { outline: none; border-color: var(--primary); }
+  .provider-card-actions { text-align: center; margin-top: 8px; }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+  /* Template Preview Cards */
+  .template-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .template-preview-card {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #FFF;
+    position: relative;
+    width: 100%;
+    text-align: left;
+  }
+  .template-preview-card:hover { border-color: var(--primary-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(31,59,87,0.10); }
+  .template-preview-card.selected { border-color: var(--primary); background: #F3F0FF; box-shadow: 0 0 0 1px var(--primary); }
+  .template-preview-card .tpl-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .template-preview-card .tpl-desc { font-size: 12px; color: var(--text-light); margin-bottom: 8px; }
+  .template-preview-card .tpl-for {
+    font-size: 11px;
+    color: var(--primary);
+    background: #F3F0FF;
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .template-preview-card .tpl-preview {
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 10px;
+    line-height: 1.3;
+    white-space: pre;
+    color: var(--text-light);
+    background: #FAFBFC;
+    border-radius: 6px;
+    padding: 8px;
+    overflow: hidden;
+    max-height: 130px;
+    border: 1px solid var(--border);
+  }
+  .template-preview-card.selected .tpl-preview { background: #F7FAFC; border-color: var(--primary-light); }
+  .template-preview-card .check-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--success);
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .template-preview-card.selected .check-badge { display: flex; }
+  .resume-phase-intro {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(31,59,87,0.08), rgba(201,133,18,0.08));
+    border: 1px solid rgba(31,59,87,0.10);
+  }
+  .resume-phase-intro h3 {
+    font-size: 18px;
+    margin: 0 0 6px;
+  }
+  .resume-phase-intro p {
+    font-size: 13px;
+    color: var(--text-light);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .resume-phase-actions {
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+  }
+  .resume-phase-note {
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+  .resume-workspace {
+    display: grid;
+    gap: 18px;
+  }
+  .resume-panel {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98));
+  }
+  .resume-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .resume-panel-header h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+  }
+  .resume-panel-header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+  .template-summary-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(31,59,87,0.08);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .resume-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  .resume-toolbar .spacer {
+    flex: 1;
+    min-width: 10px;
+  }
+  .template-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0 4px;
+    flex-wrap: wrap;
+  }
+  .template-status-text {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .export-actions-panel {
+    margin-top: 20px;
+    padding: 18px;
+    background: #FAFBFC;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  /* Template Chips */
+  .template-chip { transition: all 0.2s; }
+  .template-chip:hover { border-color: var(--primary-light) !important; transform: translateY(-1px); }
+  .template-chip.active { border-color: var(--primary) !important; }
+
+  @media (max-width: 700px) {
+    .template-cards-grid { grid-template-columns: 1fr; }
+    .resume-phase-intro { flex-direction: column; }
+    .resume-phase-actions { min-width: 0; }
+  }
+
+  /* Platform Chips */
+  .platform-chip { transition: all 0.15s; }
+  .platform-chip:hover { transform: scale(1.03); }
+
+  /* Progress Track */
+  .progress-track { transition: opacity 0.3s; }
+
+  /* Step Model Selector Bar */
+  .step-model-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #F8F7FF;
+    border: 1px solid #DFE6E9;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: var(--text-light);
+  }
+  .step-model-bar select {
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    background: white;
+    color: var(--text);
+    max-width: 260px;
+  }
+  .step-model-bar select:focus { outline: none; border-color: var(--primary); }
+
+  .step-overview {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    margin: 18px 0 24px;
+  }
+  .step-overview-item {
+    background: #F8F9FD;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .step-overview-item .index {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .step-overview-item .text {
+    font-size: 13px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+  .resume-substep-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .substep-chip {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #FAFBFC;
+    color: var(--text-light);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .substep-chip.active {
+    border-color: var(--primary);
+    background: #F3F0FF;
+    color: var(--primary);
+  }
+  .substep-chip.done {
+    border-color: var(--success);
+    background: #F0FFF4;
+    color: var(--success);
+  }
+  .substep-panel { display: none; }
+  .substep-panel.active { display: block; }
+  .substep-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .substep-title h3 { font-size: 16px; margin: 0; }
+  .substep-title span { font-size: 12px; color: var(--text-light); }
 
   /* Summary */
   .summary-grid {
@@ -430,6 +875,7 @@
     .step-dot .label { font-size: 12px; }
     .summary-grid { grid-template-columns: 1fr; }
     .chat-msg { max-width: 95%; }
+    .step-overview { grid-template-columns: 1fr 1fr 1fr; }
   }
 
   .hidden { display: none; }
@@ -551,145 +997,172 @@
   }
   .qa-review-item .q-meta { font-size: 12px; color: var(--text-light); margin-top: 4px; }
   .next-btn-area { text-align: center; margin: 12px 0; }
-  .chat-msg .msg-time { font-size: 10px; color: var(--text-light); margin-top: 4px; text-align: right; }
+
+  /* Sidebar Platform Links */
+  .side-links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .side-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #FAFBFC;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .side-link:hover {
+    border-color: var(--primary-light);
+    background: #F8F7FF;
+    color: var(--primary);
+  }
+
+  /* Tracker Section */
+  .tracker-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 20px;
+    background: #F8F9FD;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .tracker-form-full { grid-column: 1 / -1; }
+  .tracker-table-wrap { overflow-x: auto; }
+  .tracker-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .tracker-table th,
+  .tracker-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .tracker-table th {
+    font-weight: 700;
+    color: var(--text-light);
+    font-size: 12px;
+  }
+  .tracker-table tr:hover { background: #F8F7FF; }
+  .tracker-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .tracker-actions button {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .tracker-actions button:hover { border-color: var(--primary); color: var(--primary); }
+  .tracker-actions .btn-del:hover { border-color: #E74C3C; color: #E74C3C; }
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .status-badge.submitted { background: #E3F2FD; color: #1565C0; }
+  .status-badge.resume-passed { background: #E8F5E9; color: #2E7D32; }
+  .status-badge.interviewing { background: #FFF3E0; color: #E65100; }
+  .status-badge.offer { background: #FCE4EC; color: #C62828; }
+  .status-badge.rejected { background: #F5F5F5; color: #616161; }
+
+  @media (max-width: 900px) {
+    .provider-presets { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .tracker-form { grid-template-columns: 1fr; }
+    .tracker-table { font-size: 13px; }
+    .tracker-table th,
+    .tracker-table td { padding: 8px; }
+    .side-links { display: grid; grid-template-columns: 1fr 1fr; }
+  }
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <!-- Header -->
   <div class="header">
-    <h1>🚀 AI 求职全流程助手</h1>
-    <p>从简历到面试，一站式搞定你的求职准备</p>
+    <h1>AI &#27714;&#32844;&#20840;&#27969;&#31243;&#21161;&#25163;</h1>
+    <p>&#20174;&#31616;&#21382;&#29983;&#25104;&#21040;&#38754;&#35797;&#20934;&#22791;&#65292;&#19968;&#31449;&#24335;&#23436;&#25104;&#20320;&#30340;&#27714;&#32844;&#24037;&#20316;&#27969;</p>
   </div>
 
-  <!-- Progress Bar -->
   <div class="progress-container" id="progressBar">
-    <div class="side-title">配置</div>
+    <div class="side-title">&#37197;&#32622;</div>
     <button class="side-action" id="apiNavItem" onclick="showApiManager()">
-      <span>⚙️</span><span>API 管理</span>
+      <span>API</span><span>API &#31649;&#29702;</span>
     </button>
-    <div class="side-title">流程目录</div>
+    <button class="side-action" id="entryNavItem" onclick="showEntrySection()">
+      <span>&#20837;&#21475;</span><span>&#31616;&#21382;&#20837;&#21475;&#36873;&#25321;</span>
+    </button>
+    <div class="side-title">&#27969;&#31243;&#30446;&#24405;</div>
     <div class="progress-steps">
       <div class="progress-bar-bg" id="progressFill" style="width:0%"></div>
-      <div class="step-dot active" data-step="1" onclick="jumpToStep(1)">
-        <div class="circle">1</div>
-        <div class="label">基本信息</div>
-      </div>
-      <div class="step-dot" data-step="2" onclick="jumpToStep(2)">
-        <div class="circle">2</div>
-        <div class="label">教育背景</div>
-      </div>
-      <div class="step-dot" data-step="3" onclick="jumpToStep(3)">
-        <div class="circle">3</div>
-        <div class="label">工作经历</div>
-      </div>
-      <div class="step-dot" data-step="4" onclick="jumpToStep(4)">
-        <div class="circle">4</div>
-        <div class="label">项目与技能</div>
-      </div>
-      <div class="step-dot" data-step="5" onclick="jumpToStep(5)">
-        <div class="circle">5</div>
-        <div class="label">简历生成</div>
-      </div>
-      <div class="step-dot" data-step="6" onclick="jumpToStep(6)">
-        <div class="circle">6</div>
-        <div class="label">岗位匹配</div>
-      </div>
-      <div class="step-dot" data-step="7" onclick="jumpToStep(7)">
-        <div class="circle">7</div>
-        <div class="label">职位搜索</div>
-      </div>
-      <div class="step-dot" data-step="8" onclick="jumpToStep(8)">
-        <div class="circle">8</div>
-        <div class="label">简历优化</div>
-      </div>
-      <div class="step-dot" data-step="9" onclick="jumpToStep(9)">
-        <div class="circle">9</div>
-        <div class="label">模拟面试</div>
-      </div>
+      <div class="step-dot active" data-step="1" onclick="jumpToStep(1)"><div class="circle">1</div><div class="label">&#31616;&#21382;&#20869;&#23481;</div></div>
+      <div class="step-dot" data-step="2" onclick="jumpToStep(2)"><div class="circle">2</div><div class="label">&#31616;&#21382;&#29983;&#25104;</div></div>
+      <div class="step-dot" data-step="3" onclick="jumpToStep(3)"><div class="circle">3</div><div class="label">&#23703;&#20301;&#21305;&#37197;</div></div>
+      <div class="step-dot" data-step="4" onclick="jumpToStep(4)"><div class="circle">4</div><div class="label">&#32844;&#20301;&#25628;&#32034;</div></div>
+      <div class="step-dot" data-step="5" onclick="jumpToStep(5)"><div class="circle">5</div><div class="label">&#31616;&#21382;&#20248;&#21270;</div></div>
+      <div class="step-dot" data-step="6" onclick="jumpToStep(6)"><div class="circle">6</div><div class="label">&#27169;&#25311;&#38754;&#35797;</div></div>
     </div>
+    <div class="side-title" style="margin-top:14px;">&#27714;&#32844;&#24179;&#21488;</div>
+    <div class="side-links">
+      <a class="side-link" href="https://www.zhipin.com" target="_blank" rel="noopener">BOSS &#30452;&#32856;</a>
+      <a class="side-link" href="https://www.zhaopin.com" target="_blank" rel="noopener">&#26234;&#32852;&#25307;&#32856;</a>
+      <a class="side-link" href="https://www.lagou.com" target="_blank" rel="noopener">&#25289;&#21246;&#32593;</a>
+      <a class="side-link" href="https://www.liepin.com" target="_blank" rel="noopener">&#29454;&#32856;</a>
+      <a class="side-link" href="https://www.51job.com" target="_blank" rel="noopener">&#21069;&#31243;&#26080;&#24551;</a>
+      <a class="side-link" href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <button class="side-action" id="trackerNavItem" onclick="showApplicationTracker()">
+      <span>&#36861;&#36394;</span><span>&#30003;&#35831;&#36827;&#24230;</span>
+    </button>
   </div>
 
-  <!-- API Setup: Multi-Provider Configuration -->
   <div class="card" id="setupSection">
     <div class="api-setup">
-      <div class="logo">🤖</div>
-      <h2>API 管理</h2>
-      <p>管理多个 AI 服务商，并为不同任务分配专用模型。<br>密钥仅保存在浏览器内存中，不会持久化到磁盘。</p>
-
-      <!-- Provider Tabs -->
-      <div id="providerTabs" style="display:flex;gap:8px;margin-bottom:16px;justify-content:center;flex-wrap:wrap;"></div>
-      <button class="btn btn-outline" onclick="addProvider()" style="font-size:13px;padding:6px 16px;margin-bottom:20px;">
-        + 添加服务商
-      </button>
-
-      <!-- Provider Config Form -->
-      <div id="providerForm" style="max-width:520px;margin:0 auto;text-align:left;">
-        <div class="form-group">
-          <label>服务商名称</label>
-          <input type="text" id="pf_name" placeholder="如：Anthropic Claude" />
-        </div>
-        <div class="form-group">
-          <label>API 类型</label>
-          <select id="pf_type">
-            <option value="openai">OpenAI 兼容 (DeepSeek / Doubao / GPT 等)</option>
-            <option value="anthropic">Anthropic (Claude)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>API 地址</label>
-          <input type="url" id="pf_url" placeholder="Anthropic: https://api.anthropic.com/v1/messages | OpenAI 兼容: https://api.deepseek.com/v1/chat/completions" />
-        </div>
-        <div class="form-group">
-          <label>API Key</label>
-          <input type="password" id="pf_key" placeholder="sk-..." autocomplete="off" />
-        </div>
-        <div class="form-group">
-          <label>模型名称</label>
-          <input type="text" id="pf_model" placeholder="Anthropic: claude-sonnet-4-6 | DeepSeek: deepseek-chat | GPT: gpt-4o" />
-        </div>
-        <div class="btn-group" style="justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-secondary" onclick="removeCurrentProvider()" id="pf_deleteBtn" style="display:none;">删除此服务商</button>
-          <button class="btn btn-primary" onclick="saveCurrentProvider()">保存配置</button>
-          <button class="btn btn-success" onclick="initApp()" id="apiContinueBtn">保存并进入</button>
-        </div>
+      <div class="logo">AI</div>
+      <h2>API &#31649;&#29702;</h2>
+      <p>&#36873;&#25321; AI &#26381;&#21153;&#21830;&#24182;&#22635;&#20889; Key&#12290;URL &#24050;&#39044;&#37197;&#32622;&#65292;&#20320;&#21482;&#38656;&#35201;&#34917;&#20805; API Key &#24182;&#36873;&#25321;&#27169;&#22411;&#21363;&#21487;&#12290;&#23494;&#38053;&#21482;&#20445;&#23384;&#22312;&#27983;&#35272;&#22120;&#26412;&#22320;&#65292;&#19981;&#20250;&#19978;&#20256;&#21040;&#20854;&#20182;&#20301;&#32622;&#12290;</p>
+      <div id="providerPresets" class="provider-presets"></div>
+      <div class="btn-group" style="justify-content:center;margin-top:24px;">
+        <button class="btn btn-success" onclick="initApp()">&#20445;&#23384;&#24182;&#36827;&#20837;</button>
       </div>
-
-      <!-- Role Routing Config -->
-      <div id="routingConfig" style="max-width:560px;margin:24px auto 0;text-align:left;border-top:2px solid var(--border);padding-top:20px;">
-        <h3 style="font-size:15px;margin-bottom:8px;text-align:center;">🤖 角色路由配置 <span style="font-weight:400;font-size:12px;color:var(--text-light)">(可选)</span></h3>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;text-align:center;">
-          为不同任务分配不同的 AI 服务商。留空则使用当前选中的默认服务商。
-        </p>
+      <div id="apiTestStatus" class="api-test-status"></div>
+      <div style="max-width:560px;margin:28px auto 0;text-align:left;border-top:2px solid var(--border);padding-top:20px;">
+        <h3 style="font-size:14px;margin-bottom:6px;text-align:center;">AI &#21508;&#27493;&#39588;&#27169;&#22411;&#20998;&#37197; <span style="font-weight:400;font-size:12px;color:var(--text-light);">(&#21487;&#36873;)</span></h3>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;text-align:center;">&#20320;&#21487;&#20197;&#20026;&#19981;&#21516;&#20219;&#21153;&#25351;&#23450;&#27169;&#22411;&#65292;&#19981;&#35774;&#32622;&#26102;&#40664;&#35748;&#20351;&#29992;&#24403;&#21069;&#36873;&#20013;&#30340;&#26381;&#21153;&#21830;&#12290;</p>
         <div class="form-row">
-          <div class="form-group">
-            <label style="font-size:12px;">简历生成</label>
-            <select class="routing-select" data-role="resumeGeneration"></select>
-          </div>
-          <div class="form-group">
-            <label style="font-size:12px;">简历优化</label>
-            <select class="routing-select" data-role="resumeOptimization"></select>
-          </div>
+          <div class="form-group"><label style="font-size:12px;">&#31616;&#21382;&#35299;&#26512;</label><select class="step-model-select" data-role="resumeParse"></select></div>
+          <div class="form-group"><label style="font-size:12px;">&#31616;&#21382;&#29983;&#25104;</label><select class="step-model-select" data-role="resumeGeneration"></select></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label style="font-size:12px;">职位搜索</label>
-            <select class="routing-select" data-role="jobSearch"></select>
-          </div>
-          <div class="form-group">
-            <label style="font-size:12px;">岗位匹配</label>
-            <select class="routing-select" data-role="careerMatch"></select>
-          </div>
+          <div class="form-group"><label style="font-size:12px;">&#31616;&#21382;&#20248;&#21270;</label><select class="step-model-select" data-role="resumeOptimization"></select></div>
+          <div class="form-group"><label style="font-size:12px;">&#32844;&#20301;&#25628;&#32034;</label><select class="step-model-select" data-role="jobSearch"></select></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label style="font-size:12px;">面试出题</label>
-            <select class="routing-select" data-role="interviewQuestion"></select>
-          </div>
-          <div class="form-group">
-            <label style="font-size:12px;">回答评估</label>
-            <select class="routing-select" data-role="interviewEval"></select>
-          </div>
+          <div class="form-group"><label style="font-size:12px;">&#23703;&#20301;&#21305;&#37197;</label><select class="step-model-select" data-role="careerMatch"></select></div>
+          <div class="form-group"><label style="font-size:12px;">&#38754;&#35797;&#20986;&#39064;</label><select class="step-model-select" data-role="interviewQuestion"></select></div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group"><label style="font-size:12px;">&#22238;&#31572;&#35780;&#20272;</label><select class="step-model-select" data-role="interviewEval"></select></div>
         </div>
       </div>
     </div>
@@ -698,2134 +1171,702 @@
   <!-- Entry Section: Choose Mode -->
   <div class="card section hidden" id="entrySection">
     <div style="text-align:center;padding:20px 0;">
-      <div style="font-size:48px;margin-bottom:16px;">👋</div>
-      <h2>欢迎使用 AI 求职全流程助手</h2>
-      <p style="color:var(--text-light);margin:12px 0 28px;font-size:15px;">请选择你想做的事情，我将为你提供对应的服务</p>
+      <div style="font-size:48px;margin-bottom:16px;">&#128075;</div>
+      <h2>&#27426;&#36814;&#20351;&#29992; AI &#27714;&#32844;&#20840;&#27969;&#31243;&#21161;&#25163;</h2>
+      <p style="color:var(--text-light);margin:12px 0 28px;font-size:15px;">&#35831;&#36873;&#25321;&#20320;&#24819;&#20570;&#30340;&#20107;&#24773;&#65292;&#25105;&#20250;&#20026;&#20320;&#25552;&#20379;&#23545;&#24212;&#30340;&#27714;&#32844;&#26381;&#21153;</p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:720px;margin:0 auto;">
         <div onclick="chooseMode('create')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
              onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
              onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
-          <div style="font-size:36px;margin-bottom:12px;">📝</div>
+          <div style="font-size:36px;margin-bottom:12px;">&#128221;</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;">创建新简历</div>
-          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">
-            从零开始，通过问答收集信息生成专业简历，从基本资料到项目经历逐步完善。
-          </div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">从零开始收集信息并生成简历，适合第一次准备简历的情况。</div>
         </div>
-
         <div onclick="chooseMode('optimize')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
              onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
              onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
-          <div style="font-size:36px;margin-bottom:12px;">✏️</div>
-          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">修改现有简历</div>
-          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">
-            已有简历但想优化？粘贴现有简历，AI 帮你诊断、润色、匹配目标岗位。
-          </div>
+          <div style="font-size:36px;margin-bottom:12px;">&#9999;</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">修改简历</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">粘贴现有简历，AI 根据目标岗位定向优化。</div>
         </div>
-
         <div onclick="chooseMode('direct')" style="cursor:pointer;padding:28px 16px;border:2px solid var(--border);border-radius:16px;transition:all 0.2s;background:#FAFBFC;"
              onmouseover="this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
              onmouseout="this.style.borderColor='var(--border)';this.style.background='#FAFBFC'">
-          <div style="font-size:36px;margin-bottom:12px;">🚀</div>
-          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">已有简历直接找工作</div>
-          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">
-            已有完整简历，直接进入岗位匹配和职位搜索，快速找到适合你的机会。
-          </div>
+          <div style="font-size:36px;margin-bottom:12px;">&#128269;</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">搜索岗位</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">粘贴现有简历，直接搜索匹配岗位。</div>
         </div>
       </div>
 
       <!-- Resume input area (shown for optimize/direct modes) -->
       <div id="resumeInputArea" class="hidden" style="max-width:600px;margin:24px auto 0;text-align:left;">
         <div class="form-group">
-          <label>请粘贴你的简历内容 <span style="font-weight:400;color:var(--text-light);font-size:12px;">(支持 Markdown 或纯文本格式)</span></label>
-          <textarea id="existingResumeInput" rows="10" placeholder="在此粘贴你的简历内容..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:200px;"></textarea>
+          <label>&#35831;&#31896;&#36148;&#20320;&#30340;&#31616;&#21382;&#20869;&#23481;<span style="font-weight:400;color:var(--text-light);font-size:12px;">(&#25903;&#25345; Markdown&#12289;&#32431;&#25991;&#26412;&#25110;&#20174;&#25991;&#20214;&#20013;&#25552;&#21462;&#25991;&#26412;)</span></label>
+          <textarea id="existingResumeInput" rows="10" placeholder="&#22312;&#27492;&#31896;&#36148;&#20320;&#30340;&#31616;&#21382;&#20869;&#23481;..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:200px;"></textarea>
         </div>
         <div class="form-group" style="text-align:center;">
-          <label style="font-size:13px;color:var(--text-light);">或 <a href="#" onclick="document.getElementById('resumeFileInput').click();return false;" style="color:var(--primary);">上传简历文件</a>（支持 .txt、.md、.pdf）</label>
-          <input type="file" id="resumeFileInput" accept=".txt,.md,.pdf" style="display:none" onchange="handleResumeFile(event)" />
+          <label style="font-size:13px;color:var(--text-light);">&#25110; <a href="#" onclick="document.getElementById('resumeFileInput').click();return false;" style="color:var(--primary);">&#19978;&#20256;&#31616;&#21382;&#25991;&#20214;</a>&#65288;&#25903;&#25345; .txt / .md / .pdf / .docx / .rtf / .html&#65289;</label>
+          <input type="file" id="resumeFileInput" accept=".txt,.md,.pdf,.docx,.rtf,.html,.htm" style="display:none" onchange="handleResumeFile(event)" />
         </div>
         <div id="resumeInputStatus" style="font-size:13px;color:var(--success);text-align:center;margin-bottom:12px;"></div>
         <div class="btn-group" style="justify-content:center;">
-          <button class="btn btn-success" onclick="confirmResumeInput()" id="confirmResumeBtn">确认，下一步 →</button>
+          <button class="btn btn-success" onclick="confirmResumeInput()" id="confirmResumeBtn">&#30830;&#35748;&#65292;&#19979;&#19968;&#27493; &#8594;</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Step 1: Basic Info -->
+  <!-- Step 1: Resume Details -->
   <div class="card section" id="step1">
-    <h2>📋 基本信息</h2>
-    <p class="subtitle">我们先从最基本的开始</p>
-    <div class="form-row">
-      <div class="form-group"><label>姓名</label><input type="text" id="f_name" placeholder="你的姓名" /></div>
-      <div class="form-group"><label>联系方式</label><input type="text" id="f_contact" placeholder="手机号 / 邮箱" /></div>
+    <h2>馃Ь 绠€鍘嗗唴瀹</h2>
+    <p class="subtitle">鎶婄畝鍘嗛渶瑕佺殑淇℃伅鏀跺湪涓€涓ぇ姝ラ閲岋紝鍐嶆寜椤哄簭鍒嗘垚灏忔楠ゅ～鍐欍€</p>
+    <div class="step-model-bar">
+      <span>馃 鏈楠?AI 妯″瀷锛</span>
+      <select class="step-model-select" data-role="resumeParse"></select>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>目标岗位</label><input type="text" id="f_target" placeholder="如：高级后端开发工程师" /></div>
-      <div class="form-group"><label>工作年限</label><select id="f_years"><option value="">请选择</option><option>应届生</option><option>1-3年</option><option>3-5年</option><option>5-10年</option><option>10年以上</option></select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>期望城市</label><input type="text" id="f_city" placeholder="如：北京、上海、杭州" /></div>
-      <div class="form-group"><label>个人主页 <span class="optional">(可选)</span></label><input type="text" id="f_links" placeholder="GitHub / 博客链接" /></div>
-    </div>
-    <div class="form-group"><label>个人简介 <span class="optional">(2-3句话)</span></label><textarea id="f_summary" placeholder="例：3年后端开发经验，精通Java和微服务架构..." rows="3"></textarea></div>
 
-    <!-- Supplementary Materials Upload -->
-    <h3 style="font-size:16px;margin:20px 0 12px;">补充材料 <span style="font-weight:400;font-size:13px;color:var(--text-light)">(可选)</span></h3>
-    <div class="form-group">
-      <label>上传成绩单、证书等补充信息</label>
-      <div id="fileDropZone" style="border:2px dashed var(--border);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;"
-           ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
-           ondragleave="this.style.borderColor='var(--border)';this.style.background=''"
-           ondrop="event.preventDefault();this.style.borderColor='var(--border)';this.style.background='';handleFileDrop(event)"
-           onclick="document.getElementById('fileInput').click()">
-        <p style="font-size:14px;color:var(--text-light);margin-bottom:6px;">📂 拖拽文件到此处，或点击选择文件</p>
-        <p style="font-size:12px;color:var(--text-light);">支持 .txt、.md、.pdf 格式（PDF 将以文本方式读取）</p>
+    <div class="step-overview">
+      <div class="step-overview-item"><div class="index">01</div><div class="text">鍩虹淇℃伅涓庤ˉ鍏呮潗鏂</div></div>
+      <div class="step-overview-item"><div class="index">02</div><div class="text">鏁欒偛鑳屾櫙</div></div>
+      <div class="step-overview-item"><div class="index">03</div><div class="text">宸ヤ綔缁忓巻</div></div>
+      <div class="step-overview-item"><div class="index">04</div><div class="text">椤圭洰銆佹妧鑳戒笌鍏朵粬淇℃伅</div></div>
+      <div class="step-overview-item"><div class="index">05</div><div class="text">鑷垜璇勪环涓庤ˉ鍏</div></div>
+    </div>
+
+    <div class="resume-substep-nav" id="resumeSubstepNav">
+      <button class="substep-chip active" data-substep="basic" onclick="showResumeSubstep('basic')">1. 鍩虹淇℃伅</button>
+      <button class="substep-chip" data-substep="education" onclick="showResumeSubstep('education')">2. 鏁欒偛鑳屾櫙</button>
+      <button class="substep-chip" data-substep="work" onclick="showResumeSubstep('work')">3. 宸ヤ綔缁忓巻</button>
+      <button class="substep-chip" data-substep="projects" onclick="showResumeSubstep('projects')">4. 椤圭洰涓庢妧鑳</button>
+      <button class="substep-chip" data-substep="selfeval" onclick="showResumeSubstep('selfeval')">5. 鑷垜璇勪环</button>
+    </div>
+
+    <div class="substep-panel active" data-substep-panel="basic">
+      <div class="substep-title">
+        <h3>鍩虹淇℃伅</h3>
+        <span>鍏堝～鏈€褰卞搷绠€鍘嗘垚绋跨殑淇℃伅</span>
       </div>
-      <input type="file" id="fileInput" accept=".txt,.md,.pdf" multiple style="display:none" onchange="handleFileSelect(event)" />
-      <div id="fileList" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
-    </div>
+      <div class="form-row">
+        <div class="form-group"><label>濮撳悕 <span style="color:#E74C3C;">*蹇呭～</span></label><input type="text" id="f_name" placeholder="浣犵殑濮撳悕" /></div>
+        <div class="form-group"><label>鑱旂郴鏂瑰紡 <span style="color:#E74C3C;">*蹇呭～</span></label><input type="text" id="f_contact" placeholder="鎵嬫満鍙?/ 閭" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>&#30446;&#26631;&#23703;&#20301;</label><input type="text" id="f_target" placeholder="&#22914;&#65306;&#39640;&#32423;&#21518;&#31471;&#24320;&#21457;&#24037;&#31243;&#24072;" /></div>
+        <div class="form-group"><label>宸ヤ綔骞撮檺</label><select id="f_years"><option value="">璇烽€夋嫨</option><option>搴斿眾鐢</option><option>1-3骞</option><option>3-5骞</option><option>5-10骞</option><option>10骞翠互涓</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>鎰忓悜宸ヤ綔鍦</label><input type="text" id="f_city" placeholder="濡傦細鍖椾含銆佷笂娴枫€佹澀宸烇紙鍙濉級" /></div>
+        <div class="form-group"><label>绫嶈疮</label><input type="text" id="f_hometown" placeholder="濡傦細骞夸笢娣卞湷" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>鍑虹敓骞存湀</label><input type="text" id="f_birth" placeholder="濡傦細1998.06锛堝彲閫夛級" /></div>
+        <div class="form-group"><label>鎬у埆</label><select id="f_gender"><option value="">璇烽€夋嫨</option><option>鐢</option><option>濂</option></select></div>
+      </div>
+      <div class="form-group"><label>涓汉涓婚〉</label><input type="text" id="f_links" placeholder="GitHub / 鍗氬 / LinkedIn 閾炬帴" /></div>
 
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="saveStep1()">下一步 →</button>
-    </div>
-  </div>
+      <!-- Custom Fields -->
+      <div id="customInfoFields" style="margin-bottom:8px;"></div>
+      <button class="btn btn-outline btn-sm" onclick="addCustomInfoField()" style="width:100%;font-size:12px;padding:6px;">+ 娣诲姞鑷畾涔変俊鎭」锛堝鏀挎不闈㈣矊銆佹皯鏃忕瓑锛</button>
 
-  <!-- Step 2: Education -->
-  <div class="card section" id="step2">
-    <h2>🎓 教育背景</h2>
-    <p class="subtitle">你的学习经历</p>
-    <div class="form-row">
-      <div class="form-group"><label>学校名称</label><input type="text" id="f_school" placeholder="如：某某大学" /></div>
-      <div class="form-group"><label>学历</label><select id="f_degree"><option value="">请选择</option><option>博士</option><option>硕士</option><option>本科</option><option>大专</option></select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>专业</label><input type="text" id="f_major" placeholder="如：计算机科学与技术" /></div>
-      <div class="form-group"><label>就读时间</label><input type="text" id="f_edu_time" placeholder="如：2017.09 - 2021.06" /></div>
-    </div>
-    <div class="form-group"><label>GPA / 核心课程 <span class="optional">(可选)</span></label><input type="text" id="f_gpa" placeholder="如：3.8/4.0，或列出3-5门核心课程" /></div>
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="saveStep2()">下一步 →</button>
-    </div>
-  </div>
+      <div class="form-group" style="margin-top:16px;"><label>涓汉绠€浠?<span class="optional">(2-3鍙ヨ瘽)</span></label><textarea id="f_summary" placeholder="渚嬪锛? 骞村悗绔紑鍙戠粡楠岋紝鐔熸倝 Java銆佸井鏈嶅姟鍜岄珮骞跺彂绯荤粺浼樺寲銆? rows="3"></textarea></div>
 
-  <!-- Step 3: Work Experience -->
-  <div class="card section" id="step3">
-    <h2>💼 工作经历</h2>
-    <p class="subtitle">按时间倒序填写，每条经历尽量用量化数据</p>
-    <div id="workFields">
-      <div class="work-entry" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
-        <div class="form-row">
-          <div class="form-group"><label>公司名称</label><input type="text" class="f_work_company" placeholder="公司名称" /></div>
-          <div class="form-group"><label>职位</label><input type="text" class="f_work_title" placeholder="职位" /></div>
+      <h3 style="font-size:16px;margin:20px 0 12px;">琛ュ厖鏉愭枡 <span style="font-weight:400;font-size:13px;color:var(--text-light)">(鍙€?</span></h3>
+      <div class="form-group">
+        <label>涓婁紶鎴愮哗鍗曘€佽瘉涔︺€佷綔鍝佽鏄庣瓑琛ュ厖淇℃伅</label>
+        <div id="fileDropZone" style="border:2px dashed var(--border);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;"
+             ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='#F8F7FF'"
+             ondragleave="this.style.borderColor='var(--border)';this.style.background=''"
+             ondrop="event.preventDefault();this.style.borderColor='var(--border)';this.style.background='';handleFileDrop(event)"
+             onclick="document.getElementById('fileInput').click()">
+          <p style="font-size:14px;color:var(--text-light);margin-bottom:6px;">鎷栨嫿鏂囦欢鍒拌繖閲岋紝鎴栫偣鍑婚€夋嫨鏂囦欢</p>
+          <p style="font-size:12px;color:var(--text-light);">鏀寔 .txt / .md / .pdf / .docx / .rtf / .html</p>
         </div>
-        <div class="form-row single">
-          <div class="form-group"><label>工作时间</label><input type="text" class="f_work_time" placeholder="如：2022.03 - 至今" /></div>
-        </div>
-        <div class="form-group"><label>核心成就 <span class="optional">(STAR法则 + 量化数据)</span></label>
-          <textarea class="f_work_achievements tall" placeholder="例：\n1. 主导订单系统微服务拆分，将核心接口响应时间从2s降至200ms，QPS提升10倍\n2. 设计并实现了缓存分层架构，Redis缓存命中率从75%提升至95%，数据库负载降低60%\n3. 带领3人团队完成XX项目，提前2周上线"></textarea>
-        </div>
+        <input type="file" id="fileInput" accept=".txt,.md,.pdf,.docx,.rtf,.html,.htm" multiple style="display:none" onchange="handleFileSelect(event)" />
+        <div id="fileList" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
       </div>
-    </div>
-    <button class="btn btn-outline" onclick="addWorkEntry()" style="width:100%">+ 添加更多工作经历</button>
 
-    <!-- AI Assistant for Work Experience -->
-    <div class="ai-assist-panel" style="margin-top:20px;padding:16px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <span style="font-size:18px;">🤖</span>
-        <span style="font-weight:600;font-size:14px;">AI 助手帮你写</span>
-        <span style="font-size:12px;color:var(--text-light);">描述你的工作内容，AI 帮你润色成 STAR 法则的简历描述</span>
-      </div>
-      <textarea class="ai-assist-input" rows="3" placeholder="例：我负责了订单系统的重构，把慢查询优化了，还引入了缓存，系统性能提升了很多..." style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
-      <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
-        <div class="spinner"></div><span>正在生成...</span>
-      </div>
-      <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
-      <div class="btn-group" style="margin-top:8px;">
-        <button class="btn btn-primary" onclick="askAIAssist(3)" style="font-size:13px;padding:8px 20px;">✨ 生成简历描述</button>
-      </div>
-    </div>
-
-    <!-- Supplementary Materials Upload for Step 3 -->
-    <div style="margin-top:16px;">
-      <details style="cursor:pointer;">
-        <summary style="font-size:14px;color:var(--text-light);padding:8px 0;">📎 上传补充材料 <span style="font-size:12px;">(成绩单/证书/作品集)</span></summary>
-        <div style="margin-top:8px;">
-          <div style="border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;"
-               ondragover="event.preventDefault();this.style.borderColor='var(--primary)'"
-               ondragleave="this.style.borderColor='var(--border)'"
-               ondrop="event.preventDefault();this.style.borderColor='var(--border)';handleFileDrop(event)"
-               onclick="document.getElementById('fileInputStep3').click()">
-            <p style="font-size:13px;color:var(--text-light);">📂 拖拽或点击上传文件</p>
-          </div>
-          <input type="file" id="fileInputStep3" accept=".txt,.md,.pdf" multiple style="display:none" onchange="handleFileSelect(event)" />
-          <div id="fileListStep3" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
-        </div>
-      </details>
-    </div>
-
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="saveStep3()">下一步 →</button>
-    </div>
-  </div>
-
-  <!-- Step 4: Projects & Skills -->
-  <div class="card section" id="step4">
-    <h2>🛠️ 项目经历与技能</h2>
-    <p class="subtitle">项目经历、专业技能和其他补充信息</p>
-
-    <h3 style="font-size:16px;margin-bottom:12px;">项目经历</h3>
-    <div id="projectFields">
-      <div class="project-entry" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
-        <div class="form-row">
-          <div class="form-group"><label>项目名称</label><input type="text" class="f_proj_name" placeholder="项目名称" /></div>
-          <div class="form-group"><label>你的角色</label><input type="text" class="f_proj_role" placeholder="如：技术负责人" /></div>
-        </div>
-        <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" placeholder="如：Spring Boot, Redis, Kafka, Kubernetes" /></div>
-        <div class="form-group"><label>你的贡献</label><textarea class="f_proj_contribution" rows="3" placeholder="用STAR法则描述，尽量量化"></textarea></div>
-      </div>
-    </div>
-    <button class="btn btn-outline" onclick="addProjectEntry()" style="width:100%;margin-bottom:16px;">+ 添加更多项目</button>
-
-    <!-- AI Assistant for Projects -->
-    <div class="ai-assist-panel" style="margin-bottom:20px;padding:16px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <span style="font-size:18px;">🤖</span>
-        <span style="font-weight:600;font-size:14px;">AI 助手帮你写</span>
-        <span style="font-size:12px;color:var(--text-light);">描述你的项目内容，AI 帮你提炼成简历亮点</span>
-      </div>
-      <textarea class="ai-assist-input" rows="3" placeholder="例：我做了一个电商后台管理系统，用了 Spring Boot + Vue，实现了订单管理、用户管理等功能..." style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
-      <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
-        <div class="spinner"></div><span>正在生成...</span>
-      </div>
-      <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
-      <div class="btn-group" style="margin-top:8px;">
-        <button class="btn btn-primary" onclick="askAIAssist(4)" style="font-size:13px;padding:8px 20px;">✨ 生成项目描述</button>
-      </div>
-    </div>
-
-    <!-- Local Project Folder Import -->
-    <h3 style="font-size:16px;margin:20px 0 8px;">从本地项目导入 <span style="font-weight:400;font-size:13px;color:var(--text-light)">(可选)</span></h3>
-    <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-      选择一个本地项目文件夹，AI 会自动分析你的代码并帮你选择需要突出展示的贡献。
-    </p>
-    <div id="folderImportArea" style="margin-bottom:20px;">
-      <div style="text-align:center;padding:20px;background:#F8F9FD;border-radius:12px;border:2px dashed var(--border);margin-bottom:12px;">
-        <button class="btn btn-outline" onclick="selectProjectFolder()">📂 选择项目文件夹</button>
-        <p style="font-size:12px;color:var(--text-light);margin-top:8px;">
-          支持 Chrome/Edge 浏览器。其他浏览器可上传 ZIP 文件。
-        </p>
-        <input type="file" id="zipUpload" accept=".zip" style="display:none;margin-top:8px;" onchange="handleZipUpload(event)" />
-        <button class="btn btn-secondary" onclick="document.getElementById('zipUpload').click()" style="font-size:12px;padding:4px 12px;margin-top:4px;">或上传 ZIP 文件</button>
-      </div>
-      <div id="folderResult" class="hidden">
-        <div id="folderFiles" style="max-height:250px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;background:#FAFBFC;font-family:monospace;font-size:12px;"></div>
-        <div id="folderAnalysis" class="loading hidden"><div class="spinner"></div><span>正在分析项目内容...</span></div>
-        <div id="responsibilitySelector" class="hidden">
-          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">请选择需要在简历中突出的贡献：</label>
-          <div id="responsibilityList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
-          <div class="btn-group" style="justify-content:center;">
-            <button class="btn btn-secondary" onclick="clearProjectFolder()" style="font-size:13px;padding:8px 20px;">清除</button>
-            <button class="btn btn-primary" onclick="applySelectedResponsibilities()" style="font-size:13px;padding:8px 20px;">✅ 应用到项目经历</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <h3 style="font-size:16px;margin-bottom:12px;">专业技能</h3>
-    <div class="form-group"><label>编程语言</label><input type="text" id="f_skills_lang" placeholder="如：Java(熟练), Python(熟练), Go(了解)" /></div>
-    <div class="form-group"><label>框架与工具</label><input type="text" id="f_skills_tools" placeholder="如：Spring Boot, Redis, Kubernetes, Docker" /></div>
-    <div class="form-group"><label>语言能力 <span class="optional">(可选)</span></label><input type="text" id="f_skills_lang_ability" placeholder="如：英语 CET-6，可流畅阅读英文技术文档" /></div>
-
-    <h3 style="font-size:16px;margin:20px 0 12px;">其他信息 <span style="font-weight:400;font-size:13px;color:var(--text-light)">(可选)</span></h3>
-    <div class="form-group"><label>获奖 / 竞赛</label><textarea id="f_awards" rows="2" placeholder="如：ACM 区域赛银奖、国家奖学金"></textarea></div>
-    <div class="form-group"><label>其他 <span class="optional">(开源贡献、博客、论文等)</span></label><textarea id="f_other" rows="2" placeholder="如：GitHub 500+ stars 开源项目作者"></textarea></div>
-
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="saveStep4()">下一步 →</button>
-    </div>
-  </div>
-
-  <!-- Step 5: Resume Generation -->
-  <div class="card section" id="step5">
-    <h2>📄 简历生成</h2>
-    <p class="subtitle">AI 正在根据你的信息生成专业简历...</p>
-    <div class="loading" id="resumeLoading">
-      <div class="spinner"></div>
-      <span>正在生成简历...</span>
-    </div>
-    <div id="resumeResult" class="hidden">
-      <div class="resume-output" id="resumeContent"></div>
       <div class="btn-group">
-        <button class="btn btn-primary" onclick="goStep(6)">确认，下一步 →</button>
+        <button class="btn btn-primary" onclick="saveStep1()">涓嬩竴灏忔 鈫</button>
+      </div>
+    </div>
+
+    <div class="substep-panel" data-substep-panel="education">
+      <div class="substep-title">
+        <h3>鏁欒偛鑳屾櫙</h3>
+        <span>鎶婂鏍°€佷笓涓氬拰鏃堕棿琛ュ畬鏁</span>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>瀛︽牎鍚嶇О</label><input type="text" id="f_school" placeholder="濡傦細鏌愭煇澶у" /></div>
+        <div class="form-group"><label>瀛﹀巻</label><select id="f_degree"><option value="">璇烽€夋嫨</option><option>鍗氬＋</option><option>纭曞＋</option><option>鏈</option><option>澶т笓</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>&#19987;&#19994;</label><input type="text" id="f_major" placeholder="&#22914;&#65306;&#35745;&#31639;&#26426;&#31185;&#23398;&#19982;&#25216;&#26415;" /></div>
+        <div class="form-group"><label>灏辫鏃堕棿</label><input type="text" id="f_edu_time" placeholder="濡傦細2017.09 - 2021.06" /></div>
+      </div>
+      <div class="form-group"><label>GPA / &#26680;&#24515;&#35838;&#31243; <span class="optional">(&#21487;&#36873;)</span></label><input type="text" id="f_gpa" placeholder="&#22914;&#65306;3.8/4.0&#65292;&#25110;&#21015;&#20986; 3-5 &#38376;&#26680;&#24515;&#35838;&#31243;" /></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showResumeSubstep('basic')">涓婁竴姝</button>
+        <button class="btn btn-primary" onclick="saveStep2()">涓嬩竴灏忔 鈫</button>
+      </div>
+    </div>
+
+    <div class="substep-panel" data-substep-panel="work">
+      <div class="substep-title">
+        <h3>宸ヤ綔缁忓巻</h3>
+        <span>鎸夋椂闂村€掑簭濉啓锛屽敖閲忓啓娓呮缁撴灉鍜屾暟瀛</span>
+      </div>
+      <div id="workFields">
+        <div class="work-entry" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div class="form-row">
+            <div class="form-group"><label>鍏徃鍚嶇О</label><input type="text" class="f_work_company" placeholder="鍏徃鍚嶇О" /></div>
+            <div class="form-group"><label>鑱屼綅</label><input type="text" class="f_work_title" placeholder="鑱屼綅" /></div>
+          </div>
+          <div class="form-row single">
+            <div class="form-group"><label>宸ヤ綔鏃堕棿</label><input type="text" class="f_work_time" placeholder="濡傦細2022.03 - 鑷充粖" /></div>
+          </div>
+          <div class="form-group"><label>鏍稿績鎴愬氨 <span class="optional">(STAR + 閲忓寲缁撴灉)</span></label>
+            <textarea class="f_work_achievements tall" placeholder="&#20363;&#22914;&#65306;&#20027;&#23548;&#35746;&#21333;&#31995;&#32479;&#37325;&#26500;&#65292;&#23558;&#25509;&#21475;&#21709;&#24212;&#26102;&#38388;&#20174; 2s &#38477;&#21040; 200ms&#65292;QPS &#25552;&#21319; 10 &#20593;&#12290;"></textarea>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-outline" onclick="addWorkEntry()" style="width:100%">+ 娣诲姞鏇村宸ヤ綔缁忓巻</button>
+
+      <div class="ai-assist-panel" style="margin-top:20px;padding:16px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:18px;">馃</span>
+          <span style="font-weight:600;font-size:14px;">AI 甯綘娑﹁壊宸ヤ綔缁忓巻</span>
+          <span style="font-size:12px;color:var(--text-light);">鎻忚堪浣犲仛浜嗕粈涔堬紝鎴戞潵甯綘鏁寸悊鎴愭洿閫傚悎绠€鍘嗙殑琛ㄨ堪銆</span>
+        </div>
+        <textarea class="ai-assist-input" rows="3" placeholder="渚嬪锛氭垜璐熻矗璁㈠崟绯荤粺閲嶆瀯锛屼紭鍖栦簡鎱㈡煡璇紝涔熷紩鍏ヤ簡缂撳瓨锛屾暣浣撴€ц兘鎻愬崌寰堝銆? style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+        <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
+          <div class="spinner"></div><span>姝ｅ湪鐢熸垚...</span>
+        </div>
+        <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
+        <div class="btn-group" style="margin-top:8px;">
+          <button class="btn btn-primary" onclick="askAIAssist(3, event)" style="font-size:13px;padding:8px 20px;">鐢熸垚绠€鍘嗘弿杩</button>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <details style="cursor:pointer;">
+          <summary style="font-size:14px;color:var(--text-light);padding:8px 0;">涓婁紶琛ュ厖鏉愭枡 <span style="font-size:12px;">(璇佷功 / 浣滃搧 / 璇存槑鏂囨。)</span></summary>
+          <div style="margin-top:8px;">
+            <div style="border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;"
+                 ondragover="event.preventDefault();this.style.borderColor='var(--primary)'"
+                 ondragleave="this.style.borderColor='var(--border)'"
+                 ondrop="event.preventDefault();this.style.borderColor='var(--border)';handleFileDrop(event)"
+                 onclick="document.getElementById('fileInputStep3').click()">
+              <p style="font-size:13px;color:var(--text-light);">鎷栨嫿鎴栫偣鍑讳笂浼犳枃浠</p>
+            </div>
+            <input type="file" id="fileInputStep3" accept=".txt,.md,.pdf,.docx,.rtf,.html,.htm" multiple style="display:none" onchange="handleFileSelect(event)" />
+            <div id="fileListStep3" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showResumeSubstep('education')">涓婁竴姝</button>
+        <button class="btn btn-primary" onclick="saveStep3()">涓嬩竴灏忔 鈫</button>
+      </div>
+    </div>
+
+    <div class="substep-panel" data-substep-panel="projects">
+      <div class="substep-title">
+        <h3>椤圭洰銆佹妧鑳戒笌鍏朵粬淇℃伅</h3>
+        <span>鏈€鍚庢妸浜偣椤圭洰鍜屾妧鑳借ˉ瀹屾暣</span>
+      </div>
+
+      <h3 style="font-size:16px;margin-bottom:12px;">椤圭洰缁忓巻</h3>
+      <div id="projectFields">
+        <div class="project-entry" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div class="form-row">
+            <div class="form-group"><label>椤圭洰鍚嶇О</label><input type="text" class="f_proj_name" placeholder="椤圭洰鍚嶇О" /></div>
+            <div class="form-group"><label>浣犵殑瑙掕壊</label><input type="text" class="f_proj_role" placeholder="濡傦細鎶€鏈礋璐ｄ汉" /></div>
+          </div>
+          <div class="form-group"><label>鎶€鏈爤</label><input type="text" class="f_proj_tech" placeholder="濡傦細Spring Boot, Redis, Kafka, Kubernetes" /></div>
+          <div class="form-group"><label>&#20320;&#30340;&#36129;&#29486;</label><textarea class="f_proj_contribution" rows="3" placeholder="&#29992; STAR &#27861;&#21017;&#25551;&#36848;&#65292;&#23613;&#37327;&#37327;&#21270;&#32467;&#26524;&#12290;"></textarea></div>
+        </div>
+      </div>
+      <button class="btn btn-outline" onclick="addProjectEntry()" style="width:100%;margin-bottom:16px;">+ 娣诲姞鏇村椤圭洰</button>
+
+      <div class="ai-assist-panel" style="margin-bottom:20px;padding:16px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:18px;">馃</span>
+          <span style="font-weight:600;font-size:14px;">AI 甯綘鏁寸悊椤圭洰浜偣</span>
+          <span style="font-size:12px;color:var(--text-light);">鍏堝啓鑷劧璇█鎻忚堪锛屽啀杞崲鎴愮畝鍘嗚〃杩般€</span>
+        </div>
+        <textarea class="ai-assist-input" rows="3" placeholder="渚嬪锛氭垜鍋氫簡涓€涓數鍟嗗悗鍙扮鐞嗙郴缁燂紝鐢ㄤ簡 Spring Boot + Vue锛屽疄鐜颁簡璁㈠崟銆佺敤鎴峰拰搴撳瓨绠＄悊銆? style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+        <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
+          <div class="spinner"></div><span>姝ｅ湪鐢熸垚...</span>
+        </div>
+        <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
+        <div class="btn-group" style="margin-top:8px;">
+          <button class="btn btn-primary" onclick="askAIAssist(4, event)" style="font-size:13px;padding:8px 20px;">鐢熸垚椤圭洰鎻忚堪</button>
+        </div>
+      </div>
+
+      <h3 style="font-size:16px;margin:20px 0 8px;">浠庢湰鍦伴」鐩鍏?<span style="font-weight:400;font-size:13px;color:var(--text-light)">(鍙€?</span></h3>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">閫夋嫨鏈湴椤圭洰鏂囦欢澶瑰悗锛孉I 浼氬府浣犳€荤粨鍊煎緱鍐欒繘绠€鍘嗙殑璐＄尞鐐广€</p>
+      <div id="folderImportArea" style="margin-bottom:20px;">
+        <div style="text-align:center;padding:20px;background:#F8F9FD;border-radius:12px;border:2px dashed var(--border);margin-bottom:12px;">
+          <button class="btn btn-outline" onclick="selectProjectFolder()">閫夋嫨椤圭洰鏂囦欢澶</button>
+          <p style="font-size:12px;color:var(--text-light);margin-top:8px;">鏀寔 Chrome / Edge銆傚叾浠栨祻瑙堝櫒鍙互鍏堜笂浼?ZIP銆</p>
+          <input type="file" id="zipUpload" accept=".zip" style="display:none;margin-top:8px;" onchange="handleZipUpload(event)" />
+          <button class="btn btn-secondary" onclick="document.getElementById('zipUpload').click()" style="font-size:12px;padding:4px 12px;margin-top:4px;">鎴栦笂浼?ZIP 鏂囦欢</button>
+        </div>
+        <div id="folderResult" class="hidden">
+          <div id="folderFiles" style="max-height:250px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;background:#FAFBFC;font-family:monospace;font-size:12px;"></div>
+          <div id="folderAnalysis" class="loading hidden"><div class="spinner"></div><span>姝ｅ湪鍒嗘瀽椤圭洰鍐呭...</span></div>
+          <div id="responsibilitySelector" class="hidden">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">閫夋嫨瑕佸湪绠€鍘嗛噷绐佸嚭灞曠ず鐨勮础鐚細</label>
+            <div id="responsibilityList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
+            <div class="btn-group" style="justify-content:center;">
+              <button class="btn btn-secondary" onclick="clearProjectFolder()" style="font-size:13px;padding:8px 20px;">娓呯┖</button>
+              <button class="btn btn-primary" onclick="applySelectedResponsibilities()" style="font-size:13px;padding:8px 20px;">搴旂敤鍒伴」鐩粡鍘</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:16px;margin-bottom:12px;">涓撲笟鎶€鑳</h3>
+      <div class="form-group"><label>缂栫▼璇█</label><input type="text" id="f_skills_lang" placeholder="濡傦細Java锛堢啛缁冿級銆丳ython锛堢啛缁冿級銆丟o锛堜簡瑙ｏ級" /></div>
+      <div class="form-group"><label>妗嗘灦涓庡伐鍏</label><input type="text" id="f_skills_tools" placeholder="濡傦細Spring Boot, Redis, Kubernetes, Docker" /></div>
+      <div class="form-group"><label>&#35821;&#35328;&#33021;&#21147; <span class="optional">(&#21487;&#36873;)</span></label><input type="text" id="f_skills_lang_ability" placeholder="&#22914;&#65306;&#33521;&#35821; CET-6&#65292;&#21487;&#27969;&#30021;&#38405;&#35835;&#33521;&#25991;&#25216;&#26415;&#25991;&#26723;" /></div>
+
+      <h3 style="font-size:16px;margin:20px 0 12px;">鍏朵粬淇℃伅 <span style="font-weight:400;font-size:13px;color:var(--text-light)">(鍙€?</span></h3>
+      <div class="form-group"><label>鑾峰 / 绔炶禌</label><textarea id="f_awards" rows="2" placeholder="濡傦細ACM 鍖哄煙璧涢摱濂栥€佸浗瀹跺瀛﹂噾"></textarea></div>
+      <div class="form-group"><label>&#20854;&#20182; <span class="optional">(&#24320;&#28304;&#12289;&#21338;&#23458;&#12289;&#35770;&#25991;&#31561;)</span></label><textarea id="f_other" rows="2" placeholder="&#22914;&#65306;GitHub 500+ stars &#24320;&#28304;&#39033;&#30446;&#20316;&#32773;"></textarea></div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showResumeSubstep('work')">涓婁竴姝</button>
+        <button class="btn btn-primary" onclick="saveStep4()">涓嬩竴灏忔 鈫</button>
+      </div>
+    </div>
+
+    <!-- 5th substep: 鑷垜璇勪环涓庤ˉ鍏呮ā鍧?-->
+    <div class="substep-panel" data-substep-panel="selfeval">
+      <div class="substep-title">
+        <h3>鑷垜璇勪环銆佽ˉ鍏呮ā鍧椾笌鑷畾涔夋澘鍧</h3>
+        <span>鏈€鍚庝竴姝ワ紝灞曠幇浣犵殑浼樺娍鍜屼釜浜虹壒鐐</span>
+      </div>
+
+      <h3 style="font-size:16px;margin-bottom:10px;">鑷垜璇勪环 <span class="optional">(鍙€変絾鎺ㄨ崘)</span></h3>
+      <p style="font-size:12px;color:var(--text-light);margin-bottom:12px;">
+        鐢?2-4 鍙ヨ瘽鎬荤粨浣犵殑鏍稿績绔炰簤鍔涖€佽亴涓氭€佸害銆佸鐩爣宀椾綅鐨勭儹鎯呫€傚ソ鐨勮嚜鎴戣瘎浠疯兘璁?HR 蹇€熶簡瑙ｄ綘銆?      </p>
+      <div class="form-group">
+        <textarea id="f_self_eval" rows="4" class="tall" placeholder="&#20363;&#22914;&#65306;&#20855;&#22791;&#25166;&#23454;&#30340;&#19987;&#19994;&#22522;&#30784;&#19982;&#39033;&#30446;&#23454;&#25112;&#32463;&#39564;&#65292;&#25885;&#38271;&#23558;&#22797;&#26434;&#38382;&#39064;&#25286;&#35299;&#33853;&#22320;&#12290;"></textarea>
+      </div>
+      <div class="ai-assist-panel" style="padding:14px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">馃</span>
+          <span style="font-weight:600;font-size:13px;">AI 甯綘鐢熸垚鑷垜璇勪环</span>
+          <span style="font-size:12px;color:var(--text-light);">鏍规嵁浣犲凡濉啓鐨勪俊鎭紝鑷姩鐢熸垚涓€娈典笓涓氱殑鑷垜璇勪环</span>
+        </div>
+        <div class="ai-assist-status loading hidden" style="justify-content:flex-start;padding:8px 0;">
+          <div class="spinner"></div><span>姝ｅ湪鐢熸垚...</span>
+        </div>
+        <div class="ai-assist-result hidden" style="margin-top:8px;padding:12px;background:white;border-radius:8px;border:1px solid var(--border);font-size:13px;white-space:pre-wrap;line-height:1.6;"></div>
+        <div class="btn-group" style="margin-top:8px;">
+          <button class="btn btn-primary btn-sm" onclick="askSelfEvalAI(event)" style="font-size:12px;padding:6px 16px;">鉁?鐢熸垚鑷垜璇勪环</button>
+        </div>
+      </div>
+
+      <!-- Custom Modules -->
+      <h3 style="font-size:16px;margin:20px 0 10px;">鑷畾涔夋ā鍧?<span class="optional">(鍙€?</span></h3>
+      <p style="font-size:12px;color:var(--text-light);margin-bottom:12px;">
+        浣犲彲浠ユ坊鍔犱换浣曟兂鍦ㄧ畝鍘嗕腑灞曠ず鐨勬ā鍧楋細璇佷功璧勮川銆佸煿璁粡鍘嗐€佺ぞ浼氭椿鍔ㄣ€佸織鎰挎湇鍔°€佷笓鍒╃瓑銆?      </p>
+      <div id="customModules"></div>
+      <button class="btn btn-outline btn-sm" onclick="addCustomModule()" style="width:100%;font-size:12px;padding:6px;margin-bottom:20px;">
+        + 娣诲姞鑷畾涔夋ā鍧?      </button>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="showResumeSubstep('projects')">涓婁竴姝</button>
+        <button class="btn btn-primary" onclick="saveStep5()">鐢熸垚绠€鍘?鈫</button>
       </div>
     </div>
   </div>
 
-  <!-- Step 6: Career Matching -->
+  <!-- Step 2: Resume Generation -->
+  <div class="card section" id="step5">
+    <h2>馃搫 绠€鍘嗙敓鎴</h2>
+    <p class="subtitle" id="step5Subtitle">绗竴闃舵锛氱敓鎴愮畝鍘嗗唴瀹癸紝AI 甯綘鍐欏嚭鍒濈锛屼綘鍙互鐩存帴缂栬緫鎴栧璇濅慨鏀</p>
+    <div class="step-model-bar">
+      <span>馃 鏈楠?AI 妯″瀷锛</span>
+      <select class="step-model-select" data-role="resumeGeneration"></select>
+    </div>
+
+    <!-- ===== PHASE 1: Content Generation ===== -->
+    <div id="contentPhase">
+      <div class="resume-phase-intro">
+        <div>
+          <h3>绗竴闃舵锛氬厛閫夋ā鏉匡紝鍐嶇敓鎴愬唴瀹</h3>
+          <p>鐜板湪涓嶄細鑷姩鐢熸垚绠€鍘嗐€備綘鍙互鍏堟寫閫夋ā鏉块鏍硷紝鍐嶇偣鍑诲紑濮嬬敓鎴愶紱濡傛灉鎯宠瘯鍏朵粬妯℃澘锛岄噸鏂扮敓鎴愬嵆鍙€</p>
+        </div>
+        <div class="resume-phase-actions">
+          <button class="btn btn-primary" id="btnStartResumeGenerate" onclick="generateResume()">寮€濮嬬敓鎴愮畝鍘</button>
+          <div class="resume-phase-note" id="resumeStartHint">鍏堥€夋嫨妯℃澘锛屽啀寮€濮嬬敓鎴愩€傚綋鍓嶉粯璁ゆā鏉匡細鍙傝€冪畝鍘嗙増銆</div>
+        </div>
+      </div>
+      <div class="resume-panel">
+        <div class="resume-panel-header">
+          <div>
+            <h3>妯℃澘宸ヤ綔鍙</h3>
+            <p>榛樿妯℃澘宸叉寜浣犱笂浼犵殑 PDF 椋庢牸閲嶅仛銆備綘涔熷彲浠ヤ笂浼犳柊鐨勬ā鏉挎枃浠讹紝蹇€熷皾璇曚笉鍚屾帓鐗堛€</p>
+          </div>
+          <div class="template-summary-chip" id="currentTemplateBadge">褰撳墠妯℃澘锛氬弬鑰冪畝鍘嗙増</div>
+        </div>
+        <div class="template-status-row">
+          <div class="template-status-text" id="templateUploadStatus">鏀寔涓婁紶 PDF / DOCX / Markdown 妯℃澘浣滀负鐢熸垚涓庡鍑哄弬鑰冦€</div>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('templateFileInput2').click()">涓婁紶妯℃澘鏂囦欢</button>
+        </div>
+        <div id="generationTemplateCards" class="template-cards-grid"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:18px;">馃摑</span><span style="font-weight:700;font-size:15px;">绗竴闃舵锛氱敓鎴愬唴瀹</span>
+        <span style="font-size:12px;color:var(--text-light);">AI 鐢熸垚鍒濈 鈫?浣犵紪杈?鈫?瀵硅瘽淇敼 鈫?婊℃剰鍚庤繘鍏ユ帓鐗</span>
+      </div>
+      <div class="loading" id="resumeLoading" style="display:none;">
+        <div class="spinner"></div><span>姝ｅ湪鐢熸垚绠€鍘?..</span>
+      </div>
+      <div id="resumeResult" class="hidden resume-panel">
+        <div id="resumeEditMode">
+          <textarea id="resumeMDEditor" style="width:100%;min-height:300px;padding:12px;border:2px solid var(--border);border-radius:10px;font-family:'SF Mono','Menlo','Consolas',monospace;font-size:13px;line-height:1.6;resize:vertical;background:#FAFBFC;" oninput="updateResumePreview()"></textarea>
+        </div>
+        <div id="resumePreviewMode" class="hidden" style="padding: 24px 28px; border: 2px solid var(--border); border-radius: 10px; background: white; min-height: 300px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div id="resumePreviewContent" class="resume-preview-body"></div>
+        </div>
+        <div class="resume-toolbar">
+          <button class="btn btn-outline btn-sm" id="btnTogglePreview" onclick="toggleResumePreview()">棰勮</button>
+          <button class="btn btn-outline btn-sm" id="btnRegenerateResume" onclick="regenerateResume()">閲嶆柊鐢熸垚</button>
+          <button class="btn btn-outline btn-sm" onclick="copyResumeMD()">澶嶅埗 Markdown</button>
+          <span class="spacer"></span>
+          <button class="btn btn-primary" onclick="goToTemplatePhase()">纭鍐呭锛岃繘鍏ュ鍑?鈫</button>
+        </div>
+      </div>
+
+      <!-- AI Chat to Modify Resume -->
+      <div style="margin-top:16px;padding:14px;background:#F8F7FF;border:2px solid var(--primary-light);border-radius:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span>馃</span><span style="font-weight:600;font-size:13px;">璁?AI 淇敼绠€鍘</span>
+          <span style="font-size:11px;color:var(--text-light);">渚嬪锛?鎶婂伐浣滅粡鍘嗗啓寰楁洿閲忓寲"銆?鍒犻櫎绗簩涓」鐩?銆?鍦ㄦ妧鑳介噷鍔犱笂 Docker"</span>
+        </div>
+        <div id="resumeChatLog" style="max-height:160px;overflow-y:auto;margin-bottom:8px;border:1px solid var(--border);border-radius:8px;padding:8px;background:white;font-size:12px;min-height:30px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="resumeChatInput" placeholder="鍛婅瘔 AI 鎬庝箞淇敼绠€鍘?.." style="flex:1;padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;" onkeydown="if(event.key==='Enter')chatModifyResume()" />
+          <button class="btn btn-primary btn-sm" onclick="chatModifyResume()">鍙戦€</button>
+        </div>
+        <div id="resumeChatStatus" class="loading hidden" style="padding:6px 0;"><div class="spinner" style="width:16px;height:16px;border-width:2px;"></div><span style="font-size:12px;">AI 姝ｅ湪淇敼...</span></div>
+      </div>
+    </div>
+
+    <!-- ===== PHASE 2: Template & Export ===== -->
+    <div id="templatePhase" class="hidden">
+      <div class="resume-phase-intro" style="margin-bottom:16px;">
+        <div>
+          <h3>绗簩闃舵锛氱‘璁ゆā鏉垮苟瀵煎嚭</h3>
+          <p>杩欓噷鍙互缁х画鍒囨崲妯℃澘锛屽鍑虹殑 PDF / DOC 浼氱洿鎺ヤ娇鐢ㄥ綋鍓嶆ā鏉挎牱寮忋€傞粯璁ゆā鏉垮凡缁忔寜浣犱笂浼犵殑 PDF 缁撴瀯閲嶅仛銆</p>
+        </div>
+        <div class="resume-phase-actions">
+          <div class="template-summary-chip" id="exportTemplateSummary">瀵煎嚭灏嗕娇鐢ㄣ€屽弬鑰冪畝鍘嗙増銆嶆牱寮</div>
+        </div>
+      </div>
+      <input type="file" id="templateFileInput2" accept=".pdf,.docx,.txt,.md" style="display:none" onchange="handleTemplateUpload2(event)" />
+
+      <!-- Quick built-in templates -->
+      <div id="exportTemplateCards" class="template-cards-grid"></div>
+
+      <!-- Export buttons -->
+      <div class="export-actions-panel">
+        <div class="export-actions-header">
+          <div>
+            <h3>导出最终简历</h3>
+            <p>PDF 将直接生成可复制文本文件，并优先按单页版式压缩；DOC / MD 继续保留，方便你二次编辑。</p>
+          </div>
+          <div id="templateFileName2" class="template-upload-chip"></div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="exportResume('doc')" style="min-width:120px;">📄 导出 DOC</button>
+          <button class="btn btn-success" onclick="exportResume('pdf')" style="min-width:120px;">🧾 导出 PDF</button>
+          <button class="btn btn-outline" onclick="exportResume('md')" style="min-width:120px;">🟦 导出 MD</button>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin-top:12px;">
+        <button class="btn btn-secondary btn-sm" onclick="backToContentPhase()">馃攧 杩斿洖缂栬緫鍐呭</button>
+        <button class="btn btn-primary" onclick="goStep(3)">纭锛屼笅涓€姝?鈫</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Career Matching -->
   <div class="card section" id="step6">
-    <h2>🎯 职业匹配推荐</h2>
-    <p class="subtitle">AI 正在分析你的背景，推荐最适合的岗位方向</p>
+    <h2>馃幆 鑱屼笟鍖归厤鎺ㄨ崘</h2>
+    <p class="subtitle">AI 姝ｅ湪鍒嗘瀽浣犵殑鑳屾櫙锛屾帹鑽愭渶閫傚悎鐨勫矖浣嶆柟鍚</p>
+    <div class="step-model-bar">
+      <span>馃 鏈楠?AI 妯″瀷锛</span>
+      <select class="step-model-select" data-role="careerMatch"></select>
+    </div>
     <div class="loading" id="matchLoading">
       <div class="spinner"></div>
-      <span>正在分析你的职业方向...</span>
+      <span>姝ｅ湪鍒嗘瀽浣犵殑鑱屼笟鏂瑰悜...</span>
     </div>
     <div id="matchResult" class="hidden">
       <div id="matchList"></div>
       <div class="form-group mt-12">
-        <label>你的选择</label>
-        <input type="text" id="matchChoice" placeholder="输入编号（如 1），或告诉我你想起他方向" />
+        <label>浣犵殑閫夋嫨</label>
+        <input type="text" id="matchChoice" placeholder="杈撳叆缂栧彿锛堝 1锛夛紝鎴栧憡璇夋垜浣犳兂璧蜂粬鏂瑰悜" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-primary" onclick="confirmMatch()">确认选择 →</button>
+        <button class="btn btn-primary" onclick="confirmMatch()">纭閫夋嫨 鈫</button>
       </div>
     </div>
   </div>
 
-  <!-- Step 7: Job Search -->
+  <!-- Step 4: Job Search -->
   <div class="card section" id="step7">
-    <h2>🔍 真实职位搜索</h2>
-    <p class="subtitle">从招聘网站搜索真实职位，基于真实 JD 优化简历</p>
+    <h2>馃攳 鐪熷疄鑱屼綅鎼滅储</h2>
+    <p class="subtitle">浠庢嫑鑱樼綉绔欐悳绱㈢湡瀹炶亴浣嶏紝鍩轰簬鐪熷疄 JD 浼樺寲绠€鍘</p>
+    <div class="step-model-bar">
+      <span>馃 鏈楠?AI 妯″瀷锛</span>
+      <select class="step-model-select" data-role="jobSearch"></select>
+    </div>
+
+    <!-- Platform Config -->
+    <details id="jobPlatformConfig" style="margin-bottom:16px;">
+      <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--text-light);padding:8px 0;">馃搵 鎼滅储璁剧疆 <span style="font-weight:400;font-size:12px;">(鐐瑰嚮灞曞紑)</span></summary>
+      <div style="margin-top:12px;padding:14px;background:#F8F9FD;border-radius:10px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;">鎼滅储骞冲彴锛堟嫋鎷借皟鏁撮『搴忥級</div>
+        <div id="platformOrderList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
+        <div class="form-row" style="grid-template-columns:1fr 1fr;">
+          <div class="form-group">
+            <label style="font-size:12px;">姣忎釜骞冲彴缁撴灉鏁</label>
+            <select id="jobResultsPerPlatform" onchange="state.jobSearchConfig.resultsPerPlatform=parseInt(this.value)">
+              <option value="2">2 &#26465;</option>
+              <option value="3" selected>3 &#26465;</option>
+              <option value="5">5 &#26465;</option>
+              <option value="8">8 &#26465;</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </details>
+
     <div class="form-row single">
       <div class="form-group">
-        <label>搜索关键词 <span class="optional">(可选自定义)</span></label>
-        <input type="text" id="jobSearchQuery" placeholder="留空自动搜索，或输入：site:zhipin.com Java 后端 北京" />
+        <label>鎼滅储鍏抽敭璇?<span class="optional">(鍙€夎嚜瀹氫箟)</span></label>
+        <input type="text" id="jobSearchQuery" placeholder="鐣欑┖鑷姩鎼滅储锛屾垨杈撳叆锛欽ava 鍚庣 鍖椾含" />
       </div>
     </div>
     <div class="btn-group" style="justify-content:space-between;">
       <div></div>
       <div>
-        <button class="btn btn-secondary" onclick="skipJobSearch()">跳过</button>
-        <button class="btn btn-primary" onclick="searchJobs()">搜索职位</button>
+        <button class="btn btn-secondary" onclick="skipJobSearch()">璺宠繃</button>
+        <button class="btn btn-primary" onclick="searchJobs()">鎼滅储鑱屼綅</button>
       </div>
     </div>
+
+    <!-- Job Search Progress Panel -->
+    <div id="jobProgressPanel" class="hidden" style="margin-top:20px;">
+      <div class="progress-track" style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:10px;">
+        <div id="jobProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:3px;transition:width 0.5s ease;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span id="jobProgressText" style="font-size:13px;color:var(--text-light);">鍑嗗鎼滅储...</span>
+        <button class="btn btn-secondary btn-sm" onclick="cancelJobSearch()" style="font-size:11px;padding:4px 12px;">鍙栨秷鎼滅储</button>
+      </div>
+      <div id="jobProgressDetail" style="max-height:200px;overflow-y:auto;padding:8px;background:#FAFBFC;border-radius:8px;border:1px solid var(--border);"></div>
+    </div>
+
     <div class="loading hidden" id="jobLoading">
       <div class="spinner"></div>
-      <span>正在搜索招聘信息...</span>
+      <span>姝ｅ湪鎼滅储鎷涜仒淇℃伅...</span>
     </div>
     <div id="jobResult" class="hidden">
       <div class="job-list" id="jobList"></div>
       <div class="form-group mt-12">
-        <label>选择职位（输入编号，或粘贴你找到的 JD 链接/内容）</label>
-        <input type="text" id="jobChoice" placeholder="输入编号，或粘贴 JD 链接" />
+        <label>閫夋嫨鑱屼綅锛堣緭鍏ョ紪鍙凤紝鎴栫矘璐翠綘鎵惧埌鐨?JD 閾炬帴/鍐呭锛</label>
+        <input type="text" id="jobChoice" placeholder="杈撳叆缂栧彿锛屾垨绮樿创 JD 閾炬帴" />
       </div>
       <div class="btn-group">
-        <button class="btn btn-primary" onclick="confirmJob()">确认选择 →</button>
+        <button class="btn btn-primary" onclick="confirmJob()">纭閫夋嫨 鈫</button>
       </div>
     </div>
     <div id="skipJobConfirm" class="hidden">
-      <p style="color:var(--text-light);text-align:center;margin-top:16px;">已跳过职位搜索，将基于你选择的方向进行简历优化</p>
-      <div class="btn-group"><button class="btn btn-primary" onclick="goStep(8)">进入简历优化</button></div>
+      <p style="color:var(--text-light);text-align:center;margin-top:16px;">宸茶烦杩囪亴浣嶆悳绱紝灏嗗熀浜庝綘閫夋嫨鐨勬柟鍚戣繘琛岀畝鍘嗕紭鍖</p>
+      <div class="btn-group"><button class="btn btn-primary" onclick="goStep(5)">杩涘叆绠€鍘嗕紭鍖</button></div>
     </div>
   </div>
 
-  <!-- Step 8: Resume Optimization -->
+  <!-- Step 5: Resume Optimization -->
   <div class="card section" id="step8">
-    <h2>✨ 简历定向优化</h2>
-    <p class="subtitle" id="optimizeSubtitle">基于目标岗位进行逐项优化</p>
+    <h2>鉁?绠€鍘嗗畾鍚戜紭鍖</h2>
+    <p class="subtitle" id="optimizeSubtitle">鍩轰簬鐩爣宀椾綅杩涜閫愰」浼樺寲</p>
+    <div class="step-model-bar">
+      <span>馃 鏈楠?AI 妯″瀷锛</span>
+      <select class="step-model-select" data-role="resumeOptimization"></select>
+    </div>
     <div class="loading" id="optimizeLoading">
       <div class="spinner"></div>
-      <span>正在优化简历...</span>
+      <span>姝ｅ湪浼樺寲绠€鍘?..</span>
     </div>
     <div id="optimizeResult" class="hidden">
       <div id="optimizeContent"></div>
       <div class="resume-output hidden" id="optimizedResume" style="margin-top:16px;"></div>
       <div class="btn-group">
-        <button class="btn btn-success" onclick="goStep(9)">进入模拟面试 🎤</button>
+        <button class="btn btn-success" onclick="goStep(6)">杩涘叆妯℃嫙闈㈣瘯 馃帳</button>
       </div>
     </div>
   </div>
 
-  <!-- Step 9: Interview -->
+  <!-- Step 6: Interview -->
   <div class="card section" id="step9">
-    <h2>🎤 模拟面试</h2>
-    <p class="subtitle" id="interviewSubtitle">针对目标岗位的真实面试模拟</p>
+    <h2>馃帳 妯℃嫙闈㈣瘯</h2>
+    <p class="subtitle" id="interviewSubtitle">閽堝鐩爣宀椾綅鐨勭湡瀹為潰璇曟ā鎷</p>
+    <div class="step-model-bar" style="gap:12px;flex-wrap:wrap;">
+      <span>馃 鍑洪妯″瀷锛</span>
+      <select class="step-model-select" data-role="interviewQuestion" style="max-width:200px;"></select>
+      <span>璇勪及妯″瀷锛</span>
+      <select class="step-model-select" data-role="interviewEval" style="max-width:200px;"></select>
+    </div>
     <div id="interviewSetup">
-      <p style="text-align:center;color:var(--text-light);margin-bottom:16px;">准备好了吗？点击开始进入模拟面试。<br>每道题你可以选择<strong>自己回答</strong>（获得评分+反馈+参考回答）或<strong>直接看参考回答</strong>。</p>
+      <p style="text-align:center;color:var(--text-light);margin-bottom:16px;">鍑嗗濂戒簡鍚楋紵鐐瑰嚮寮€濮嬭繘鍏ユā鎷熼潰璇曘€?br>姣忛亾棰樹綘鍙互閫夋嫨<strong>鑷繁鍥炵瓟</strong>锛堣幏寰楄瘎鍒?鍙嶉+鍙傝€冨洖绛旓級鎴?strong>鐩存帴鐪嬪弬鑰冨洖绛</strong>銆</p>
 
       <!-- Question Source Selection -->
       <div id="questionSourceSelector" style="margin:16px 0;padding:16px;background:#F8F9FD;border-radius:12px;">
-        <h3 style="font-size:15px;margin-bottom:8px;">📚 题目来源选择</h3>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">选择面试题目的来源，可多选。全部不选则表示不限来源。</p>
+        <h3 style="font-size:15px;margin-bottom:8px;">馃摎 棰樼洰鏉ユ簮閫夋嫨</h3>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">閫夋嫨闈㈣瘯棰樼洰鐨勬潵婧愶紝鍙閫夈€傚叏閮ㄤ笉閫夊垯琛ㄧず涓嶉檺鏉ユ簮銆</p>
         <div id="sourceList" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
           <label class="source-option" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#EDE7F6;border-radius:8px;cursor:pointer;font-size:13px;">
-            <input type="checkbox" value="nowcoder" onchange="updateQuestionSources()" /> 牛客网
+            <input type="checkbox" value="nowcoder" onchange="updateQuestionSources()" /> 鐗涘缃?          </label>
+          <label class="source-option" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#EDE7F6;border-radius:8px;cursor:pointer;font-size:13px;">
+            <input type="checkbox" value="leetcode" onchange="updateQuestionSources()" /> 鍔涙墸/LeetCode
           </label>
           <label class="source-option" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#EDE7F6;border-radius:8px;cursor:pointer;font-size:13px;">
-            <input type="checkbox" value="leetcode" onchange="updateQuestionSources()" /> 力扣/LeetCode
+            <input type="checkbox" value="zhipin" onchange="updateQuestionSources()" /> BOSS 鐩磋仒闈㈢粡
           </label>
           <label class="source-option" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#EDE7F6;border-radius:8px;cursor:pointer;font-size:13px;">
-            <input type="checkbox" value="zhipin" onchange="updateQuestionSources()" /> BOSS 直聘面经
+            <input type="checkbox" value="zhihu" onchange="updateQuestionSources()" /> 鐭ヤ箮闈㈢粡
           </label>
           <label class="source-option" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#EDE7F6;border-radius:8px;cursor:pointer;font-size:13px;">
-            <input type="checkbox" value="zhihu" onchange="updateQuestionSources()" /> 知乎面经
-          </label>
-          <label class="source-option" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#EDE7F6;border-radius:8px;cursor:pointer;font-size:13px;">
-            <input type="checkbox" value="custom" onchange="toggleCustomSource()" /> 自定义来源
-          </label>
+            <input type="checkbox" value="custom" onchange="toggleCustomSource()" /> 鑷畾涔夋潵婧?          </label>
         </div>
         <div id="customSourceInput" class="hidden" style="margin-top:8px;">
-          <input type="text" id="customSourceField" placeholder="输入网站 URL 或关键词，如：maimai.cn 前端面试" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;" oninput="updateQuestionSources()" />
+          <input type="text" id="customSourceField" placeholder="杈撳叆缃戠珯 URL 鎴栧叧閿瘝锛屽锛歮aimai.cn 鍓嶇闈㈣瘯" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;" oninput="updateQuestionSources()" />
         </div>
       </div>
 
       <div class="btn-group" style="justify-content:center;">
-        <button class="btn btn-success" onclick="startInterview()">开始面试 🎤</button>
+        <button class="btn btn-success" onclick="startInterview()">寮€濮嬮潰璇?馃帳</button>
       </div>
     </div>
     <div id="interviewArea" class="hidden">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <span id="questionCounter" style="font-size:13px;color:var(--text-light);"></span>
-        <button class="btn btn-secondary" onclick="endInterview()" style="padding:6px 16px;font-size:13px;">结束面试</button>
+        <button class="btn btn-secondary" onclick="endInterview()" style="padding:6px 16px;font-size:13px;">缁撴潫闈㈣瘯</button>
       </div>
       <div class="chat-box" id="chatBox"></div>
-      <!-- Action buttons (shown after each question) -->
       <div id="interviewActions" class="hidden">
         <div class="interview-actions">
-          <button class="btn btn-primary" id="btnAnswerSelf" onclick="showAnswerInput()">✍️ 自己回答</button>
-          <button class="btn btn-outline" id="btnShowRef" onclick="showReferenceAnswer()">👀 看参考回答</button>
+          <button class="btn btn-primary" id="btnAnswerSelf" onclick="showAnswerInput()">鉁嶏笍 鑷繁鍥炵瓟</button>
+          <button class="btn btn-outline" id="btnShowRef" onclick="showReferenceAnswer()">馃挕 鐪嬪弬鑰冨洖绛</button>
         </div>
       </div>
-      <!-- User answer input (shown when user clicks "自己回答") -->
       <div id="answerInputArea" class="hidden">
         <div class="chat-input-group">
-          <input type="text" id="chatInput" placeholder="输入你的回答..." onkeydown="if(event.key==='Enter')sendAnswer()" />
-          <button class="btn btn-primary" onclick="sendAnswer()">提交回答</button>
-          <button class="btn btn-secondary" onclick="cancelAnswer()">取消</button>
+          <input type="text" id="chatInput" placeholder="杈撳叆浣犵殑鍥炵瓟..." onkeydown="if(event.key==='Enter')sendAnswer()" />
+          <button class="btn btn-primary" onclick="sendAnswer()">鎻愪氦鍥炵瓟</button>
+          <button class="btn btn-secondary" onclick="cancelAnswer()">鍙栨秷</button>
         </div>
       </div>
-      <!-- Next question button -->
       <div id="nextQuestionArea" class="hidden next-btn-area">
-        <button class="btn btn-primary" onclick="askNextQuestion()">下一题 →</button>
+        <button class="btn btn-primary" onclick="askNextQuestion()">涓嬩竴棰?鈫</button>
       </div>
     </div>
     <div id="interviewSummary" class="hidden">
       <div id="summaryContent"></div>
       <div class="btn-group" style="justify-content:center;margin-top:16px;">
-        <button class="btn btn-primary" onclick="resetAll()">重新开始 🔄</button>
+        <button class="btn btn-primary" onclick="resetAll()">閲嶆柊寮€濮?馃攧</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Application Tracker Section -->
+  <div class="card section" id="trackerSection">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <h2>馃摪 鐢宠杩涘害杩借釜</h2>
+        <p class="subtitle" style="margin-bottom:0;">璁板綍鍜岀鐞嗕綘鐨勬眰鑱岀敵璇疯繘搴</p>
+      </div>
+      <button class="btn btn-primary" onclick="toggleTrackerForm()">+ 娣诲姞鐢宠</button>
+    </div>
+
+    <div id="trackerForm" class="hidden tracker-form">
+      <div class="form-group">
+        <label>&#20844;&#21496;&#21517;&#31216;</label>
+        <input type="text" id="trackerCompany" placeholder="&#22914;&#65306;&#23383;&#33410;&#36339;&#21160;" />
+      </div>
+      <div class="form-group">
+        <label>&#32844;&#20301;</label>
+        <input type="text" id="trackerPosition" placeholder="&#22914;&#65306;&#39640;&#32423;&#21518;&#31471;&#24320;&#21457;&#24037;&#31243;&#24072;" />
+      </div>
+      <div class="form-group">
+        <label>&#25307;&#32856;&#24179;&#21488;</label>
+        <select id="trackerPlatform">
+          <option value="">&#35831;&#36873;&#25321;</option>
+          <option value="BOSS直聘">BOSS&#30452;&#32856;</option>
+          <option value="智联招聘">&#26234;&#32852;&#25307;&#32856;</option>
+          <option value="拉勾网">&#25289;&#21246;&#32593;</option>
+          <option value="猎聘">&#29454;&#32856;</option>
+          <option value="前程无忧">&#21069;&#31243;&#26080;&#24551;</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="其他">&#20854;&#20182;</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>&#30003;&#35831;&#29366;&#24577;</label>
+        <select id="trackerStatus">
+          <option value="submitted">&#24050;&#25237;&#36882;</option>
+          <option value="resume-passed">&#31616;&#21382;&#36890;&#36807;</option>
+          <option value="interviewing">&#38754;&#35797;&#20013;</option>
+          <option value="offer">&#24050;&#25343; Offer</option>
+          <option value="rejected">&#24050;&#25298;&#32477;</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>&#32844;&#20301;&#38142;&#25509; <span class="optional">(&#21487;&#36873;)</span></label>
+        <input type="url" id="trackerUrl" placeholder="&#32844;&#20301;&#35814;&#24773;&#39029;&#38142;&#25509;" />
+      </div>
+      <div class="form-group tracker-form-full">
+        <label>&#22791;&#27880; <span class="optional">(&#21487;&#36873;)</span></label>
+        <textarea id="trackerNotes" rows="2" placeholder="&#20363;&#22914;&#65306;&#38754;&#35797;&#26102;&#38388;&#12289;&#27807;&#36890;&#21453;&#39304;&#12289;&#21518;&#32493;&#36319;&#36827;&#35745;&#21010;"></textarea>
+      </div>
+      <div class="btn-group" style="grid-column:1/-1;">
+        <button class="btn btn-secondary" onclick="cancelTrackerForm()">&#21462;&#28040;</button>
+        <button class="btn btn-primary" onclick="saveTrackerApplication()">&#20445;&#23384;</button>
+      </div>
+    </div>
+
+    <div id="trackerSummary" style="margin-bottom:20px;"></div>
+    <div id="trackerList"></div>
+    <div id="trackerEmpty" style="text-align:center;padding:40px 20px;color:var(--text-light);">
+      <div style="font-size:48px;margin-bottom:16px;">&#128204;</div>
+      <p style="font-size:16px;margin-bottom:8px;">&#36824;&#27809;&#26377;&#30003;&#35831;&#35760;&#24405;</p>
+      <p style="font-size:14px;">&#28857;&#20987;&#19978;&#26041;&#8220;&#28155;&#21152;&#30003;&#35831;&#8221;&#24320;&#22987;&#36319;&#36394;&#20320;&#30340;&#27714;&#32844;&#36827;&#24230;</p>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-// ===================== State =====================
-const state = {
-  // Multi-provider API support
-  apiProviders: [
-    {
-      id: 'provider-1',
-      name: 'DeepSeek',
-      apiUrl: 'https://api.deepseek.com/v1/chat/completions',
-      apiKey: '',
-      model: 'deepseek-chat',
-      providerType: 'openai',
-      isDefault: true
-    }
-  ],
-  activeProviderId: 'provider-1',
-  roleRouting: {
-    resumeGeneration: null,
-    resumeOptimization: null,
-    jobSearch: null,
-    careerMatch: null,
-    interviewQuestion: null,
-    interviewEval: null
-  },
-  // Interview question sources
-  interviewSources: [],
-  customSource: '',
-  hasStarted: false,
-  currentStep: 0,
-  mode: '',              // 'create' | 'optimize' | 'direct'
-  existingResume: '',    // user's existing resume text
-  resume: '',
-  optimizedResume: '',
-  matchChoice: '',
-  jobChoice: '',
-  chatHistory: [],
-  interviewQuestions: [],
-  questionIndex: 0,
-  scores: [],
-  userData: {},
-  interviewActive: false,
-  jobsFound: [],
-  interviewQA: [],        // { question, userAnswer, referenceAnswer, score, suggestions, mode }
-  currentQuestion: '',    // current question being asked
-  awaitingAnswer: false,  // waiting for user to choose answer method
-  awaitingInput: false    // waiting for user text input
-};
-
-// ===================== Multi-LLM API Layer =====================
-
-function getActiveProvider() {
-  return state.apiProviders.find(p => p.id === state.activeProviderId) || state.apiProviders[0];
-}
-
-function getProvider(id) {
-  return state.apiProviders.find(p => p.id === id);
-}
-
-function getProviderForRole(roleKey) {
-  const routedId = state.roleRouting[roleKey];
-  if (routedId && state.apiProviders.some(p => p.id === routedId && p.apiKey)) {
-    return routedId;
-  }
-  return null; // use default/active provider
-}
-
-async function callLLM(system, messages, { maxTokens = 2048, providerId = null } = {}) {
-  const provider = providerId ? getProvider(providerId) : getActiveProvider();
-  if (!provider || !provider.apiKey) {
-    throw new Error('请先配置 API Key');
-  }
-  if (provider.providerType === 'anthropic') {
-    return callAnthropic(provider, system, messages, maxTokens);
-  } else {
-    return callOpenAI(provider, system, messages, maxTokens);
-  }
-}
-
-async function callAnthropic(provider, system, messages, maxTokens) {
-  const msgs = messages.map(m => ({ role: m.role, content: m.content }));
-  const resp = await fetch(provider.apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': provider.apiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: provider.model,
-      max_tokens: maxTokens,
-      system: system,
-      messages: msgs
-    })
-  });
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(`API 错误 (${provider.name}): ${resp.status} - ${err}`);
-  }
-  const data = await resp.json();
-  return data.content[0].text;
-}
-
-async function callOpenAI(provider, system, messages, maxTokens) {
-  const msgs = [];
-  if (system) {
-    msgs.push({ role: 'system', content: system });
-  }
-  messages.forEach(m => {
-    msgs.push({ role: m.role, content: m.content });
-  });
-  const resp = await fetch(provider.apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${provider.apiKey}`
-    },
-    body: JSON.stringify({
-      model: provider.model,
-      max_tokens: maxTokens,
-      messages: msgs,
-      stream: false
-    })
-  });
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(`API 错误 (${provider.name}): ${resp.status} - ${err}`);
-  }
-  const data = await resp.json();
-  return data.choices?.[0]?.message?.content || '';
-}
-
-// Legacy wrapper for backward compatibility
-async function callClaude(system, messages, maxTokens = 2048) {
-  return callLLM(system, messages, { maxTokens });
-}
-
-// ===================== File Upload =====================
-const uploadedFiles = []; // { name, content, type, size }
-
-function handleFileSelect(event) {
-  const files = event.target.files;
-  for (const file of files) {
-    readFileContent(file);
-  }
-  event.target.value = '';
-}
-
-function handleFileDrop(event) {
-  for (const file of event.dataTransfer.files) {
-    readFileContent(file);
-  }
-}
-
-function readFileContent(file) {
-  const ext = file.name.split('.').pop().toLowerCase();
-  if (!['txt', 'md', 'pdf'].includes(ext)) {
-    alert(`不支持的文件格式: .${ext}。支持 txt、md、pdf`);
-    return;
-  }
-
-  addFileToList(file.name, '读取中...', file.size);
-
-  if (ext === 'txt' || ext === 'md') {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedFiles.push({ name: file.name, content: e.target.result, type: ext, size: file.size });
-      updateFileListItem(file.name, '✅ 已读取');
-    };
-    reader.readAsText(file);
-  } else if (ext === 'pdf') {
-    // Read PDF as text (basic extraction — the API will handle further parsing)
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = `[PDF 文件: ${file.name}]\n${e.target.result || '（PDF 内容已作为文本读取，可能包含格式字符）'}`;
-      uploadedFiles.push({ name: file.name, content: content.substring(0, 10000), type: ext, size: file.size });
-      updateFileListItem(file.name, '✅ 已读取（文本模式）');
-    };
-    reader.readAsText(file);
-  }
-}
-
-function addFileToList(name, status, size) {
-  const list = document.getElementById('fileList');
-  const id = 'file-item-' + name.replace(/[^a-zA-Z0-9]/g, '-');
-  const div = document.createElement('div');
-  div.id = id;
-  div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;background:#F8F9FD;border-radius:8px;padding:10px 14px;';
-  div.innerHTML = `
-    <div style="flex:1;overflow:hidden;">
-      <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📄 ${name}</div>
-      <div style="font-size:11px;color:var(--text-light);">${(size / 1024).toFixed(1)} KB — ${status}</div>
-    </div>
-    <button onclick="removeFile('${name.replace(/'/g, "\\'")}')" style="background:none;border:none;color:#E74C3C;cursor:pointer;font-size:18px;padding:0 4px;">&times;</button>
-  `;
-  list.appendChild(div);
-}
-
-function updateFileListItem(name, status) {
-  const id = 'file-item-' + name.replace(/[^a-zA-Z0-9]/g, '-');
-  const div = document.getElementById(id);
-  if (div) {
-    div.querySelector('div > div:last-child').textContent = status;
-  }
-}
-
-function removeFile(name) {
-  const idx = uploadedFiles.findIndex(f => f.name === name);
-  if (idx > -1) uploadedFiles.splice(idx, 1);
-  const id = 'file-item-' + name.replace(/[^a-zA-Z0-9]/g, '-');
-  const div = document.getElementById(id);
-  if (div) div.remove();
-}
-
-function getUploadedFilesStr() {
-  if (uploadedFiles.length === 0) return '';
-  let str = '\n\n补充材料：\n';
-  uploadedFiles.forEach(f => {
-    str += `--- ${f.name} ---\n${f.content}\n\n`;
-  });
-  return str;
-}
-
-// ===================== Navigation =====================
-function hideWorkflowViews() {
-  document.getElementById('setupSection').classList.add('hidden');
-  document.getElementById('entrySection').classList.remove('active');
-  document.getElementById('entrySection').classList.add('hidden');
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-}
-
-function setApiNavActive(active) {
-  document.getElementById('apiNavItem').classList.toggle('active', active);
-}
-
-function showApiManager() {
-  hideWorkflowViews();
-  document.getElementById('setupSection').classList.remove('hidden');
-  setApiNavActive(true);
-}
-
-function jumpToStep(n) {
-  state.hasStarted = true;
-  goStep(n);
-}
-
-function goStep(n) {
-  if (n < 1 || n > 9) return;
-  document.getElementById('setupSection').classList.add('hidden');
-  setApiNavActive(false);
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('entrySection').classList.remove('active');
-  document.getElementById('entrySection').classList.add('hidden');
-  document.getElementById('step' + n).classList.add('active');
-  document.querySelectorAll('.step-dot').forEach(d => {
-    d.classList.remove('active');
-    d.classList.remove('done');
-    const step = parseInt(d.dataset.step);
-    if (step < n) d.classList.add('done');
-    if (step === n) d.classList.add('active');
-  });
-  const pct = ((n - 1) / 8) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
-  state.hasStarted = true;
-  state.currentStep = n;
-}
-
-// ===================== Init =====================
-function initApp() {
-  // Save current provider form if dirty
-  saveCurrentProvider();
-
-  // Need at least one valid provider
-  const validProviders = state.apiProviders.filter(p => p.apiKey && p.apiUrl && p.model);
-  if (validProviders.length === 0) {
-    alert('请至少完整配置一个 AI 服务商（名称、API 地址、Key、模型）');
-    return;
-  }
-
-  // Save role routing from selects
-  document.querySelectorAll('.routing-select').forEach(sel => {
-    state.roleRouting[sel.dataset.role] = sel.value || null;
-  });
-
-  // Persist provider configs (without API keys) to localStorage
-  try {
-    const configToSave = state.apiProviders.map(p => ({
-      id: p.id, name: p.name, apiUrl: p.apiUrl,
-      model: p.model, providerType: p.providerType, isDefault: p.isDefault
-    }));
-    localStorage.setItem('ai_providers_config', JSON.stringify(configToSave));
-    localStorage.setItem('ai_active_provider', state.activeProviderId);
-    localStorage.setItem('ai_role_routing', JSON.stringify(state.roleRouting));
-  } catch (e) { /* ignore localStorage errors */ }
-
-  document.getElementById('setupSection').classList.add('hidden');
-  setApiNavActive(false);
-
-  if (state.hasStarted && state.currentStep > 0) {
-    goStep(state.currentStep);
-    return;
-  }
-
-  document.getElementById('entrySection').classList.remove('hidden');
-  document.getElementById('entrySection').classList.add('active');
-  state.hasStarted = true;
-  state.currentStep = 0;
-  state.mode = '';
-  state.existingResume = '';
-}
-
-// ===================== Mode Entry Selection =====================
-function chooseMode(mode) {
-  state.mode = mode;
-  if (mode === 'create') {
-    // Go directly to step 1
-    document.getElementById('entrySection').classList.remove('active');
-    document.getElementById('entrySection').classList.add('hidden');
-    goStep(1);
-  } else {
-    // Show resume input area
-    document.getElementById('resumeInputArea').classList.remove('hidden');
-    document.getElementById('confirmResumeBtn').textContent =
-      mode === 'optimize' ? '确认，进入简历优化 →' : '确认，进入岗位匹配 →';
-  }
-}
-
-function cancelModeSelection() {
-  state.mode = '';
-  state.existingResume = '';
-  document.getElementById('resumeInputArea').classList.add('hidden');
-  document.getElementById('existingResumeInput').value = '';
-  document.getElementById('resumeInputStatus').textContent = '';
-}
-
-function handleResumeFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const ext = file.name.split('.').pop().toLowerCase();
-  if (!['txt', 'md', 'pdf'].includes(ext)) {
-    alert('请上传 .txt、.md 或 .pdf 格式的文件');
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    let content = e.target.result || '';
-    if (ext === 'pdf') content = content.substring(0, 10000);
-    document.getElementById('existingResumeInput').value = content;
-    document.getElementById('resumeInputStatus').textContent = '✅ 已读取：' + file.name;
-  };
-  if (ext === 'pdf') reader.readAsText(file);
-  else reader.readAsText(file);
-}
-
-function confirmResumeInput() {
-  const text = document.getElementById('existingResumeInput').value.trim();
-  if (!text) {
-    alert('请粘贴或上传你的简历内容');
-    return;
-  }
-  state.existingResume = text;
-
-  if (state.mode === 'optimize') {
-    // Parse existing resume and pre-fill all form fields, go through steps 1-4
-    document.getElementById('entrySection').classList.remove('active');
-    document.getElementById('entrySection').classList.add('hidden');
-    state.resume = text;
-    goStep(1);
-    parseExistingResume(text);
-  } else if (state.mode === 'direct') {
-    // Skip to career matching (step 6)
-    // First generate a basic resume from their text
-    document.getElementById('entrySection').classList.remove('active');
-    document.getElementById('entrySection').classList.add('hidden');
-    state.userData.target = state.userData.target || '目标岗位';
-    state.resume = text;
-    goStep(6);
-    goStep6();
-  }
-}
-
-// ===================== Existing Resume Parsing =====================
-async function parseExistingResume(text) {
-  // Show parsing status
-  const container = document.getElementById('step1');
-  const statusDiv = document.createElement('div');
-  statusDiv.id = 'parseStatus';
-  statusDiv.className = 'loading';
-  statusDiv.innerHTML = '<div class="spinner"></div><span>正在分析你的简历并预填信息...</span>';
-  container.insertBefore(statusDiv, container.querySelector('.btn-group'));
-
-  const system = `你是一位简历解析专家。分析以下简历内容，提取结构化信息并返回 JSON 格式（只返回 JSON，不要其他文字）：
-{
-  "name": "姓名",
-  "contact": "联系方式",
-  "target": "目标岗位",
-  "years": "工作年限（选填：应届生/1-3年/3-5年/5-10年/10年以上）",
-  "city": "期望城市",
-  "links": "个人主页/GitHub",
-  "summary": "个人简介（2-3句话）",
-  "school": "学校",
-  "degree": "学历（博士/硕士/本科/大专）",
-  "major": "专业",
-  "eduTime": "就读时间",
-  "gpa": "GPA或核心课程",
-  "workExp": [
-    { "company": "公司", "title": "职位", "time": "工作时间", "achievements": "核心成就（STAR法则+量化数据）" }
-  ],
-  "projects": [
-    { "name": "项目名称", "role": "你的角色", "tech": "技术栈", "contribution": "你的贡献" }
-  ],
-  "skillsLang": "编程语言及熟练度",
-  "skillsTools": "框架与工具",
-  "skillsLangAbility": "语言能力",
-  "awards": "获奖情况",
-  "other": "其他信息"
-}
-如果某项信息缺失，用空字符串替代。工作经历和项目经历如果有则完整提取。`;
-
-  try {
-    const result = await callLLM(system, [
-      { role: 'user', content: `请解析以下简历内容，提取结构化信息：\n\n${text.substring(0, 8000)}` }
-    ], { maxTokens: 3072 });
-
-    const parsed = JSON.parse(result);
-    Object.assign(state.userData, parsed);
-
-    // Pre-fill form fields
-    prefillFormFields();
-
-    if (statusDiv) {
-      statusDiv.innerHTML = '<span style="color:var(--success);">✅ 简历已解析完成，请核对并补充信息后继续。</span>';
-      setTimeout(() => { if (statusDiv) statusDiv.remove(); }, 3000);
-    }
-  } catch (e) {
-    if (statusDiv) {
-      statusDiv.innerHTML = `<span style="color:#E74C3C;">⚠️ 自动解析失败：${e.message}，请手动填写信息。</span>`;
-      setTimeout(() => { if (statusDiv) statusDiv.remove(); }, 4000);
-    }
-    state.userData.target = state.userData.target || '目标岗位';
-  }
-}
-
-function prefillFormFields() {
-  const d = state.userData;
-  const setVal = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
-  setVal('f_name', d.name);
-  setVal('f_contact', d.contact);
-  setVal('f_target', d.target);
-  setVal('f_years', d.years);
-  setVal('f_city', d.city);
-  setVal('f_links', d.links);
-  setVal('f_summary', d.summary);
-  setVal('f_school', d.school);
-  setVal('f_degree', d.degree);
-  setVal('f_major', d.major);
-  setVal('f_edu_time', d.eduTime);
-  setVal('f_gpa', d.gpa);
-  setVal('f_skills_lang', d.skillsLang);
-  setVal('f_skills_tools', d.skillsTools);
-  setVal('f_skills_lang_ability', d.skillsLangAbility);
-  setVal('f_awards', d.awards);
-  setVal('f_other', d.other);
-
-  // Pre-fill work experience entries
-  if (d.workExp && d.workExp.length > 0) {
-    const workFields = document.getElementById('workFields');
-    workFields.innerHTML = '';
-    d.workExp.forEach((w, idx) => {
-      const entry = document.createElement('div');
-      entry.className = 'work-entry';
-      entry.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;';
-      entry.innerHTML = `
-        <div class="form-row">
-          <div class="form-group"><label>公司名称</label><input type="text" class="f_work_company" value="${escHtml(w.company || '')}" /></div>
-          <div class="form-group"><label>职位</label><input type="text" class="f_work_title" value="${escHtml(w.title || '')}" /></div>
-        </div>
-        <div class="form-row single">
-          <div class="form-group"><label>工作时间</label><input type="text" class="f_work_time" value="${escHtml(w.time || '')}" /></div>
-        </div>
-        <div class="form-group"><label>核心成就</label><textarea class="f_work_achievements tall" rows="4">${escHtml(w.achievements || '')}</textarea></div>
-        <button class="btn btn-secondary" onclick="this.parentElement.remove()" style="font-size:13px;padding:6px 16px;margin-top:8px;">删除</button>
-      `;
-      workFields.appendChild(entry);
-    });
-  }
-
-  // Pre-fill project entries
-  if (d.projects && d.projects.length > 0) {
-    const projFields = document.getElementById('projectFields');
-    projFields.innerHTML = '';
-    d.projects.forEach((p, idx) => {
-      const entry = document.createElement('div');
-      entry.className = 'project-entry';
-      entry.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;';
-      entry.innerHTML = `
-        <div class="form-row">
-          <div class="form-group"><label>项目名称</label><input type="text" class="f_proj_name" value="${escHtml(p.name || '')}" /></div>
-          <div class="form-group"><label>你的角色</label><input type="text" class="f_proj_role" value="${escHtml(p.role || '')}" /></div>
-        </div>
-        <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" value="${escHtml(p.tech || '')}" /></div>
-        <div class="form-group"><label>你的贡献</label><textarea class="f_proj_contribution" rows="3">${escHtml(p.contribution || '')}</textarea></div>
-        <button class="btn btn-secondary" onclick="this.parentElement.remove()" style="font-size:13px;padding:6px 16px;margin-top:8px;">删除</button>
-      `;
-      projFields.appendChild(entry);
-    });
-  }
-}
-
-// ===================== AI Chat Assistant for Steps 3 & 4 =====================
-async function askAIAssist(step) {
-  const btn = event.target;
-  const panel = btn.closest('.ai-assist-panel');
-  const input = panel.querySelector('.ai-assist-input');
-  const resultArea = panel.querySelector('.ai-assist-result');
-  const status = panel.querySelector('.ai-assist-status');
-  const prompt = input.value.trim();
-
-  if (!prompt) { alert('请描述你的工作内容或项目经历'); return; }
-
-  status.classList.remove('hidden');
-  resultArea.classList.add('hidden');
-  btn.disabled = true;
-
-  const target = state.userData.target || '技术岗位';
-  const isWork = step === 3;
-
-  const system = `你是简历优化专家。根据用户描述，帮他用 STAR 法则（情境、任务、行动、结果）生成高质量的简历描述。
-返回格式：2-4 条量化成就描述，每条一行，用数字序号开头。
-要求：
-1. 使用动词开头（设计、实现、优化、主导、带领等）
-2. 尽量补充量化数据（提升百分比、减少耗时、服务用户数等）
-3. 突出个人贡献，而非团队成果
-4. 语言简洁有力，每条不超过 60 字`;
-
-  try {
-    const result = await callLLM(system, [
-      { role: 'user', content: `我的目标岗位是 ${target}。请帮我将以下描述优化为 STAR 法则的简历成就描述：\n\n${prompt}` }
-    ], { maxTokens: 1024 });
-
-    resultArea.textContent = result;
-    resultArea.classList.remove('hidden');
-    status.classList.add('hidden');
-
-    // Add "apply" button
-    const existingApply = panel.querySelector('.ai-apply-btn');
-    if (existingApply) existingApply.remove();
-    const applyBtn = document.createElement('button');
-    applyBtn.className = 'btn btn-primary ai-apply-btn';
-    applyBtn.textContent = '✅ 应用到简历';
-    applyBtn.style.cssText = 'font-size:13px;padding:6px 20px;margin-top:8px;';
-    applyBtn.onclick = () => {
-      const textarea = isWork
-        ? document.querySelector('.f_work_achievements')
-        : document.querySelector('.f_proj_contribution');
-      if (textarea) {
-        if (textarea.value.trim()) {
-          textarea.value += '\n' + result;
-        } else {
-          textarea.value = result;
-        }
-        resultArea.textContent = '✅ 已应用！';
-        panel.querySelector('.ai-assist-input').value = '';
-      }
-    };
-    resultArea.after(applyBtn);
-  } catch (e) {
-    status.innerHTML = `<span style="color:#E74C3C;">生成失败：${e.message}</span>`;
-  }
-  btn.disabled = false;
-}
-
-function getProviderFormData() {
-  return {
-    name: document.getElementById('pf_name').value.trim(),
-    providerType: document.getElementById('pf_type').value,
-    apiUrl: document.getElementById('pf_url').value.trim(),
-    apiKey: document.getElementById('pf_key').value.trim(),
-    model: document.getElementById('pf_model').value.trim()
-  };
-}
-
-function setProviderFormData(p) {
-  document.getElementById('pf_name').value = p.name || '';
-  document.getElementById('pf_type').value = p.providerType || 'openai';
-  document.getElementById('pf_url').value = p.apiUrl || '';
-  document.getElementById('pf_key').value = p.apiKey || '';
-  document.getElementById('pf_model').value = p.model || '';
-}
-
-function renderProviderTabs() {
-  const container = document.getElementById('providerTabs');
-  container.innerHTML = state.apiProviders.map(p => `
-    <button class="btn ${p.id === state.activeProviderId ? 'btn-primary' : 'btn-secondary'}"
-      onclick="selectProvider('${p.id}')" style="font-size:13px;padding:6px 18px;">
-      ${p.name} ${p.isDefault ? '⭐' : ''}
-    </button>
-  `).join('');
-}
-
-function renderProviderForm() {
-  const p = getActiveProvider();
-  if (!p) return;
-  setProviderFormData(p);
-  document.getElementById('pf_deleteBtn').style.display =
-    state.apiProviders.length > 1 ? 'inline-block' : 'none';
-}
-
-function selectProvider(id) {
-  // Save current before switching
-  saveCurrentProvider();
-  state.activeProviderId = id;
-  renderProviderTabs();
-  renderProviderForm();
-}
-
-function addProvider() {
-  saveCurrentProvider();
-  const newId = 'provider-' + Date.now();
-  state.apiProviders.push({
-    id: newId,
-    name: '新服务 ' + (state.apiProviders.length + 1),
-    apiUrl: '',
-    apiKey: '',
-    model: '',
-    providerType: 'openai',
-    isDefault: false
-  });
-  state.activeProviderId = newId;
-  renderProviderTabs();
-  renderProviderForm();
-  populateRoutingSelects();
-}
-
-function saveCurrentProvider() {
-  const p = getActiveProvider();
-  if (!p) return;
-  const data = getProviderFormData();
-  if (data.name) p.name = data.name;
-  if (data.providerType) p.providerType = data.providerType;
-  if (data.apiUrl) p.apiUrl = data.apiUrl;
-  if (data.apiKey) p.apiKey = data.apiKey;
-  if (data.model) p.model = data.model;
-  renderProviderTabs();
-  populateRoutingSelects();
-}
-
-function removeCurrentProvider() {
-  if (state.apiProviders.length <= 1) {
-    alert('至少保留一个服务商');
-    return;
-  }
-  if (!confirm(`确定删除 "${getActiveProvider().name}"？`)) return;
-  const idx = state.apiProviders.findIndex(p => p.id === state.activeProviderId);
-  state.apiProviders.splice(idx, 1);
-  state.activeProviderId = state.apiProviders[Math.min(idx, state.apiProviders.length - 1)].id;
-  renderProviderTabs();
-  renderProviderForm();
-  populateRoutingSelects();
-}
-
-function populateRoutingSelects() {
-  document.querySelectorAll('.routing-select').forEach(sel => {
-    const current = state.roleRouting[sel.dataset.role];
-    sel.innerHTML = '<option value="">（使用默认服务商）</option>';
-    state.apiProviders.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name + (p.isDefault ? ' ⭐' : '');
-      if (p.id === current) opt.selected = true;
-      sel.appendChild(opt);
-    });
-  });
-}
-
-// ===================== Step 1 =====================
-function saveStep1() {
-  state.userData.name = document.getElementById('f_name').value.trim();
-  state.userData.contact = document.getElementById('f_contact').value.trim();
-  state.userData.target = document.getElementById('f_target').value.trim();
-  state.userData.years = document.getElementById('f_years').value;
-  state.userData.city = document.getElementById('f_city').value.trim();
-  state.userData.links = document.getElementById('f_links').value.trim();
-  state.userData.summary = document.getElementById('f_summary').value.trim();
-  if (!state.userData.name || !state.userData.target) {
-    alert('请至少填写姓名和目标岗位');
-    return;
-  }
-  goStep(2);
-}
-
-// ===================== Step 2 =====================
-function saveStep2() {
-  state.userData.school = document.getElementById('f_school').value.trim();
-  state.userData.degree = document.getElementById('f_degree').value;
-  state.userData.major = document.getElementById('f_major').value.trim();
-  state.userData.eduTime = document.getElementById('f_edu_time').value.trim();
-  state.userData.gpa = document.getElementById('f_gpa').value.trim();
-  goStep(3);
-}
-
-// ===================== Step 3 =====================
-function addWorkEntry() {
-  const container = document.getElementById('workFields');
-  const entry = document.createElement('div');
-  entry.className = 'work-entry';
-  entry.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;';
-  entry.innerHTML = `
-    <div class="form-row">
-      <div class="form-group"><label>公司名称</label><input type="text" class="f_work_company" placeholder="公司名称" /></div>
-      <div class="form-group"><label>职位</label><input type="text" class="f_work_title" placeholder="职位" /></div>
-    </div>
-    <div class="form-row single">
-      <div class="form-group"><label>工作时间</label><input type="text" class="f_work_time" placeholder="如：2022.03 - 至今" /></div>
-    </div>
-    <div class="form-group"><label>核心成就</label><textarea class="f_work_achievements tall" rows="4" placeholder="用STAR法则+量化数据描述"></textarea></div>
-    <button class="btn btn-secondary" onclick="this.parentElement.remove()" style="font-size:13px;padding:6px 16px;">删除</button>
-  `;
-  container.appendChild(entry);
-}
-
-function saveStep3() {
-  const companies = document.querySelectorAll('.f_work_company');
-  const titles = document.querySelectorAll('.f_work_title');
-  const times = document.querySelectorAll('.f_work_time');
-  const achievements = document.querySelectorAll('.f_work_achievements');
-  state.userData.workExp = [];
-  companies.forEach((c, i) => {
-    if (c.value.trim()) {
-      state.userData.workExp.push({
-        company: c.value.trim(),
-        title: titles[i].value.trim(),
-        time: times[i].value.trim(),
-        achievements: achievements[i].value.trim()
-      });
-    }
-  });
-  goStep(4);
-}
-
-// ===================== Step 4 =====================
-function addProjectEntry() {
-  const container = document.getElementById('projectFields');
-  const entry = document.createElement('div');
-  entry.className = 'project-entry';
-  entry.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;';
-  entry.innerHTML = `
-    <div class="form-row">
-      <div class="form-group"><label>项目名称</label><input type="text" class="f_proj_name" placeholder="项目名称" /></div>
-      <div class="form-group"><label>你的角色</label><input type="text" class="f_proj_role" placeholder="如：技术负责人" /></div>
-    </div>
-    <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" placeholder="如：Spring Boot, Redis" /></div>
-    <div class="form-group"><label>你的贡献</label><textarea class="f_proj_contribution" rows="3" placeholder="STAR法则描述"></textarea></div>
-    <button class="btn btn-secondary" onclick="this.parentElement.remove()" style="font-size:13px;padding:6px 16px;">删除</button>
-  `;
-  container.appendChild(entry);
-}
-
-function saveStep4() {
-  const projNames = document.querySelectorAll('.f_proj_name');
-  const projRoles = document.querySelectorAll('.f_proj_role');
-  const projTechs = document.querySelectorAll('.f_proj_tech');
-  const projContribs = document.querySelectorAll('.f_proj_contribution');
-  state.userData.projects = [];
-  projNames.forEach((p, i) => {
-    if (p.value.trim()) {
-      state.userData.projects.push({
-        name: p.value.trim(),
-        role: projRoles[i].value.trim(),
-        tech: projTechs[i].value.trim(),
-        contribution: projContribs[i].value.trim()
-      });
-    }
-  });
-  state.userData.skillsLang = document.getElementById('f_skills_lang').value.trim();
-  state.userData.skillsTools = document.getElementById('f_skills_tools').value.trim();
-  state.userData.skillsLangAbility = document.getElementById('f_skills_lang_ability').value.trim();
-  state.userData.awards = document.getElementById('f_awards').value.trim();
-  state.userData.other = document.getElementById('f_other').value.trim();
-
-  if (state.userData.skillsLang || state.userData.skillsTools) {
-    goStep(5);
-    generateResume();
-  } else {
-    alert('请至少填写一项专业技能');
-  }
-}
-
-// ===================== Question Sources =====================
-function updateQuestionSources() {
-  const checked = document.querySelectorAll('#sourceList input[type="checkbox"]:checked:not([value="custom"])');
-  state.interviewSources = [];
-  checked.forEach(cb => state.interviewSources.push(cb.value));
-  const custom = document.getElementById('customSourceField');
-  state.customSource = (custom && custom.value.trim()) || '';
-}
-
-function toggleCustomSource() {
-  const cb = document.querySelector('#sourceList input[value="custom"]');
-  const input = document.getElementById('customSourceInput');
-  if (cb && cb.checked) {
-    input.classList.remove('hidden');
-  } else {
-    input.classList.add('hidden');
-    document.getElementById('customSourceField').value = '';
-  }
-  updateQuestionSources();
-}
-
-function getQuestionSourceInstruction() {
-  if (state.interviewSources.length === 0 && !state.customSource) {
-    return '从你的面试官知识库中出题，不限来源，覆盖技术深度、项目经验、场景题、行为题和系统设计。';
-  }
-  const sourceMap = {
-    nowcoder: '牛客网（nowcoder.com）的面经和面试题库',
-    leetcode: '力扣/LeetCode 上的算法题和面试题',
-    zhipin: 'BOSS 直聘面经',
-    zhihu: '知乎上的面试经验分享'
-  };
-  const sources = state.interviewSources.map(s => sourceMap[s] || s);
-  if (state.customSource) {
-    sources.push(`自定义来源：${state.customSource}。如果用 WebSearch 搜索，使用 site: 操作符精准搜索。`);
-  }
-  return `优先从以下来源获取面试题目风格和考察重点：${sources.join('、')}。题目要贴近这些来源的真实面试风格，但要根据用户简历和目标岗位做个性化调整。`;
-}
-
-// ===================== Project Folder Import =====================
-let projectFolderFiles = []; // { path, content, size }
-const SKIP_DIRS = new Set(['node_modules', '.git', '.svn', '__pycache__', '.next', 'dist', 'build', '.claude', '.vscode', 'target', 'bin', 'obj', 'venv', '.idea']);
-const TEXT_EXTS = new Set(['.js','.ts','.jsx','.tsx','.py','.java','.go','.rs','.rb','.php','.c','.cpp','.h','.hpp','.cs','.swift','.kt','.vue','.svelte','.html','.css','.scss','.less','.json','.xml','.yaml','.yml','.toml','.md','.sql','.sh','.bash','.dockerfile','.gradle','.properties','.cfg','.ini','.txt','.conf']);
-
-async function selectProjectFolder() {
-  if (!window.showDirectoryPicker) {
-    alert('您的浏览器不支持文件夹选择。请使用 Chrome/Edge 浏览器，或上传 ZIP 文件。');
-    document.getElementById('zipUpload').click();
-    return;
-  }
-  try {
-    const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
-    document.getElementById('folderResult').classList.remove('hidden');
-    document.getElementById('folderAnalysis').classList.remove('hidden');
-    document.getElementById('folderAnalysis').querySelector('span').textContent = '正在扫描文件...';
-
-    projectFolderFiles = [];
-    await readAllFiles(dirHandle, '');
-
-    renderFileTree();
-    await analyzeProjectFolder();
-  } catch (e) {
-    if (e.name !== 'AbortError') {
-      document.getElementById('folderAnalysis').innerHTML = `<span style="color:#E74C3C;">选择文件夹失败：${e.message}</span>`;
-    }
-  }
-}
-
-async function readAllFiles(dirHandle, path) {
-  for await (const entry of dirHandle.values()) {
-    const fullPath = path ? `${path}/${entry.name}` : entry.name;
-    if (entry.kind === 'directory') {
-      if (!SKIP_DIRS.has(entry.name)) {
-        await readAllFiles(entry, fullPath);
-      }
-    } else if (entry.kind === 'file') {
-      const ext = '.' + entry.name.split('.').pop().toLowerCase();
-      if (TEXT_EXTS.has(ext)) {
-        try {
-          const file = await entry.getFile();
-          if (file.size > 50000) continue;
-          const content = await file.text();
-          projectFolderFiles.push({ path: fullPath, content, size: file.size });
-        } catch (e) { /* skip unreadable files */ }
-      }
-    }
-  }
-}
-
-function renderFileTree() {
-  const container = document.getElementById('folderFiles');
-  const fileCount = projectFolderFiles.length;
-  const totalSize = projectFolderFiles.reduce((s, f) => s + f.size, 0);
-  let html = `<div style="margin-bottom:8px;font-weight:600;font-size:13px;color:var(--text-light);">已扫描 ${fileCount} 个代码文件，总计 ${(totalSize / 1024).toFixed(0)} KB</div>`;
-  projectFolderFiles.slice(0, 30).forEach(f => {
-    html += `<div style="padding:2px 0;">📄 ${f.path} <span style="color:var(--text-light);font-size:11px;">(${(f.size/1024).toFixed(1)} KB)</span></div>`;
-  });
-  if (projectFolderFiles.length > 30) {
-    html += `<div style="color:var(--text-light);font-size:12px;">...还有 ${projectFolderFiles.length - 30} 个文件</div>`;
-  }
-  container.innerHTML = html;
-}
-
-async function analyzeProjectFolder() {
-  const listContainer = document.getElementById('responsibilityList');
-  listContainer.innerHTML = '';
-  document.getElementById('responsibilitySelector').classList.add('hidden');
-
-  if (projectFolderFiles.length === 0) {
-    document.getElementById('folderAnalysis').innerHTML = '<span style="color:var(--text-light);">未找到可分析的代码文件。</span>';
-    return;
-  }
-
-  // Build condensed summary of first 15 files
-  const fileSummary = projectFolderFiles.slice(0, 15).map(f =>
-    `File: ${f.path}\nContent:\n${f.content.substring(0, 800)}...\n`
-  ).join('\n---\n');
-
-  const system = `你是资深技术简历顾问。分析以下项目代码，提取可以在简历中突出的技术贡献点。
-返回 JSON 数组格式（只返回 JSON，不要其他文字）：
-[
-  {
-    "id": 1,
-    "responsibility": "简短的技术贡献描述（15字以内）",
-    "category": "架构设计/性能优化/功能开发/工程化/测试/其他",
-    "techStack": ["相关技术"],
-    "detail": "一句话详细说明"
-  }
-]
-最多返回 6 条。`;
-
-  try {
-    const result = await callLLM(system, [
-      { role: 'user', content: `请分析以下项目代码，提取突出的技术贡献点供简历撰写使用。\n\n项目文件：\n${fileSummary}` }
-    ], { maxTokens: 2048 });
-
-    let contributions;
-    try { contributions = JSON.parse(result); } catch { contributions = []; }
-
-    if (!contributions || contributions.length === 0) {
-      document.getElementById('folderAnalysis').innerHTML = '<span style="color:var(--text-light);">未能从项目中分析出技术贡献，请手动填写项目经历。</span>';
-      return;
-    }
-
-    document.getElementById('folderAnalysis').classList.add('hidden');
-    document.getElementById('responsibilitySelector').classList.remove('hidden');
-
-    contributions.forEach(c => {
-      const item = document.createElement('label');
-      item.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:12px;background:#F8F9FD;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all 0.2s;';
-      item.innerHTML = `
-        <input type="checkbox" data-id="${c.id}" style="margin-top:3px;" checked />
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:600;">${escHtml(c.responsibility)}</div>
-          <div style="font-size:11px;color:var(--text-light);margin:4px 0;">类别：${escHtml(c.category)} | 技术：${(c.techStack || []).join(', ')}</div>
-          <div style="font-size:12px;">${escHtml(c.detail)}</div>
-        </div>
-      `;
-      listContainer.appendChild(item);
-    });
-  } catch (e) {
-    document.getElementById('folderAnalysis').innerHTML = `<span style="color:#E74C3C;">分析失败：${e.message}</span>`;
-  }
-}
-
-function escHtml(s) { return (s || '').replace(/[&<>]/g, function(m) { return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m]; }); }
-
-function applySelectedResponsibilities() {
-  const checked = document.querySelectorAll('#responsibilityList input[type="checkbox"]:checked');
-  if (checked.length === 0) {
-    alert('请至少选择一项贡献');
-    return;
-  }
-
-  const contributions = [];
-  checked.forEach(cb => {
-    const label = cb.closest('label');
-    const resp = label.querySelector('div > div:first-child').textContent.trim();
-    contributions.push(resp);
-  });
-
-  // Auto-fill the first empty project entry or create a new one
-  const projContribs = document.querySelectorAll('.f_proj_contribution');
-  let filled = false;
-  projContribs.forEach(textarea => {
-    if (!textarea.value.trim() && !filled) {
-      textarea.value = contributions.map((c, i) => `${i+1}. ${c}`).join('\n');
-      filled = true;
-    }
-  });
-
-  // Extract tech stack
-  const techSet = new Set();
-  checked.forEach(cb => {
-    const label = cb.closest('label');
-    const techText = label.querySelector('div > div:nth-child(2)').textContent;
-    const match = techText.match(/技术：(.*?)(?:\||$)/);
-    if (match) {
-      match[1].split(',').forEach(t => techSet.add(t.trim()));
-    }
-  });
-  if (techSet.size > 0) {
-    const projTechs = document.querySelectorAll('.f_proj_tech');
-    projTechs.forEach(input => {
-      if (!input.value.trim()) {
-        input.value = Array.from(techSet).join(', ');
-      }
-    });
-  }
-
-  // Hide folder result
-  clearProjectFolder();
-  alert('✅ 已应用所选贡献到项目经历！请检查并完善。');
-}
-
-function clearProjectFolder() {
-  projectFolderFiles = [];
-  document.getElementById('folderResult').classList.add('hidden');
-  document.getElementById('responsibilitySelector').classList.add('hidden');
-  document.getElementById('folderAnalysis').classList.add('hidden');
-  document.getElementById('folderAnalysis').querySelector('span').textContent = '正在分析项目内容...';
-}
-
-async function handleZipUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  alert('ZIP 解析需要额外库支持。请使用 Chrome/Edge 浏览器直接选择文件夹，或手动填写项目经历。');
-  event.target.value = '';
-}
-
-// ===================== Step 5: Resume =====================
-function collectAllData() {
-  const d = state.userData;
-  let workStr = '';
-  if (d.workExp) {
-    d.workExp.forEach(w => {
-      workStr += `- ${w.company} / ${w.title} / ${w.time}\n${w.achievements}\n\n`;
-    });
-  }
-  let projStr = '';
-  if (d.projects) {
-    d.projects.forEach(p => {
-      projStr += `- ${p.name}（${p.role}）\n  技术栈：${p.tech}\n  贡献：${p.contribution}\n\n`;
-    });
-  }
-
-  return `个人信息：
-姓名：${d.name}
-联系方式：${d.contact}
-目标岗位：${d.target}
-工作年限：${d.years}
-期望城市：${d.city}
-个人主页：${d.links || '无'}
-个人简介：${d.summary || '无'}
-
-教育背景：
-学校：${d.school || '无'}
-学历：${d.degree || '无'}
-专业：${d.major || '无'}
-时间：${d.eduTime || '无'}
-GPA/课程：${d.gpa || '无'}
-
-工作经历：
-${workStr || '无'}
-
-项目经历：
-${projStr || '无'}
-
-专业技能：
-编程语言：${d.skillsLang || '无'}
-框架工具：${d.skillsTools || '无'}
-语言能力：${d.skillsLangAbility || '无'}
-
-其他：
-获奖：${d.awards || '无'}
-其他信息：${d.other || '无'}${getUploadedFilesStr()}`;
-}
-
-async function generateResume() {
-  document.getElementById('resumeLoading').classList.remove('hidden');
-  document.getElementById('resumeResult').classList.add('hidden');
-
-  const data = collectAllData();
-
-  const system = `你是一位专业的简历顾问。根据用户提供的信息，生成一份结构化的 Markdown 格式简历。
-简历格式要清晰、专业，突出量化数据和成果。
-使用标准的简历章节：个人信息、个人简介、教育背景、工作经历、项目经历、专业技能、其他。`;
-
-  try {
-    const content = await callLLM(system, [
-      { role: 'user', content: `请根据以下信息生成一份专业的 Markdown 简历：\n\n${data}` }
-    ], { maxTokens: 3072, providerId: getProviderForRole('resumeGeneration') });
-
-    state.resume = content;
-    document.getElementById('resumeContent').textContent = content;
-    document.getElementById('resumeLoading').classList.add('hidden');
-    document.getElementById('resumeResult').classList.remove('hidden');
-  } catch (e) {
-    document.getElementById('resumeLoading').innerHTML = `<span style="color:#E74C3C;">生成失败：${e.message}</span>`;
-  }
-}
-
-// ===================== Step 6: Career Matching =====================
-async function goStep6() {
-  goStep(6);
-  document.getElementById('matchLoading').classList.remove('hidden');
-  document.getElementById('matchResult').classList.add('hidden');
-
-  const data = collectAllData();
-
-  const system = `你是资深职业顾问。根据用户的背景信息，推荐 3-5 个最适合的岗位方向。
-返回 JSON 格式（只返回 JSON，不要其他文字）：
-[
-  {
-    "id": 1,
-    "title": "岗位名称",
-    "match": 92,
-    "reason": "推荐理由",
-    "demand": "市场需求热度描述",
-    "path": "发展路径"
-  }
-]`;
-
-  try {
-    const result = await callLLM(system, [
-      { role: 'user', content: `请根据以下背景推荐最适合的岗位方向：\n\n${data}` }
-    ], { maxTokens: 2048, providerId: getProviderForRole('careerMatch') });
-
-    const matches = JSON.parse(result);
-    const container = document.getElementById('matchList');
-    container.innerHTML = '<h3 style="margin-bottom:16px;">根据你的背景，推荐以下方向：</h3>';
-    matches.forEach(m => {
-      container.innerHTML += `
-        <div class="result-card">
-          <h4>推荐 ${m.id}：${m.title}</h4>
-          <div class="meta">匹配度：${m.match}%</div>
-          <div class="match-bar"><div class="fill" style="width:${m.match}%"></div></div>
-          <p>🎯 ${m.reason}</p>
-          <p>📈 市场需求：${m.demand}</p>
-          <p>💡 发展路径：${m.path}</p>
-        </div>`;
-    });
-    state.matchData = matches;
-    document.getElementById('matchLoading').classList.add('hidden');
-    document.getElementById('matchResult').classList.remove('hidden');
-  } catch (e) {
-    document.getElementById('matchLoading').innerHTML = `<span style="color:#E74C3C;">分析失败：${e.message}</span>`;
-  }
-}
-
-function confirmMatch() {
-  const choice = document.getElementById('matchChoice').value.trim();
-  state.matchChoice = choice;
-  goStep(7);
-}
-
-// ===================== Step 7: Job Search =====================
-async function searchJobs() {
-  const query = document.getElementById('jobSearchQuery').value.trim();
-  const target = state.userData.target || '技术岗位';
-  document.getElementById('jobLoading').classList.remove('hidden');
-  document.getElementById('jobResult').classList.add('hidden');
-  document.getElementById('skipJobConfirm').classList.add('hidden');
-
-  const sites = ['zhipin.com', 'zhaopin.com', 'lagou.com', 'liepin.com', '51job.com', 'linkedin.com'];
-  const searchQuery = query || `site:${sites.slice(0,3).join(' OR site:')} ${target} ${state.userData.city || '北京'} 招聘`;
-
-  const system = `你是招聘信息分析专家。根据搜索结果，生成 4-6 个真实的招聘职位信息。
-返回 JSON 格式（只返回 JSON）：
-[
-  {
-    "id": 1,
-    "title": "职位名称",
-    "company": "公司名称",
-    "location": "地点",
-    "salary": "薪资范围",
-    "requirements": "核心要求摘要，不超过30字",
-    "source": "来源网站"
-  }
-]`;
-
-  try {
-    const result = await callLLM(system, [
-      { role: 'user', content: `模拟搜索招聘网站，为以下岗位生成真实感较强的招聘信息：\n岗位：${target}\n地点：${state.userData.city || '北京'}\n搜索关键词：${searchQuery}\n\n注意：职位要贴近真实，公司用知名或真实互联网公司。` }
-    ], { maxTokens: 2048, providerId: getProviderForRole('jobSearch') });
-
-    const jobs = JSON.parse(result);
-    state.jobsFound = jobs;
-    const container = document.getElementById('jobList');
-    container.innerHTML = '<h3 style="margin-bottom:16px;">为你找到以下真实职位：</h3>';
-    jobs.forEach(j => {
-      container.innerHTML += `
-        <div class="job-item" onclick="selectJob(${j.id})">
-          <h4>${j.title} - ${j.company}</h4>
-          <div class="meta">📍 ${j.location} | 💰 ${j.salary}</div>
-          <p style="font-size:14px;margin:8px 0;">📋 ${j.requirements}</p>
-          <div class="tags"><span>${j.source}</span></div>
-        </div>`;
-    });
-    document.getElementById('jobLoading').classList.add('hidden');
-    document.getElementById('jobResult').classList.remove('hidden');
-  } catch (e) {
-    document.getElementById('jobLoading').innerHTML = `<span style="color:#E74C3C;">搜索失败：${e.message}</span>`;
-  }
-}
-
-function selectJob(id) {
-  document.querySelectorAll('.job-item').forEach(el => el.classList.remove('selected'));
-  document.querySelectorAll('.job-item')[id - 1]?.classList.add('selected');
-  document.getElementById('jobChoice').value = id;
-}
-
-function skipJobSearch() {
-  document.getElementById('jobLoading').classList.add('hidden');
-  document.getElementById('jobResult').classList.add('hidden');
-  document.getElementById('skipJobConfirm').classList.remove('hidden');
-}
-
-function confirmJob() {
-  const choice = document.getElementById('jobChoice').value.trim();
-  state.jobChoice = choice;
-  goStep(8);
-  optimizeResume();
-}
-
-// ===================== Step 8: Optimize =====================
-async function optimizeResume() {
-  document.getElementById('optimizeLoading').classList.remove('hidden');
-  document.getElementById('optimizeResult').classList.add('hidden');
-
-  const target = state.matchChoice || state.userData.target || '目标岗位';
-  document.getElementById('optimizeSubtitle').textContent = `针对「${target}」进行定向优化`;
-
-  const system = `你是简历优化专家。根据用户的简历和目标岗位，生成优化后的简历。
-优化原则：
-1. 个人简介融入目标岗位关键词
-2. 工作经历重排，强化相关成就
-3. 技能按目标需求排序
-4. 保持真实性，不编造经历
-
-返回优化后的完整 Markdown 简历。`;
-
-  try {
-    const content = await callLLM(system, [
-      { role: 'user', content: `这是我的简历和目标信息：
-
-原始简历：
-${state.resume}
-
-目标岗位/方向：${target}
-用户选择：${state.matchChoice ? `从推荐中选择了：${state.matchChoice}` : ''}
-${state.jobChoice ? `选中的职位信息：${typeof state.jobChoice === 'string' && state.jobChoice.startsWith('http') ? '用户提供了职位链接' : '职位编号：' + state.jobChoice}` : ''}
-
-请生成优化后的简历，并在最后附上 3 条优化说明。` }
-    ], { maxTokens: 3072, providerId: getProviderForRole('resumeOptimization') });
-
-    state.optimizedResume = content;
-    document.getElementById('optimizeLoading').classList.add('hidden');
-    document.getElementById('optimizeResult').classList.remove('hidden');
-
-    const parts = content.split(/(?=## 优化说明|优化说明)/);
-    document.getElementById('optimizeContent').innerHTML = `
-      <div class="feedback-card">
-        <strong>✅ 简历优化完成！</strong>
-        <p>已针对「${target}」进行定向优化。优化后的简历如下：</p>
-      </div>
-      <div class="resume-output">${parts[0] || content}</div>
-    `;
-    if (parts[1]) {
-      document.getElementById('optimizeContent').innerHTML +=
-        `<div class="feedback-card"><strong>📝 优化说明</strong>${parts[1]}</div>`;
-    }
-  } catch (e) {
-    document.getElementById('optimizeLoading').innerHTML = `<span style="color:#E74C3C;">优化失败：${e.message}</span>`;
-  }
-}
-
-// ===================== Step 9: Interview =====================
-async function startInterview() {
-  document.getElementById('interviewSetup').classList.add('hidden');
-  document.getElementById('interviewArea').classList.remove('hidden');
-  state.interviewActive = true;
-  state.interviewQA = [];
-  state.scores = [];
-  state.questionIndex = 0;
-  state.chatHistory = [];
-  state.currentQuestion = '';
-  state.awaitingAnswer = false;
-  state.awaitingInput = false;
-
-  renderChat();
-  updateQuestionCounter();
-
-  // Ask the first question
-  await askNextQuestionCore();
-}
-
-function buildInterviewSystem() {
-  const target = state.matchChoice || state.userData.target || '技术岗位';
-  return `你是${state.userData.target || ''}岗位的资深面试官，来自${state.jobChoice ? '目标公司' : '一家知名互联网公司'}。
-
-面试原则：
-1. 每次只问一个问题
-2. 结合用户的简历项目经历提问
-3. 问题涵盖：技术深度、项目经验、场景题、行为题
-4. 用户回答后给出结构化反馈
-
-反馈格式要求完整，包含评分、优点、改进建议、参考思路。
-
-${getQuestionSourceInstruction()}
-
-当前目标岗位：${target}
-${state.jobChoice ? `用户对职位编号 ${state.jobChoice} 感兴趣` : ''}
-
-用户信息：
-${collectAllData()}
-
-简历：
-${state.optimizedResume || state.resume}`;
-}
-
-async function askNextQuestionCore() {
-  const system = buildInterviewSystem();
-  let prompt;
-  if (state.questionIndex === 0) {
-    prompt = '这是面试的第一道题。请根据用户的目标岗位和简历，出一道有针对性的面试题。返回 JSON 格式（只返回 JSON）：{"question": "问题内容", "category": "技术/行为/系统设计/项目"}';
-  } else {
-    const prev = state.interviewQA[state.interviewQA.length - 1];
-    prompt = `继续面试。上一题是：${prev.question}\n用户${prev.mode === 'user' ? '的回答是：' + prev.userAnswer : '选择了看参考回答'}\n\n请出一道不同的、有深度的面试题。不要重复之前的题目。返回 JSON：{"question": "问题内容", "category": "技术/行为/系统设计/项目"}`;
-  }
-
-  try {
-    const result = await callLLM(system, [{ role: 'user', content: prompt }], { maxTokens: 1024, providerId: getProviderForRole('interviewQuestion') });
-    let parsed;
-    try { parsed = JSON.parse(result); } catch { parsed = null; }
-
-    const question = parsed ? parsed.question : result;
-    state.currentQuestion = question;
-    state.awaitingAnswer = true;
-
-    // Show question in chat
-    const cat = parsed && parsed.category ? `[${parsed.category}]` : '';
-    addChatMessage('interviewer', `${cat} **第${state.questionIndex + 1}题：**\n${question}`);
-
-    // Show action buttons
-    document.getElementById('interviewActions').classList.remove('hidden');
-    document.getElementById('answerInputArea').classList.add('hidden');
-    document.getElementById('nextQuestionArea').classList.add('hidden');
-  } catch (e) {
-    const fallback = '请介绍一下你在过去项目中最有成就感的一个技术方案。';
-    state.currentQuestion = fallback;
-    state.awaitingAnswer = true;
-    addChatMessage('interviewer', `**第${state.questionIndex + 1}题：**\n${fallback}`);
-    document.getElementById('interviewActions').classList.remove('hidden');
-  }
-}
-
-function showAnswerInput() {
-  if (!state.awaitingAnswer) return;
-  state.awaitingAnswer = false;
-  state.awaitingInput = true;
-  document.getElementById('interviewActions').classList.add('hidden');
-  document.getElementById('answerInputArea').classList.remove('hidden');
-  document.getElementById('chatInput').focus();
-}
-
-function cancelAnswer() {
-  state.awaitingAnswer = true;
-  state.awaitingInput = false;
-  document.getElementById('interviewActions').classList.remove('hidden');
-  document.getElementById('answerInputArea').classList.add('hidden');
-}
-
-async function sendAnswer() {
-  const input = document.getElementById('chatInput');
-  const answer = input.value.trim();
-  if (!answer || !state.awaitingInput) return;
-  input.value = '';
-  state.awaitingInput = false;
-
-  // Show user's answer in chat
-  addChatMessage('user', answer);
-  state.questionIndex++;
-
-  document.getElementById('answerInputArea').classList.add('hidden');
-
-  // Show loading
-  addChatMessage('system', '⏳ 评估中，请稍候...');
-
-  const system = buildInterviewSystem();
-  try {
-    const result = await callLLM(system, [
-      { role: 'user', content: `面试题：${state.currentQuestion}\n\n用户的回答：${answer}\n\n请给出评分和反馈，同时提供一个高质量的参考回答。返回 JSON 格式（只返回 JSON）：
-{
-  "score": 7,
-  "detailScores": {"技术深度": 7, "表达清晰度": 8, "完整性": 6},
-  "strengths": "优点描述",
-  "improvements": "改进建议",
-  "referenceAnswer": "一个完整的、高质量的参考回答示例，展示应该怎么回答这道题"
-}` }
-    ], { maxTokens: 3072, providerId: getProviderForRole('interviewEval') });
-
-    let parsed;
-    try { parsed = JSON.parse(result); } catch { parsed = null; }
-
-    // Remove loading message
-    state.chatHistory = state.chatHistory.filter(m => !(m.role === 'system' && m.content.startsWith('⏳')));
-
-    if (parsed) {
-      const score = parsed.score || 7;
-      const detailScores = parsed.detailScores || {};
-      const strengths = parsed.strengths || '回答基本正确';
-      const improvements = parsed.improvements || '可以更加深入';
-      const refAnswer = parsed.referenceAnswer || '';
-
-      state.scores.push(score);
-
-      // Build feedback display
-      let detailHtml = '';
-      if (Object.keys(detailScores).length > 0) {
-        detailHtml = '<div class="score-detail-grid">';
-        for (const [k, v] of Object.entries(detailScores)) {
-          detailHtml += `<div class="score-detail-item"><div class="sd-value">${v}/10</div><div class="sd-label">${k}</div></div>`;
-        }
-        detailHtml += '</div>';
-      }
-
-      const feedbackContent = `
-        <div style="margin:8px 0;"><span class="score-badge">${score}/10</span></div>
-        ${detailHtml}
-        <div class="feedback-box"><div class="fb-label">✅ 优点</div>${marked(strengths)}</div>
-        <div class="feedback-box" style="border-color:#EF9A9A;background:#FFEBEE;"><div class="fb-label" style="color:#C62828;">💡 改进建议</div>${marked(improvements)}</div>
-        <div class="ref-answer-box"><div class="ref-label">📝 参考回答</div>${marked(refAnswer)}</div>
-      `;
-
-      addChatMessage('feedback', feedbackContent);
-
-      state.interviewQA.push({
-        question: state.currentQuestion,
-        userAnswer: answer,
-        referenceAnswer: refAnswer,
-        score: score,
-        suggestions: improvements,
-        mode: 'user'
-      });
-    } else {
-      state.scores.push(6);
-      state.interviewQA.push({
-        question: state.currentQuestion,
-        userAnswer: answer,
-        referenceAnswer: '',
-        score: 6,
-        suggestions: '',
-        mode: 'user'
-      });
-      addChatMessage('system', '反馈生成完成。');
-    }
-  } catch (e) {
-    state.chatHistory = state.chatHistory.filter(m => !(m.role === 'system' && m.content.startsWith('⏳')));
-    addChatMessage('system', '评分完成，继续下一题。');
-  }
-
-  // Show next question button
-  document.getElementById('nextQuestionArea').classList.remove('hidden');
-  updateQuestionCounter();
-}
-
-async function showReferenceAnswer() {
-  if (!state.awaitingAnswer) return;
-  state.awaitingAnswer = false;
-  document.getElementById('interviewActions').classList.add('hidden');
-
-  state.questionIndex++;
-
-  // Show loading
-  addChatMessage('system', '⏳ 正在生成参考回答...');
-
-  const system = buildInterviewSystem();
-  try {
-    const result = await callLLM(system, [
-      { role: 'user', content: `面试题：${state.currentQuestion}\n\n请为这道题提供一个高质量、完整的参考回答，并给出回答思路指导。返回 JSON 格式（只返回 JSON）：
-{
-  "referenceAnswer": "一个完整的参考回答，展示应该怎么回答这道题",
-  "keyPoints": "这道题的核心要点和回答思路"
-}` }
-    ], { maxTokens: 2048, providerId: getProviderForRole('interviewQuestion') });
-
-    let parsed;
-    try { parsed = JSON.parse(result); } catch { parsed = null; }
-
-    // Remove loading
-    state.chatHistory = state.chatHistory.filter(m => !(m.role === 'system' && m.content.startsWith('⏳')));
-
-    const refAnswer = parsed ? parsed.referenceAnswer : result;
-    const keyPoints = parsed ? parsed.keyPoints : '';
-
-    let display = `<div class="ref-answer-box"><div class="ref-label">📝 参考回答</div>${marked(refAnswer)}</div>`;
-    if (keyPoints) {
-      display += `<div class="feedback-box"><div class="fb-label">💡 答题思路</div>${marked(keyPoints)}</div>`;
-    }
-
-    addChatMessage('reference', display);
-
-    state.interviewQA.push({
-      question: state.currentQuestion,
-      userAnswer: '',
-      referenceAnswer: refAnswer,
-      score: null,
-      suggestions: keyPoints,
-      mode: 'reference'
-    });
-  } catch (e) {
-    state.chatHistory = state.chatHistory.filter(m => !(m.role === 'system' && m.content.startsWith('⏳')));
-    addChatMessage('reference', `<div class="ref-answer-box"><div class="ref-label">📝 参考回答</div>建议从项目背景、技术选型、具体实现、成果量化几个方面来回答。</div>`);
-    state.interviewQA.push({
-      question: state.currentQuestion,
-      userAnswer: '',
-      referenceAnswer: '参考回答生成失败',
-      score: null,
-      suggestions: '',
-      mode: 'reference'
-    });
-  }
-
-  document.getElementById('nextQuestionArea').classList.remove('hidden');
-  updateQuestionCounter();
-}
-
-async function askNextQuestion() {
-  document.getElementById('nextQuestionArea').classList.add('hidden');
-  state.awaitingAnswer = true;
-
-  if (state.questionIndex >= 5) {
-    // After 5 questions, offer to end
-    addChatMessage('system', '💬 已经完成了 5 道题，输入 "结束" 或点击右上角结束面试查看总结。');
-  }
-
-  await askNextQuestionCore();
-}
-
-// ===================== Chat UI =====================
-function addChatMessage(role, content) {
-  state.chatHistory.push({ role, content });
-  renderChat();
-}
-
-function renderChat() {
-  const box = document.getElementById('chatBox');
-  box.innerHTML = state.chatHistory.map(msg => {
-    if (msg.role === 'interviewer') {
-      return `<div class="chat-msg interviewer"><div class="role-label">🎤 面试官</div><div>${marked2(msg.content)}</div></div>`;
-    } else if (msg.role === 'user') {
-      return `<div class="chat-msg user"><div>${marked2(msg.content)}</div></div>`;
-    } else if (msg.role === 'feedback') {
-      return `<div class="chat-msg" style="max-width:95%;align-self:center;background:transparent;border:none;padding:8px 0;">${msg.content}</div>`;
-    } else if (msg.role === 'reference') {
-      return `<div class="chat-msg" style="max-width:95%;align-self:center;background:transparent;border:none;padding:8px 0;">${msg.content}</div>`;
-    } else if (msg.role === 'system') {
-      return `<div class="chat-msg system">${marked2(msg.content)}</div>`;
-    }
-    return '';
-  }).join('');
-  box.scrollTop = box.scrollHeight;
-}
-
-function marked2(text) {
-  return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-}
-function marked(text) {
-  return marked2(text);
-}
-
-function updateQuestionCounter() {
-  document.getElementById('questionCounter').textContent =
-    `已答：${state.interviewQA.length} 题 | ${state.scores.length > 0 ? '平均分：' + (state.scores.reduce((a,b)=>a+b,0)/state.scores.length).toFixed(1) : '暂无评分'}`;
-}
-
-function endInterview() {
-  state.interviewActive = false;
-  document.getElementById('interviewArea').classList.add('hidden');
-  document.getElementById('interviewSetup').classList.add('hidden');
-  document.getElementById('interviewSummary').classList.remove('hidden');
-
-  const totalQ = state.interviewQA.length;
-  const userAnswered = state.interviewQA.filter(q => q.mode === 'user');
-  const avgScore = userAnswered.length > 0
-    ? (userAnswered.reduce((sum, q) => sum + (q.score || 0), 0) / userAnswered.length).toFixed(1)
-    : userAnswered.length > 0 ? 'N/A' : '—';
-
-  // Build detailed review
-  let reviewHtml = '';
-  state.interviewQA.forEach((qa, i) => {
-    const modeLabel = qa.mode === 'user' ? '自己回答' : '看参考回答';
-    const scoreHtml = qa.score != null ? `<span class="score-badge" style="font-size:14px;padding:2px 10px;">${qa.score}/10</span>` : '<span style="color:var(--text-light);font-size:13px;">参考模式</span>';
-    reviewHtml += `
-      <div class="qa-review-item">
-        <div class="q-number">第 ${i+1} 题 · ${modeLabel} ${qa.score != null ? '· 评分：' + qa.score + '/10' : ''}</div>
-        <div class="q-text">${qa.question}</div>
-        ${qa.userAnswer ? `<div class="a-text"><strong>你的回答：</strong><br>${qa.userAnswer}</div>` : ''}
-        ${qa.referenceAnswer ? `<div class="r-text"><strong>参考回答：</strong><br>${qa.referenceAnswer}</div>` : ''}
-        ${qa.suggestions ? `<div class="q-meta">💡 ${qa.suggestions}</div>` : ''}
-      </div>`;
-  });
-
-  // Generate overall suggestions
-  let overallSuggestions = '';
-  if (userAnswered.length > 0) {
-    const weakAreas = userAnswered.filter(q => q.score < 6);
-    if (weakAreas.length > 0) {
-      overallSuggestions = `<div class="feedback-card" style="border-color:#EF9A9A;">
-        <strong>⚠️ 需要加强的领域：</strong>
-        <p>以下题目得分较低，建议重点复习：</p>
-        <ul>${weakAreas.map(q => `<li>${q.question}</li>`).join('')}</ul>
-      </div>`;
-    } else {
-      overallSuggestions = `<div class="feedback-card" style="border-color:var(--success);">
-        <strong>👍 整体表现不错！</strong>
-        <p>继续保持，建议针对薄弱环节深入准备。</p>
-      </div>`;
-    }
-  }
-
-  document.getElementById('summaryContent').innerHTML = `
-    <h3 style="text-align:center;margin-bottom:20px;">🎯 面试总结报告</h3>
-    <div class="summary-grid">
-      <div class="summary-item"><div class="value">${totalQ}</div><div class="label">总题数</div></div>
-      <div class="summary-item"><div class="value">${userAnswered.length}</div><div class="label">自己回答</div></div>
-      <div class="summary-item"><div class="value">${avgScore}</div><div class="label">平均分</div></div>
-      <div class="summary-item"><div class="value">${totalQ - userAnswered.length}</div><div class="label">参考回答</div></div>
-    </div>
-    ${overallSuggestions}
-    <h4 style="margin:20px 0 12px;">📝 逐题回顾</h4>
-    ${reviewHtml}
-    <div class="feedback-card" style="text-align:center;margin-top:16px;">
-      <strong>💪 面试结束！</strong>
-      <p style="margin-top:8px;color:var(--text-light);">建议仔细查看参考回答，对比自己的回答找到差距。</p>
-    </div>
-  `;
-}
-
-// ===================== Reset =====================
-function resetAll() {
-  Object.keys(state).forEach(k => {
-    if (k === 'apiKey' || k === 'apiProviders' || k === 'activeProviderId' || k === 'roleRouting') return;
-    if (Array.isArray(state[k])) state[k] = [];
-    else if (typeof state[k] === 'object' && state[k] !== null) state[k] = {};
-    else if (typeof state[k] === 'number') state[k] = 0;
-    else state[k] = '';
-  });
-  state.currentStep = 0;
-  state.hasStarted = true;
-  document.getElementById('interviewSummary').classList.add('hidden');
-  document.getElementById('interviewSetup').classList.remove('hidden');
-  document.querySelectorAll('input, textarea, select').forEach(el => {
-    if (!el.closest('.work-entry') && !el.closest('.project-entry') && !el.closest('#setupSection')) {
-      el.value = '';
-    }
-  });
-  document.getElementById('workFields').innerHTML = `
-    <div class="work-entry" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
-      <div class="form-row">
-        <div class="form-group"><label>公司名称</label><input type="text" class="f_work_company" placeholder="公司名称" /></div>
-        <div class="form-group"><label>职位</label><input type="text" class="f_work_title" placeholder="职位" /></div>
-      </div>
-      <div class="form-row single">
-        <div class="form-group"><label>工作时间</label><input type="text" class="f_work_time" placeholder="如：2022.03 - 至今" /></div>
-      </div>
-      <div class="form-group"><label>核心成就</label><textarea class="f_work_achievements tall" rows="4" placeholder="用STAR法则+量化数据描述"></textarea></div>
-    </div>`;
-  document.getElementById('projectFields').innerHTML = `
-    <div class="project-entry" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
-      <div class="form-row">
-        <div class="form-group"><label>项目名称</label><input type="text" class="f_proj_name" placeholder="项目名称" /></div>
-        <div class="form-group"><label>你的角色</label><input type="text" class="f_proj_role" placeholder="如：技术负责人" /></div>
-      </div>
-      <div class="form-group"><label>技术栈</label><input type="text" class="f_proj_tech" placeholder="如：Spring Boot, Redis" /></div>
-      <div class="form-group"><label>你的贡献</label><textarea class="f_proj_contribution" rows="3" placeholder="STAR法则描述"></textarea></div>
-    </div>`;
-  // Clear file lists
-  document.getElementById('fileList').innerHTML = '';
-  const fileList3 = document.getElementById('fileListStep3');
-  if (fileList3) fileList3.innerHTML = '';
-  uploadedFiles.length = 0;
-
-  state.mode = '';
-  state.existingResume = '';
-  document.getElementById('resumeInputArea').classList.add('hidden');
-  document.getElementById('existingResumeInput').value = '';
-  document.getElementById('resumeInputStatus').textContent = '';
-  document.getElementById('setupSection').classList.add('hidden');
-  setApiNavActive(false);
-  document.getElementById('entrySection').classList.remove('hidden');
-  document.getElementById('entrySection').classList.add('active');
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
-  document.querySelector('.step-dot[data-step="1"]').classList.add('active');
-  document.getElementById('progressFill').style.width = '0%';
-}
-
-// ===================== Keyboard shortcut & Init =====================
-document.addEventListener('DOMContentLoaded', () => {
-  // Restore provider configs from localStorage (without API keys)
-  try {
-    const saved = localStorage.getItem('ai_providers_config');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      parsed.forEach((p, i) => {
-        if (state.apiProviders[i]) {
-          Object.assign(state.apiProviders[i], p);
-        } else {
-          state.apiProviders.push(p);
-        }
-      });
-    }
-    const activeId = localStorage.getItem('ai_active_provider');
-    if (activeId && state.apiProviders.some(p => p.id === activeId)) {
-      state.activeProviderId = activeId;
-    }
-    const routing = localStorage.getItem('ai_role_routing');
-    if (routing) {
-      Object.assign(state.roleRouting, JSON.parse(routing));
-    }
-  } catch (e) { /* ignore */ }
-
-  renderProviderTabs();
-  renderProviderForm();
-  populateRoutingSelects();
-  if (!document.getElementById('setupSection').classList.contains('hidden')) {
-    setApiNavActive(true);
-    document.querySelectorAll('.step-dot').forEach(d => { d.classList.remove('active'); d.classList.remove('done'); });
-  }
-});
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 </script>
+<script src="assets/state.js?v=2"></script>
+<script src="assets/api.js?v=2"></script>
+<script src="assets/view.js?v=2"></script>
+<script src="assets/actions.js?v=2"></script>
 </body>
 </html>
+

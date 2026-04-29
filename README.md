@@ -26,7 +26,13 @@
 │   ├── interview-coach/
 │   └── resume-builder/
 ├── .claude/launch.json              # Web App 本地启动配置
-└── web-app/index.html               # 独立网页版
+└── web-app/
+    ├── index.html                   # 独立网页版入口
+    └── assets/
+        ├── state.js                 # 应用状态
+        ├── api.js                   # API 服务商预设与调用层
+        ├── view.js                  # UI 渲染函数
+        └── actions.js               # 业务逻辑与事件处理
 ```
 
 `.agents/skills` 与 `.claude/skills` 保持同一套最新 skill 内容；平台本地状态文件（如 `.claude/settings.local.json`、`.claude/worktrees/`）不会进入版本库。
@@ -220,21 +226,44 @@ start interview-coach-skill/web-app/index.html
 
 ### 功能特点
 
-- 🎨 美观的步骤式向导界面（共 9 步，覆盖求职全流程）
-- 📝 表单化信息收集（无需命令行交互）
-- 🤖 **多 API 服务商支持**：支持 Anthropic Claude、OpenAI 兼容（DeepSeek、豆包、GPT 等）
-- 🔀 **角色路由**：不同任务可分配不同模型（如 DeepSeek 生成简历、豆包搜索职位、GPT 面试）
-- 📎 **补充材料上传**：拖拽或点击上传 PDF/TXT/MD/DOCX 文件
+- 🎨 美观的步骤式向导界面（共 6 步，覆盖求职全流程）
+- 📝 表单化信息收集 + 子步骤引导（基础信息 → 教育 → 工作经历 → 项目技能）
+- 🤖 **三大 API 服务商预设**：DeepSeek、豆包（火山引擎）、千问（阿里云），URL 已预填
+- 🔀 **步骤级模型分配**：在每一步卡片顶部可直接切换使用的模型，也可在 API 管理页统一配置
+- 📎 **文件上传**：拖拽或点击上传 PDF/TXT/MD/DOCX/RTF/HTML 等格式
 - 📂 **本地项目导入**：选择项目文件夹，自动扫描代码 → AI 分析 → 勾选贡献点写入简历
 - 🎯 **题库来源选择**：可指定牛客网、力扣、BOSS直聘面经、知乎等面试题来源
 - 📄 在线简历生成与优化
-- 🔍 真实职位搜索展示（BOSS直聘、智联等）
+- 🔍 真实职位搜索展示
 - 🎤 内置模拟面试聊天界面，带评分和参考回答
-- 💾 配置持久化（API key 仅保存在浏览器内存）
+- 🔗 **申请进度追踪**：记录投递、面试状态
+- 💾 配置持久化（API Key 仅保存在浏览器内存）
+
+### 文件结构
+
+```
+web-app/
+├── index.html          # 主页面（结构 + 样式）
+└── assets/
+    ├── state.js        # 应用状态对象
+    ├── api.js          # API 服务商预设、调用层、连通性测试
+    ├── view.js         # UI 渲染（导航、聊天、追踪器、文件列表等）
+    └── actions.js      # 业务逻辑（文件处理、步骤控制、面试、初始化等）
+```
+
+### 配置说明
+
+1. 打开网页后，在 API 管理页面选择服务商：
+   - **DeepSeek**：`https://api.deepseek.com/v1/chat/completions`
+   - **豆包（火山引擎）**：`https://ark.cn-beijing.volces.com/api/v3/chat/completions`
+   - **千问（阿里云）**：`https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
+2. 填写对应服务商的 **API Key** 并选择模型
+3. 点击「测试连通性」验证，然后点击「保存并进入」
+4. 每个使用 AI 的步骤顶部都有模型选择下拉框，可随时切换
 
 ### 注意事项
 
-- 首次使用需在页面顶部配置 AI 服务商（支持 Anthropic 和 OpenAI 兼容格式）
-- 可为不同任务角色分配不同的 AI 模型
+- 首次使用需至少为一个 API 服务商填写 Key
 - 密钥仅存储在浏览器内存中，不持久化到磁盘
 - 推荐使用 Chrome/Edge 浏览器以获得完整功能体验（文件夹选择功能需要 Chromium 内核）
+- Docx 文件解析依赖 mammoth.js，PDF 解析依赖 pdf.js（从 CDN 加载）
