@@ -2,7 +2,7 @@
 name: full-career
 description: "一站式求职助手：信息收集→简历生成→岗位匹配→真实职位搜索→简历优化→模拟面试，覆盖求职全流程。"
 argument-hint: "[目标岗位] [工作年限]"
-allowed-tools: "Read, Write, WebSearch, WebFetch"
+allowed-tools: "Read, Write, WebSearch, WebFetch, Bash, Glob, Grep"
 user-invocable: true
 ---
 

@@ -5,20 +5,20 @@ const RESUME_SUBSTEP_IDS = ['basic', 'education', 'work', 'projects', 'selfeval'
 // Universal built-in templates
 const RESUME_TEMPLATES = {
   reference: {
-    name: '参考简历版',
-    desc: '默认模板，按你上传的中文简历样式重做，适合校招、实习与一页式简历。',
-    for: '默认推荐',
+    name: '经典简洁版',
+    desc: '经典中文简历样式，简洁大方，适合校招、实习与一页式简历。',
+    for: '通用推荐',
     accent: '默认',
     generationHint: '版式参考一页中文简历：姓名居中、联系方式单独一行、分区标题清晰、内容紧凑，项目经历优先写技术栈、职责与成果，整体正式克制。',
     preview: `# 张三
-13800138000 ｜ zhangsan@example.com
+13800138000 | zhangsan@example.com
 
 ## 教育背景
-某某大学 ｜ 计算机学院 ｜ 本科 ｜ 2020.09 - 2024.06
+某某大学 | 计算机学院 | 本科 | 2020.09 - 2024.06
 - GPA: 3.5/4.0
 
 ## 项目经历
-### 智能客服对话系统 ｜ 核心开发 ｜ 2023.03 - 2023.09
+### 智能客服对话系统 | 核心开发 | 2023.03 - 2023.09
 - 技术栈：Python、TensorFlow、Flask、Docker
 - 职责：NLP 意图识别模块开发与模型调优
 - 成果：意图识别准确率从 82% 提升至 93%，响应耗时降至 200ms 以内`,
@@ -42,12 +42,12 @@ const RESUME_TEMPLATES = {
     accent: '清晰',
     generationHint: '输出一份现代、清晰、正式的中文简历，模块标题统一，经历成果尽量量化，信息密度适中，适合导出为专业 PDF。',
     preview: `# 候选人姓名
-城市 ｜ 电话 ｜ 邮箱 ｜ 作品集
+城市 | 电话 | 邮箱 | 作品集
 ## 个人概述
 - 3-4 句概括岗位方向、经验年限、核心技术与业务结果
 
 ## 工作经历
-### 公司名称 ｜ 岗位 ｜ 2022.03 - 至今
+### 公司名称 | 岗位 | 2022.03 - 至今
 - 主导核心系统重构，性能提升 40%
 - 建立可观测体系，故障定位时间缩短 60%`,
     pdf: {
@@ -68,8 +68,8 @@ const RESUME_TEMPLATES = {
     for: '资深岗位',
     accent: '高密',
     generationHint: '输出一份高信息密度的一页式中文简历，减少空话，保留高价值成果、技术栈和职责，适合经验较多的候选人。',
-    preview: `# 候选人姓名 ｜ 求职方向
-城市 ｜ 电话 ｜ 邮箱
+    preview: `# 候选人姓名 | 求职方向
+城市 | 电话 | 邮箱
 
 ## 核心竞争力
 - 8 年后端 / AI 应用经验，负责过高并发系统与核心交付
@@ -83,6 +83,59 @@ const RESUME_TEMPLATES = {
         { fontScale: 1, spacingScale: 1, lineScale: 1 },
         { fontScale: 0.97, spacingScale: 0.9, lineScale: 0.95 },
         { fontScale: 0.94, spacingScale: 0.82, lineScale: 0.91 }
+      ]
+    }
+  },
+  minimal: {
+    name: '极简清新版',
+    desc: '干净清爽的排版，适合创意岗位与初创公司投递。',
+    for: '创意/设计',
+    accent: '清新',
+    generationHint: '输出一份极简清新的中文简历，排版留白充足，字体轻盈，适合设计师、产品经理等创意岗位。',
+    preview: `# 林小月
+上海 | 138xxxx | yue@design.studio | dribbble.com/yue
+
+## 关于我
+产品设计师，3 年 B 端 SaaS 设计经验。擅长将复杂业务流转化为直观交互。
+
+## 经历
+### UIDesign Studio | 产品设计师 | 2023.01 - 至今
+- 主导企业级 Dashboard 改版，用户满意度从 3.8 提升至 4.6`,
+    pdf: {
+      margins: { top: 20, right: 22, bottom: 20, left: 22 },
+      font: { h1: 22, h2: 13, h3: 10.5, body: 9.5, meta: 8.5 },
+      spacing: { afterH1: 8, afterContact: 12, beforeH2: 12, afterH2: 5, beforeH3: 5, afterH3: 2, afterParagraph: 3, afterList: 3, bulletIndent: 5 },
+      lineHeight: { body: 1.7, tight: 1.4, heading: 1.25 },
+      compression: [
+        { fontScale: 1, spacingScale: 1, lineScale: 1 },
+        { fontScale: 0.97, spacingScale: 0.9, lineScale: 0.95 }
+      ]
+    }
+  },
+  tech: {
+    name: '技术极客版',
+    desc: '突出技术栈与项目成果，适合技术岗位投递大厂。',
+    for: '技术/大厂',
+    accent: '技术',
+    generationHint: '输出一份技术导向的中文简历，技术栈独立成区，项目用数据说话，弱化非技术内容，适合字节/阿里/腾讯等大厂。',
+    preview: `# 王强 | 高级后端工程师
+GitHub: github.com/wangqiang | 北京 | wang@dev.io
+
+## 技术栈
+Go · Java · Python | K8s · Docker · Terraform | MySQL · Redis · Kafka
+
+## 核心项目
+### 实时推荐引擎 | Tech Lead | 2024.01 - 至今
+- QPS 10万+，P99 延迟 < 50ms，支撑日活 2000 万用户`,
+    pdf: {
+      margins: { top: 15, right: 16, bottom: 15, left: 16 },
+      font: { h1: 19, h2: 12, h3: 10.5, body: 9.5, meta: 8.8 },
+      spacing: { afterH1: 4, afterContact: 8, beforeH2: 8, afterH2: 3, beforeH3: 4, afterH3: 1.5, afterParagraph: 1.5, afterList: 2, bulletIndent: 4 },
+      lineHeight: { body: 1.45, tight: 1.3, heading: 1.18 },
+      compression: [
+        { fontScale: 1, spacingScale: 1, lineScale: 1 },
+        { fontScale: 0.97, spacingScale: 0.92, lineScale: 0.96 },
+        { fontScale: 0.94, spacingScale: 0.84, lineScale: 0.92 }
       ]
     }
   }
@@ -102,7 +155,9 @@ const state = {
   providers: [
     { id: 'deepseek', name: 'DeepSeek', apiUrl: 'https://api.deepseek.com/v1/chat/completions', apiKey: '', model: 'deepseek-chat', type: 'openai' },
     { id: 'doubao', name: '豆包（火山引擎）', apiUrl: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions', apiKey: '', model: 'doubao-pro-32k', type: 'openai' },
-    { id: 'qwen', name: '千问（阿里云）', apiUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', apiKey: '', model: 'qwen-plus', type: 'openai' }
+    { id: 'qwen', name: '千问（阿里云）', apiUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', apiKey: '', model: 'qwen-plus', type: 'openai' },
+    { id: 'claude', name: 'Claude (Anthropic)', apiUrl: 'https://api.anthropic.com/v1/messages', apiKey: '', model: 'claude-sonnet-4-6', type: 'anthropic' },
+    { id: 'openai', name: 'OpenAI', apiUrl: 'https://api.openai.com/v1/chat/completions', apiKey: '', model: 'gpt-4o', type: 'openai' }
   ],
   activeProviderId: 'deepseek',
 
@@ -164,5 +219,11 @@ const state = {
   interviewPrep: '',
   interviewPrepGeneratedAt: '',
 
-  applications: []
+  applications: [],
+
+  dashboard: {
+    viewMode: 'card',
+    filterStatus: 'all',
+    sortBy: 'date'
+  }
 };

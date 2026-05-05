@@ -887,8 +887,16 @@ function confirmMatch() {
 function cancelJobSearch() {
   if (state.activeAbortController) {
     state.activeAbortController.abort();
-    state.jobSearchCancelled = true;
   }
+  state.jobSearchCancelled = true;
+  // Instantly clean up UI for immediate re-search
+  document.getElementById('jobProgressPanel').classList.add('hidden');
+  document.getElementById('jobLoading').classList.add('hidden');
+  document.getElementById('jobResult').classList.add('hidden');
+  // Ensure platform config stays open
+  var cfg = document.getElementById('jobPlatformConfig');
+  if (cfg) cfg.open = true;
+  endProcess();
 }
 
 function updateJobProgress(phase, detail, pct) {
@@ -1038,7 +1046,8 @@ function selectJob(id) {
 function skipJobSearch() {
   document.getElementById('jobLoading').classList.add('hidden');
   document.getElementById('jobResult').classList.add('hidden');
-  document.getElementById('skipJobConfirm').classList.remove('hidden');
+  document.getElementById('jobProgressPanel').classList.add('hidden');
+  // Don't block re-entry - keep search UI visible
 }
 
 function confirmJob() {
@@ -1356,10 +1365,28 @@ function updateTargetCompany() {
 }
 
 // ===================== Step 9: Interview =====================
+function getInterviewRoundHint() {
+  const el = document.getElementById('interviewRoundType');
+  const val = el ? el.value : '';
+  const hints = {
+    'first': '这是一轮面试（初试/一面），重点考察基础功、项目经验和学习能力。题目偏向基础原理+核心项目，难度中等，目的是筛选出基本合格的候选人。',
+    'tech': '这是技术面/专业面，重点深度考察技术能力。题目要深入技术原理、架构设计、性能优化、异常处理，追问细节。难度中高。',
+    'second': '这是二轮面试（复试），通常由更高级别的面试官进行。题目要更有广度：系统设计、跨团队协作、技术选型权衡、业务理解。难度较高。',
+    'system': '这是系统设计面试，重点考察大规模系统设计能力。题目围绕高并发、高可用、数据存储、微服务拆分、容量规划等。让候选人从需求分析开始，逐步深入细节。',
+    'behavior': '这是行为面/HR面试，重点考察软技能、职业规划、团队协作、冲突处理、价值观匹配。使用STAR法则提问，关注候选人的沟通表达和职业态度。',
+    'final': '这是终面/总监面试，重点考察综合素质、技术视野、领导力潜力、业务理解和长期发展潜力。题目要有高度，关注候选人的思维深度和格局。',
+    'group': '这是群面/无领导小组讨论，重点考察沟通协作、逻辑表达、团队角色和推动力。给出一个开放性问题或案例，观察候选人在群体中的表现。',
+    'english': 'This is an English interview. ALL questions, feedback, and interactions MUST be in English. Focus on communication clarity, technical depth, and cultural fit for international roles.'
+  };
+  return hints[val] || '';
+}
+
 function buildInterviewSystem() {
   const target = state.matchChoice || state.userData.target || '技术岗位';
   const companyHint = getCompanyHint(state.targetCompany);
-  return `你是一位资深面试官，请围绕目标岗位 ${target} 提问。题目要结合用户简历，覆盖技术深度、项目经验、场景题和行为题。反馈时请给出评分、优点、改进建议和参考回答。\n${companyHint}\n${getQuestionSourceInstruction()}\n\n用户信息：\n${collectAllData()}\n\n当前简历：\n${state.optimizedResume || state.resume}`;
+  const roundHint = getInterviewRoundHint();
+  const roundInfo = roundHint ? `\n面试轮次说明：${roundHint}` : '';
+  return `你是一位资深面试官，请围绕目标岗位 ${target} 提问。题目要结合用户简历，覆盖技术深度、项目经验、场景题和行为题。反馈时请给出评分、优点、改进建议和参考回答。${roundInfo}\n${companyHint}\n${getQuestionSourceInstruction()}\n\n用户信息：\n${collectAllData()}\n\n当前简历：\n${state.optimizedResume || state.resume}`;
 }
 
 function buildInterviewPrepSystem() {
@@ -2323,7 +2350,7 @@ function selectResumeTemplate(key) {
 }
 
 function legacyRenderResumeTemplateCards() {
-  const targets = ['generationTemplateCards', 'exportTemplateCards'];
+  const targets = []; // Marketplace in templatePhase replaces all template cards
   const cards = Object.entries(RESUME_TEMPLATES).map(([key, tpl]) => {
     const selected = state.resumeTemplate === key;
     return `
@@ -2764,7 +2791,7 @@ function saveStep5() {
 }
 
 function renderResumeTemplateCards() {
-  const targets = ['generationTemplateCards', 'exportTemplateCards'];
+  const targets = []; // Marketplace in templatePhase replaces all template cards
   const cards = Object.entries(RESUME_TEMPLATES).map(([key, tpl]) => {
     const selected = state.resumeTemplate === key;
     return `
@@ -2836,18 +2863,21 @@ async function ensureCjkFont() {
     } catch (e) { _cjkFontBase64 = null; }
   }
 
-  // Try multiple CDN sources with timeout fallback
+  // Try multiple CDN sources with timeout fallback (domestic + international)
   var urls = [
+    // Domestic CDN (accessible from China)
+    'https://registry.npmmirror.com/@aspect-dev/cjk-fonts/1.0.0/files/NotoSansSC-Regular.ttf',
+    'https://cdn.bootcdn.net/ajax/libs/noto/2023.11/NotoSansSC-Regular.ttf',
+    // International CDN
     'https://cdn.jsdelivr.net/npm/@aspect-dev/cjk-fonts@1.0.0/NotoSansSC-Regular.ttf',
     'https://cdn.jsdelivr.net/gh/notofonts/noto-cjk@main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf',
-    'https://unpkg.com/@aspect-dev/cjk-fonts@1.0.0/NotoSansSC-Regular.ttf',
-    'https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf'
+    'https://unpkg.com/@aspect-dev/cjk-fonts@1.0.0/NotoSansSC-Regular.ttf'
   ];
 
   for (var u = 0; u < urls.length; u++) {
     try {
       var controller = new AbortController();
-      var timeout = setTimeout(function() { controller.abort(); }, 12000);
+      var timeout = setTimeout(function() { controller.abort(); }, 3000);
       var resp = await fetch(urls[u], { signal: controller.signal });
       clearTimeout(timeout);
       if (!resp.ok) continue;
@@ -3218,6 +3248,11 @@ function syncResumeWorkspace() {
   const hasResume = !!getResumeMarkdownSource();
   if (hasResume && !state.resumeGeneratedOnce) state.resumeGeneratedOnce = true;
 
+  // Marketplace lives in templatePhase now - no need to toggle here
+  // Hide old generationTemplateCards area since marketplace replaces it
+  const genCards = document.getElementById('generationTemplateCards');
+  if (genCards) genCards.style.display = 'none';
+
   const startBtn = document.getElementById('btnStartResumeGenerate');
   const startHint = document.getElementById('resumeStartHint');
   const regenBtn = document.getElementById('btnRegenerateResume');
@@ -3411,27 +3446,70 @@ async function downloadResumePDF() {
     return;
   }
 
+  showProcessingToast('\u6b63\u5728\u751f\u6210 PDF...');
+
+  // Method 1: Try jsPDF with CJK font (3s fast timeout per URL)
   const fontName = await ensureCjkFont();
   const jsPdfCtor = getJsPdfCtor();
-  if (!fontName || !jsPdfCtor) {
-    alert('PDF \u7ec4\u4ef6\u6216\u4e2d\u6587\u5b57\u4f53\u672a\u6b63\u786e\u52a0\u8f7d\u3002\u8bf7\u68c0\u67e5\u7f51\u7edc\u8fde\u63a5\u540e\u91cd\u8bd5\uff0c\u6216\u9009\u62e9\u5bfc\u51fa DOC / Markdown \u683c\u5f0f\u3002');
-    return;
+
+  if (fontName && jsPdfCtor) {
+    try {
+      const fit = chooseResumeCompressionIndex(markdown);
+      state.resumeLayoutCompressionIndex = fit.compressionIndex;
+      const doc = new jsPdfCtor({ unit: 'mm', format: 'a4', compress: true, putOnlyUsedFonts: true });
+      const spec = getResumePdfLayout(state.resumeTemplate, fit.compressionIndex);
+      const pageCount = renderResumePdf(doc, fit.blocks, spec);
+      const fileName = (state.userData.name || '\u7b80\u5386') + '-\u7b80\u5386.pdf';
+      doc.save(fileName);
+      saveSessionData();
+      updateResumePreview();
+      showProcessingToast(pageCount > 1 ? '\u5df2\u5bfc\u51fa PDF' : '\u5df2\u5bfc\u51fa PDF');
+      return;
+    } catch (e) {
+      console.warn('jsPDF failed, using browser print:', e.message);
+    }
   }
 
-  try {
-    const fit = chooseResumeCompressionIndex(markdown);
-    state.resumeLayoutCompressionIndex = fit.compressionIndex;
-    const doc = new jsPdfCtor({ unit: 'mm', format: 'a4', compress: true, putOnlyUsedFonts: true });
-    const spec = getResumePdfLayout(state.resumeTemplate, fit.compressionIndex);
-    const pageCount = renderResumePdf(doc, fit.blocks, spec);
-    const fileName = (state.userData.name || '\u7b80\u5386') + '-\u7b80\u5386.pdf';
-    doc.save(fileName);
-    saveSessionData();
-    updateResumePreview();
-    showProcessingToast(pageCount > 1 ? '\u5df2\u5bfc\u51fa PDF\uff08\u81ea\u52a8\u5206\u9875\uff09' : '\u5df2\u5bfc\u51fa PDF');
-  } catch (e) {
-    console.error('PDF export failed:', e);
-    alert('PDF \u5bfc\u51fa\u5931\u8d25\uff1a' + e.message);
+  // Method 2: Browser print-to-PDF (instant, native Chinese support)
+  downloadResumeViaPrint();
+}
+
+function downloadResumeViaPrint() {
+  var oldFrame = document.getElementById('printFrame');
+  if (oldFrame) oldFrame.remove();
+
+  // Build print-optimized resume HTML once
+  var html = resumeHTML(getResumeMarkdownSource(), state.resumeTemplate, state.resumeLayoutCompressionIndex);
+  // Inject print-specific CSS for clean output
+  html = html.replace('</head>', '<style>@page{size:A4;margin:15mm}body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:13px;line-height:1.8;color:#222;max-width:100%}h1{font-size:22px;text-align:center}h2{font-size:15px;border-bottom:1.5px solid #333;padding-bottom:3px}h3{font-size:14px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head>');
+
+  var iframe = document.createElement('iframe');
+  iframe.id = 'printFrame';
+  iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:99999;background:white;';
+  document.body.appendChild(iframe);
+
+  var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(html);
+  iframeDoc.close();
+
+  // Print as soon as content is ready (no artificial delays)
+  function doPrint() {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    } catch(e) { /* ignore */ }
+    // Clean up after print dialog
+    setTimeout(function() {
+      var pf = document.getElementById('printFrame');
+      if (pf && pf.parentNode) pf.parentNode.removeChild(pf);
+    }, 1000);
+  }
+
+  if (iframeDoc.readyState === 'complete' || iframeDoc.readyState === 'interactive') {
+    doPrint();
+  } else {
+    iframe.onload = doPrint;
   }
 }
 

@@ -422,13 +422,13 @@ function renderTrackerSummary() {
   const byStatus = {};
   state.applications.forEach(a => { byStatus[a.status] = (byStatus[a.status] || 0) + 1; });
   container.innerHTML =
-    '<div class="summary-grid" style="grid-template-columns:repeat(auto-fit,minmax(90px,1fr));">' +
-    '<div class="summary-item"><div class="value">' + total + '</div><div class="label">\u603B\u8BA1</div></div>' +
-    '<div class="summary-item"><div class="value">' + (byStatus['submitted'] || 0) + '</div><div class="label">\u5DF2\u6295\u9012</div></div>' +
-    '<div class="summary-item"><div class="value">' + (byStatus['resume-passed'] || 0) + '</div><div class="label">\u7B80\u5386\u901A\u8FC7</div></div>' +
-    '<div class="summary-item"><div class="value">' + (byStatus['interviewing'] || 0) + '</div><div class="label">\u9762\u8BD5\u4E2D</div></div>' +
-    '<div class="summary-item"><div class="value">' + (byStatus['offer'] || 0) + '</div><div class="label">\u5DF2\u83B7 Offer</div></div>' +
-    '<div class="summary-item"><div class="value">' + (byStatus['rejected'] || 0) + '</div><div class="label">\u5DF2\u62D2\u7EDD</div></div>' +
+    '<div class="dashboard-stats tracker-stats">' +
+    '<div class="dash-stat-card"><div class="dash-num">' + total + '</div><div class="dash-label">\u603B\u8BA1</div></div>' +
+    '<div class="dash-stat-card"><div class="dash-num">' + (byStatus['submitted'] || 0) + '</div><div class="dash-label">\u5DF2\u6295\u9012</div></div>' +
+    '<div class="dash-stat-card"><div class="dash-num">' + (byStatus['resume-passed'] || 0) + '</div><div class="dash-label">\u7B80\u5386\u901A\u8FC7</div></div>' +
+    '<div class="dash-stat-card"><div class="dash-num">' + (byStatus['interviewing'] || 0) + '</div><div class="dash-label">\u9762\u8BD5\u4E2D</div></div>' +
+    '<div class="dash-stat-card"><div class="dash-num success">' + (byStatus['offer'] || 0) + '</div><div class="dash-label">\u5DF2\u83B7 Offer</div></div>' +
+    '<div class="dash-stat-card"><div class="dash-num">' + (byStatus['rejected'] || 0) + '</div><div class="dash-label">\u5DF2\u62D2\u7EDD</div></div>' +
     '</div>';
 }
 
