@@ -8,9 +8,10 @@
 - Skill 套件：适合在 Claude Code / Codex 里用命令式方式调用
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Site](https://img.shields.io/badge/site-netlify-00C7B7.svg)](https://interview-coach-skill.netlify.app)
+[![GitHub Pages](https://img.shields.io/badge/site-GitHub%20Pages-2563eb.svg)](https://wksudud.github.io/interview-coach-skill/)
+[![Netlify](https://img.shields.io/badge/site-Netlify-00C7B7.svg)](https://interview-coach-skill.netlify.app)
 
-在线体验：[interview-coach-skill.netlify.app](https://interview-coach-skill.netlify.app)
+在线体验：[wksudud.github.io/interview-coach-skill](https://wksudud.github.io/interview-coach-skill/)（GitHub Pages）｜ [Netlify 镜像](https://interview-coach-skill.netlify.app)
 
 ## 项目亮点
 
