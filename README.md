@@ -21,6 +21,8 @@
 - 隐私优先：API Key 和会话数据保存在浏览器本地，不依赖项目自带后端
 - 中文优先：交互、简历生成、公司定向优化和面试反馈都围绕中文求职场景设计
 
+> 项目架构与开发指南见 [AGENT.md](AGENT.md)
+
 ## Web 应用能做什么
 
 Web 端围绕一条完整用户路径组织：
@@ -150,7 +152,7 @@ claude skills install .claude/skills/full-career
 └── web-app/
     ├── index.html
     ├── assets/
-    └── templates/
+    └── templates/         ← 简历模板预留目录（可放置 Jinja/HTML 模板文件）
 ```
 
 ## 适合谁使用
