@@ -1,5 +1,7 @@
 # AI Job Search Copilot · AI 求职全流程助手
 
+[English](README.en.md) · [Roadmap](ROADMAP.md)
+
 一个把简历准备、岗位匹配、职位搜索、定向优化、模拟面试和申请跟踪串起来的 AI 求职工作台。
 
 项目同时提供两种形态：
@@ -11,7 +13,11 @@
 [![GitHub Pages](https://img.shields.io/badge/site-GitHub%20Pages-2563eb.svg)](https://wksudud.github.io/interview-coach-skill/)
 [![Netlify](https://img.shields.io/badge/site-Netlify-00C7B7.svg)](https://interview-coach-skill.netlify.app)
 
-在线体验：[wksudud.github.io/interview-coach-skill](https://wksudud.github.io/interview-coach-skill/)（GitHub Pages）｜ [Netlify 镜像](https://interview-coach-skill.netlify.app)
+在线体验：[interview-coach-skill.netlify.app](https://interview-coach-skill.netlify.app)（Netlify 主 Demo）
+GitHub Pages 入口：[wksudud.github.io/interview-coach-skill](https://wksudud.github.io/interview-coach-skill/)
+
+![应用截图](docs/screenshots/app-home.png)
+![移动端截图](docs/screenshots/app-mobile.png)
 
 ## 项目亮点
 
@@ -144,11 +150,16 @@ claude skills install .claude/skills/full-career
 ```text
 .
 ├── README.md
+├── README.en.md
+├── ROADMAP.md
+├── package.json
 ├── SKILL.md
 ├── prompt-standalone.md
 ├── netlify.toml
 ├── .claude/skills/
 ├── .agents/skills/
+├── tests/
+├── docs/
 └── web-app/
     ├── index.html
     ├── assets/
@@ -164,14 +175,33 @@ claude skills install .claude/skills/full-career
 
 ## 开发与检查
 
-如果你要继续修改前端脚本，至少可以先做语法检查：
+运行本地静态 smoke test：
 
 ```bash
-node --check web-app/assets/state.js
-node --check web-app/assets/api.js
-node --check web-app/assets/view.js
-node --check web-app/assets/actions.js
+npm test
 ```
+
+检查在线 Demo 是否可用：
+
+```bash
+npm run smoke:live
+```
+
+启动本地 Web 应用：
+
+```bash
+npm run serve
+```
+
+## Roadmap
+
+- 增加英文界面语言切换。
+- 增加可导入/导出的求职数据 JSON。
+- 增加简历模板市场与自定义模板。
+- 增加 Playwright 端到端流程测试。
+- 增加 CI：静态检查、测试、部署预览。
+
+详见 [ROADMAP.md](ROADMAP.md)。
 
 ## License
 
